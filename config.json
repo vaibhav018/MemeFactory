@@ -1,0 +1,165 @@
+{
+  "app": {
+    "name": "mana_telugu_trolls_meme_pipeline",
+    "instagram_handle": "@mana_telugu_trolls",
+    "timezone": "Asia/Kolkata",
+    "dry_run": true,
+    "languages": ["te", "hi", "hinglish"]
+  },
+
+  "drive": {
+    "_comment": "Auth via service account is recommended for a headless scheduled pipeline (no browser login required).",
+    "auth_method": "service_account",
+    "service_account_file": "credentials/service_account.json",
+    "oauth_client_secret_file": "credentials/oauth_client_secret.json",
+    "oauth_token_file": "credentials/oauth_token.json",
+    "parent_folder_id": "1j49CKDxqvGQ1TQtrewwHqqg4KPUHkZm4",
+    "reaction_images_folder_id": "1zJyZk3xRxVZfxmS9t_G9MAVy0LJBkN-c",
+    "generated_memes_subfolder_name": "Generated_Memes",
+    "logs_subfolder_name": "Logs",
+    "generated_memes_folder_id": null,
+    "logs_folder_id": null
+  },
+
+  "news": {
+    "newsdataio_key_env": "NEWSDATA_API_KEY",
+    "newsdataio_endpoint": "https://newsdata.io/api/1/latest",
+    "newsdataio_params": {
+      "country": "in",
+      "language": "te,hi",
+      "category": "entertainment,politics,sports",
+      "size": 10
+    },
+    "rss_feeds": [
+      { "name": "Sakshi", "url": "https://www.sakshi.com/rss.xml", "language": "te" },
+      { "name": "123telugu", "url": "https://www.123telugu.com/feed", "language": "te" },
+      { "name": "TV9 Telugu", "url": "https://tv9telugu.com/feed", "language": "te" }
+    ],
+    "keywords": [
+      "cinema", "movie", "box office", "collection", "trailer", "teaser",
+      "politics", "election", "minister", "party",
+      "viral", "trending", "controversy", "troll",
+      "sports", "cricket", "ipl", "match"
+    ],
+    "max_stories": 10,
+    "min_newsdataio_stories": 3,
+    "request_timeout_seconds": 15,
+    "recency_half_life_hours": 18
+  },
+
+  "emotion_rules": {
+    "default_emotion": "confused",
+    "rules": [
+      {
+        "emotion": "skeptical",
+        "keywords": ["box office", "flop", "collection drop", "underperform", "postponed"],
+        "punchline_templates": [
+          "Nuvvu cheppindi correct ah? 🤨",
+          "Ee news nijama leda fake ah... suspense.",
+          "Trailer chusi expect chesindi ఇదేనా?"
+        ]
+      },
+      {
+        "emotion": "shocked",
+        "keywords": ["scandal", "arrest", "controversy", "leaked", "banned", "shock"],
+        "punchline_templates": [
+          "Ento idi jarigindi?! 😱",
+          "Idi nijama... nammalekapothunnanu.",
+          "Break news ani chusi shock ayipoyanu."
+        ]
+      },
+      {
+        "emotion": "laughing",
+        "keywords": ["viral", "meme", "funny", "troll", "comedy", "prank"],
+        "punchline_templates": [
+          "Idi chusi navvu apukolekapothunnanu 😂",
+          "Public reaction ki full support 🤣",
+          "Ee viral video full entertainment."
+        ]
+      },
+      {
+        "emotion": "angry",
+        "keywords": ["scam", "fraud", "protest", "attack", "corruption", "injustice"],
+        "punchline_templates": [
+          "Idi chala తప్పు, evadu chesina agree cheyalem 😡",
+          "Enti ee mosam, evariki nachindi?",
+          "Public ki full ఆగ్రహం ఈ విషయం మీద."
+        ]
+      },
+      {
+        "emotion": "excited",
+        "keywords": ["record", "blockbuster", "win", "victory", "hit", "success", "trailer launch"],
+        "punchline_templates": [
+          "Adirindi mowa! 🔥🔥",
+          "Ee news vinagane excitement peaks ki!",
+          "Full mass, evadi bad ledu ఇందులో."
+        ]
+      },
+      {
+        "emotion": "confused",
+        "keywords": [],
+        "punchline_templates": [
+          "Enti idi, artham kavatledu 🤔",
+          "Idi chadivi confuse ayipoya.",
+          "Ee news exact ga enti cheptunte?"
+        ]
+      }
+    ]
+  },
+
+  "reaction_index": {
+    "csv_path": "data/emotion_reaction_index.csv",
+    "filename_pattern": "{character}_{emotion}_{number}.jpg"
+  },
+
+  "compositor": {
+    "output_width": 1080,
+    "output_height": 1350,
+    "output_format": "JPEG",
+    "output_quality": 92,
+    "top_caption": {
+      "font_path": "assets/fonts/NotoSansTelugu-Regular.ttf",
+      "fallback_font_path": "assets/fonts/Roboto-Bold.ttf",
+      "font_size": 54,
+      "color": [255, 255, 255],
+      "stroke_color": [0, 0, 0],
+      "stroke_width": 3,
+      "max_width_ratio": 0.9,
+      "top_margin": 30
+    },
+    "bottom_caption": {
+      "font_path": "assets/fonts/NotoSansTelugu-Regular.ttf",
+      "fallback_font_path": "assets/fonts/Roboto-Bold.ttf",
+      "font_size": 54,
+      "color": [255, 255, 255],
+      "stroke_color": [0, 0, 0],
+      "stroke_width": 3,
+      "max_width_ratio": 0.9,
+      "bottom_margin": 40
+    },
+    "watermark": {
+      "text": "@mana_telugu_trolls",
+      "font_path": "assets/fonts/NotoSansTelugu-Regular.ttf",
+      "font_size": 28,
+      "color": [255, 215, 0],
+      "position": "bottom_right",
+      "margin": 20
+    }
+  },
+
+  "paths": {
+    "local_memes_dir": "output/memes",
+    "local_logs_dir": "output/logs",
+    "news_cache_file": "data/news_cache.json",
+    "queue_file": "data/queue.json"
+  },
+
+  "schedule": {
+    "news_fetch_time": "06:00",
+    "emotion_match_time": "06:15",
+    "reaction_pick_time": "06:20",
+    "compositor_time": "06:30",
+    "post_times": ["08:00", "13:00", "21:00"],
+    "queue_size": 3
+  }
+}

@@ -1,0 +1,17 @@
+This folder needs two TrueType font files for the compositor to render proper
+Telugu/Hinglish glyphs (without them, Pillow falls back to a built-in bitmap
+font that cannot render Telugu script at all - captions will look wrong).
+
+Required files (paths referenced by config.json -> compositor section):
+  assets/fonts/NotoSansTelugu-Bold.ttf   (caption text - supports Telugu script)
+  assets/fonts/Roboto-Bold.ttf           (watermark text - Latin only is fine)
+
+Where to get them:
+  - Search "Noto Sans Telugu" on Google Fonts (fonts.google.com) and download
+    the Bold static weight.
+  - Search "Roboto" on Google Fonts and download the Bold static weight.
+  Both are open-source (SIL Open Font License / Apache License) and free to
+  redistribute with this project.
+
+Drop the .ttf files directly into this folder with the exact filenames above,
+or update the font_path values in config.json if you name them differently.

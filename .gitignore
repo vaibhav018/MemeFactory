@@ -1,0 +1,28 @@
+# Secrets - never commit these
+.env
+credentials/service_account.json
+credentials/oauth_token.json
+
+# Generated content
+output/memes/*
+!output/memes/.gitkeep
+output/logs/*
+!output/logs/.gitkeep
+data/queue.json
+data/news_cache.json
+
+# new-pipeline local caches (Generated_Memes IS committed - Actions needs it
+# for public raw URLs used by Instagram publishing)
+logs/
+assets/Downloaded/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# OS
+.DS_Store
+Thumbs.db

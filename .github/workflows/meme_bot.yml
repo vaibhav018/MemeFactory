@@ -1,0 +1,38 @@
+name: meme-bot
+
+on:
+  schedule:
+    # IST -> UTC (IST = UTC+5:30): 08:00 / 13:00 / 21:00 IST
+    - cron: "30 2 * * *"
+    - cron: "30 7 * * *"
+    - cron: "30 15 * * *"
+  workflow_dispatch: {}      # manual "Run workflow" button for testing
+
+permissions:
+  contents: write            # commit generated memes back to the repo
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install pillow ddgs requests
+
+      - name: Generate meme
+        run: python auto_meme.py
+
+      - name: Commit meme + dedupe state
+        run: |
+          git config user.name "meme-bot"
+          git config user.email "actions@github.com"
+          git add Generated_Memes data/used_headlines.json
+          git diff --cached --quiet && echo "Nothing to commit" && exit 0
+          git commit -m "auto meme $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase origin main
+          git push
