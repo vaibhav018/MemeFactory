@@ -1,6 +1,6 @@
 # MemeFactory - Telugu/Hindi Meme Generation Pipeline
 
-Automated pipeline for `@mana_telugu_trolls`: pulls trending Telugu/Hindi news,
+Automated pipeline for `@bhogeswar_rao_garu`: pulls trending Telugu/Hindi news,
 picks a meme emotion + punchline, matches a reaction image from Google Drive,
 composites a 1080x1350 Instagram-ready meme, and queues 3 memes/day for
 posting at 8AM / 1PM / 9PM.
