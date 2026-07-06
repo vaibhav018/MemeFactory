@@ -24,6 +24,7 @@ import sys
 import textwrap
 from datetime import datetime
 from pathlib import Path
+from urllib.parse import urlparse
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -57,6 +58,31 @@ EMOJI_RE = re.compile(
     "[" "\U0001F300-\U0001FAFF" "\U00002600-\U000027BF" "\U0001F1E6-\U0001F1FF" "]+"
 )
 
+# Only accept photos hosted by known Indian news/entertainment outlets - image
+# search titles can match the query while the scraped "image" for that page is
+# an unrelated ad/sidebar/stock photo. Restricting to trusted publishers is a
+# second, independent check on top of the title-relevance filter.
+TRUSTED_NEWS_DOMAINS = {
+    "sakshi.com", "123telugu.com", "tv9telugu.com", "ap7am.com", "thehansindia.com",
+    "newindianexpress.com", "deccanchronicle.com", "thehindu.com", "thgim.com",
+    "thebetterandhra.com", "gulte.com", "greatandhra.com", "telugu360.com",
+    "andhrajyothy.com", "eenadu.net", "ntnews.com", "v6velugu.com",
+    "ndtv.com", "indiatoday.in", "timesofindia.indiatimes.com", "indianexpress.com",
+    "hindustantimes.com", "news18.com", "abplive.com", "moneycontrol.com",
+    "business-standard.com", "livemint.com", "financialexpress.com",
+    "outlookindia.com", "outlookbusiness.com", "assettype.com",
+    "zeenews.india.com", "republicworld.com", "wionews.com", "bhaskar.com",
+    "filmibeat.com", "telanganatoday.com",
+}
+
+
+def _is_trusted_domain(url: str) -> bool:
+    try:
+        netloc = urlparse(url).netloc.lower().split(":")[0]
+    except Exception:
+        return False
+    return any(netloc == d or netloc.endswith("." + d) for d in TRUSTED_NEWS_DOMAINS)
+
 # ============================== MEME CONTENT ==============================
 # Each caption block is a list of (text, color) lines.  Text is auto-wrapped
 # and auto-shrunk to fit.  WHITE = factual setup, YELLOW = punch/key stat.
@@ -84,8 +110,14 @@ def fetch_news_image(query: str, save_dir: Path, max_tries: int = 10,
                      must_contain: str | None = None) -> Path | None:
     """Search DuckDuckGo images for `query` and download the first usable photo.
 
-    If `must_contain` is given, results whose title lacks that word are tried
-    only after all title-matching results are exhausted (relevance filter).
+    Strict by design: if `must_contain` is given, only title-matching results
+    are considered at all (no falling through to unrelated images), and every
+    candidate must also come from a known news/entertainment domain
+    (TRUSTED_NEWS_DOMAINS) - image search occasionally mismatches a page's
+    title against an unrelated ad/sidebar photo scraped from that page, so
+    relying on the title alone isn't enough. Returns None (caller falls back
+    to a local reaction image) rather than ever using an unrelated/unvetted
+    photo. safesearch is forced to "on" regardless of query content.
     Biased toward large source images (size="Large") since the final canvas
     is 1080x1350 - small source photos would otherwise get visibly upscaled.
     """
@@ -98,17 +130,18 @@ def fetch_news_image(query: str, save_dir: Path, max_tries: int = 10,
 
     print(f">> Searching images for: {query}")
     try:
-        results = list(DDGS().images(query, max_results=max_tries * 3, size="Large"))
+        results = list(DDGS().images(query, max_results=max_tries * 3, size="Large", safesearch="on"))
     except Exception as e:
         print(f"!! Image search failed: {e}")
         return None
 
     if must_contain:
         key = must_contain.lower()
-        matched = [r for r in results if key in (r.get("title") or "").lower()]
-        rest = [r for r in results if r not in matched]
-        print(f">> Relevance filter '{must_contain}': {len(matched)} matching titles")
-        results = matched + rest
+        results = [r for r in results if key in (r.get("title") or "").lower()]
+        print(f">> Relevance filter '{must_contain}': {len(results)} title-matching results")
+
+    results = [r for r in results if _is_trusted_domain(r.get("image") or "")]
+    print(f">> Trusted-domain filter: {len(results)} from known news sources")
 
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
     tried = 0
