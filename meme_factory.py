@@ -46,6 +46,7 @@ BLACK = (10, 10, 10)
 # works on Windows and Linux (GitHub Actions) alike
 FONT_PATH = str(BASE / "assets" / "fonts" / "Anton-Regular.ttf")
 LOGO_PATH = BASE / "assets" / "Logo" / "logo_photo_watermark.png"
+FACE_MODEL_PATH = BASE / "assets" / "models" / "face_detection_yunet_2023mar.onnx"
 LOGO_SIZE = 130                      # px, stamped in the photo's top-right corner
 LOGO_MARGIN = 18
 FONT_MAX = 58                        # starting font size
@@ -233,14 +234,66 @@ def draw_block(draw, phys_lines, font, line_h, y):
 
 
 # ============================== COMPOSITE ==============================
+def _detect_faces(img: Image.Image):
+    """Returns face boxes [(x, y, w, h), ...] in the original image's coordinates.
+    Returns [] if the face model isn't available or no faces are found -
+    callers must treat that as "fall back to center crop", not an error.
+
+    Uses OpenCV's bundled YuNet detector (cv2.FaceDetectorYN) - the modern
+    replacement for the old Haar cascade API, which OpenCV 5.x removed.
+    """
+    if not FACE_MODEL_PATH.exists():
+        return []
+    try:
+        import cv2
+        import numpy as np
+        arr = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
+        h, w = arr.shape[:2]
+        detector = cv2.FaceDetectorYN_create(str(FACE_MODEL_PATH), "", (w, h))
+        _, faces = detector.detect(arr)
+        if faces is None:
+            return []
+        return [tuple(f[:4]) for f in faces]
+    except Exception as exc:
+        print(f"   - face detection unavailable ({exc}), using center crop")
+        return []
+
+
+def _crop_offset(faces, scale, new_w, new_h, target_w, target_h) -> tuple[int, int]:
+    """Crop position biased to keep detected faces in frame. Falls back to a
+    plain center crop when no faces were found."""
+    default_left = (new_w - target_w) // 2
+    default_top = (new_h - target_h) // 2
+    if not len(faces):
+        return default_left, default_top
+
+    xs1 = [int(x * scale) for (x, y, w, h) in faces]
+    ys1 = [int(y * scale) for (x, y, w, h) in faces]
+    xs2 = [int((x + w) * scale) for (x, y, w, h) in faces]
+    ys2 = [int((y + h) * scale) for (x, y, w, h) in faces]
+    faces_cx = (min(xs1) + max(xs2)) // 2
+    faces_cy = (min(ys1) + max(ys2)) // 2
+
+    left = max(0, min(faces_cx - target_w // 2, new_w - target_w))
+    top = max(0, min(faces_cy - target_h // 2, new_h - target_h))
+    return left, top
+
+
 def cover_crop(img: Image.Image, target_w: int, target_h: int) -> Image.Image:
-    """Resize + center-crop so the image fills target area completely (full bleed)."""
+    """Resize + crop so the image fills target area completely (full bleed).
+
+    Crop position is face-aware: a plain center-crop was chopping off heads
+    on portrait photos and multi-person collages whenever the source aspect
+    ratio required cropping a lot of vertical space. Detected faces (via
+    OpenCV's bundled Haar cascade - free, no download, no API) are kept in
+    frame instead; falls back to the old center-crop if none are found.
+    """
     img = img.convert("RGB")
+    faces = _detect_faces(img)
     scale = max(target_w / img.width, target_h / img.height)
-    new = img.resize((round(img.width * scale), round(img.height * scale)),
-                     Image.Resampling.LANCZOS)
-    left = (new.width - target_w) // 2
-    top = (new.height - target_h) // 2
+    new_w, new_h = round(img.width * scale), round(img.height * scale)
+    new = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
+    left, top = _crop_offset(faces, scale, new_w, new_h, target_w, target_h)
     return new.crop((left, top, left + target_w, top + target_h))
 
 

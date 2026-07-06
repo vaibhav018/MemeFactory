@@ -26,7 +26,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install pillow ddgs requests
+        run: pip install pillow ddgs requests opencv-python-headless numpy
 
       - name: Generate meme
         run: python auto_meme.py
