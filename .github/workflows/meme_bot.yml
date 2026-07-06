@@ -51,7 +51,7 @@ jobs:
         run: |
           git config user.name "meme-bot"
           git config user.email "actions@github.com"
-          git add Generated_Memes data/used_headlines.json
+          git add Generated_Memes data/used_headlines.json data/category_history.json
           git diff --cached --quiet && echo "Nothing to commit" && exit 0
           git commit -m "auto meme $(date -u +%Y-%m-%dT%H:%MZ)"
           git pull --rebase origin main
