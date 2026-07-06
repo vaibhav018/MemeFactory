@@ -80,12 +80,14 @@ MEME = {
 
 
 # ============================== IMAGE FETCH ==============================
-def fetch_news_image(query: str, save_dir: Path, max_tries: int = 8,
+def fetch_news_image(query: str, save_dir: Path, max_tries: int = 10,
                      must_contain: str | None = None) -> Path | None:
     """Search DuckDuckGo images for `query` and download the first usable photo.
 
     If `must_contain` is given, results whose title lacks that word are tried
     only after all title-matching results are exhausted (relevance filter).
+    Biased toward large source images (size="Large") since the final canvas
+    is 1080x1350 - small source photos would otherwise get visibly upscaled.
     """
     try:
         import requests
@@ -96,7 +98,7 @@ def fetch_news_image(query: str, save_dir: Path, max_tries: int = 8,
 
     print(f">> Searching images for: {query}")
     try:
-        results = list(DDGS().images(query, max_results=max_tries * 3))
+        results = list(DDGS().images(query, max_results=max_tries * 3, size="Large"))
     except Exception as e:
         print(f"!! Image search failed: {e}")
         return None
@@ -123,12 +125,17 @@ def fetch_news_image(query: str, save_dir: Path, max_tries: int = 8,
             img = Image.open(io.BytesIO(resp.content))
             img.load()
             w, h = img.size
-            if w < 500 or h < 350:          # skip thumbnails/icons
+            if w < 900 or h < 650:          # skip thumbnails/small images that'd visibly upscale to 1080x1350
                 print(f"   - too small ({w}x{h}), skipping")
                 continue
             safe = re.sub(r"\W+", "_", query)[:50]
             out = save_dir / f"{safe}.jpg"
-            img.convert("RGB").save(out, quality=92)
+            if img.format == "JPEG" and img.mode == "RGB":
+                # Write the original bytes directly - re-encoding here would
+                # be a second lossy JPEG generation before render_meme's own.
+                out.write_bytes(resp.content)
+            else:
+                img.convert("RGB").save(out, quality=95, optimize=True)
             print(f">> Downloaded {w}x{h}: {url[:80]}")
             print(f">> Saved to: {out}")
             return out
@@ -231,7 +238,7 @@ def render_meme(image_path, top_block, bottom_block, out_path):
     if bot_phys:
         draw_block(draw, bot_phys, bot_font, bot_lh, top_h + photo_h + BAR_PAD_Y)
 
-    canvas.save(out_path, quality=95)
+    canvas.save(out_path, quality=97, optimize=True)
     print(f">> Meme saved: {out_path}")
     return out_path
 
