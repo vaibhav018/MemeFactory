@@ -120,6 +120,33 @@ CATEGORY_SUFFIX = {
     "national": "India",
 }
 
+# ---------------------------------------------------------------- hashtags
+CATEGORY_HASHTAGS = {
+    "tollywood": ["#Tollywood", "#TeluguCinema", "#TeluguMovies", "#TFI"],
+    "andhra_telangana": ["#Telangana", "#AndhraPradesh", "#TeluguNews"],
+    "cricket": ["#Cricket", "#TeamIndia", "#INDCricket"],
+    "national": ["#India", "#Trending", "#ViralNews"],
+}
+COMMON_HASHTAGS = ["#TeluguMemes", "#TeluguTrolls", "#TeluguComedy", "#Meme", "#Viral", "#Reels"]
+MAX_HASHTAGS = 12
+
+
+def build_hashtags(story: dict, keyword: str | None) -> list[str]:
+    """Category tags + one dynamic tag from the story's subject + common reach tags."""
+    tags = list(CATEGORY_HASHTAGS.get(story["category"], []))
+    if keyword:
+        kw_tag = "#" + re.sub(r"[^A-Za-z0-9]", "", keyword)
+        if len(kw_tag) > 1:
+            tags.append(kw_tag)
+    tags += COMMON_HASHTAGS
+
+    seen, deduped = set(), []
+    for tag in tags:
+        if tag.lower() not in seen:
+            seen.add(tag.lower())
+            deduped.append(tag)
+    return deduped[:MAX_HASHTAGS]
+
 
 def extract_image_query(story: dict) -> tuple[str, str | None]:
     """Distill the headline into a focused image query + a relevance keyword.
@@ -182,10 +209,12 @@ def main():
     # Recorded so instagram_publisher.py (run as a later CI step, after the
     # image is pushed to `main` and reachable at a public raw URL) knows
     # which file + caption to post without re-deriving them.
+    hashtags = build_hashtags(story, keyword)
+    caption = story["headline"] + "\n.\n.\n" + " ".join(hashtags)
     LAST_MEME_FILE.write_text(
         json.dumps({
             "path": str(out.relative_to(BASE)).replace("\\", "/"),
-            "caption": story["headline"],
+            "caption": caption,
         }, ensure_ascii=False, indent=1),
         encoding="utf-8",
     )
