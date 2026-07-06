@@ -52,6 +52,7 @@ LOGO_PATH = BASE / "assets" / "Logo" / "logo_photo_watermark.png"
 FACE_MODEL_PATH = BASE / "assets" / "models" / "face_detection_yunet_2023mar.onnx"
 LOGO_SIZE = 130                      # px, stamped in the photo's top-right corner
 LOGO_MARGIN = 18
+DIVIDER_H = 6                        # thin accent-color seam between bars and photo
 FONT_MAX = 58                        # starting font size
 FONT_MIN = 34                        # shrink to fit down to this
 LINE_SPACING = 1.08                  # tight leading like the references
@@ -367,6 +368,13 @@ def render_meme(image_path, top_block, bottom_block, out_path):
     photo_h = CANVAS_H - top_h - bot_h
     photo = cover_crop(Image.open(image_path), CANVAS_W, photo_h)
     canvas.paste(photo, (0, top_h))
+
+    # thin accent-color seam at each bar/photo boundary - a small premium
+    # touch that costs no extra layout space (carved from the bar's own
+    # padding, not added on top of it)
+    draw.rectangle([0, top_h - DIVIDER_H, CANVAS_W, top_h], fill=YELLOW)
+    if bot_phys:
+        draw.rectangle([0, top_h + photo_h, CANVAS_W, top_h + photo_h + DIVIDER_H], fill=YELLOW)
 
     # page logo badge in the photo's top-right corner
     if LOGO_PATH.exists():

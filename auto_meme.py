@@ -200,10 +200,26 @@ def extract_image_query(story: dict) -> tuple[str, str | None]:
 
 
 # ---------------------------------------------------------------- captions
-def make_captions(story: dict):
-    """Pure content, no filler: headline only (white, top), no bottom bar."""
-    top = [(story["headline"], WHITE)]
+def make_captions(story: dict, content_caption: str | None):
+    """Two-tone brand look (matches assets/Reference Memes): a yellow "hook"
+    highlight against white supporting text, top AND bottom bars populated.
+    Still no filler - the bottom bar is the real AI-generated article
+    summary (content_caption), not a canned punchline; it's simply omitted
+    when that summary isn't available instead of inventing one.
+    """
+    headline = story["headline"]
+    m = re.match(r"^(.+?[,:])\s*(.+)$", headline)
+    if m:
+        top = [(m.group(1).rstrip(",:"), YELLOW), (m.group(2), WHITE)]
+    else:
+        top = [(headline, WHITE)]
+
     bottom = []
+    if content_caption:
+        sentences = [s.strip() for s in content_caption.split(".") if s.strip()]
+        for i, sentence in enumerate(sentences[:3]):
+            bottom.append((sentence, YELLOW if i == 0 else WHITE))
+
     return top, bottom
 
 
@@ -229,7 +245,14 @@ def main():
         candidates = list(REACTION_DIR.glob("*.jpg"))
         image_path = random.choice(candidates)
 
-    top, bottom = make_captions(story)
+    # Computed once, up front, and reused for both the on-image bottom bar
+    # and the Instagram post caption below. distilbart's decoder sometimes
+    # emits a stray space before punctuation ("crore . Trade") - clean that
+    # up regardless of where the text ends up.
+    raw_summary = write_content_caption(story.get("link", ""))
+    content_caption = re.sub(r"\s+([.,])", r"\1", raw_summary) if raw_summary else None
+
+    top, bottom = make_captions(story, content_caption)
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     slug = "_".join(_strip_punctuation(story["headline"]).split())[:40].strip("_").lower()
     out = OUTPUT_DIR / f"meme_{slug}_{ts}.jpg"
@@ -243,8 +266,7 @@ def main():
     # it here added nothing, so the post caption is a real summary of the
     # actual article instead (falls back to the bare headline if the article
     # can't be fetched/summarized for any reason - free local model, no API).
-    content_caption = write_content_caption(story.get("link", "")) or story["headline"]
-    caption = content_caption + "\n.\n.\n" + " ".join(hashtags)
+    caption = (content_caption or story["headline"]) + "\n.\n.\n" + " ".join(hashtags)
     LAST_MEME_FILE.write_text(
         json.dumps({
             "path": str(out.relative_to(BASE)).replace("\\", "/"),
