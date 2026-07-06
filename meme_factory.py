@@ -43,8 +43,11 @@ WHITE = (255, 255, 255)
 YELLOW = (255, 222, 0)               # mana-telugu-trolls style yellow
 BLACK = (10, 10, 10)
 # Anton (bundled, open license) - same condensed ALL-CAPS look as Impact,
-# works on Windows and Linux (GitHub Actions) alike
+# works on Windows and Linux (GitHub Actions) alike. It has zero Telugu
+# glyphs, so Telugu-script headlines (Sakshi/TV9 Telugu/123telugu are now
+# direct sources) fall back to NotoSansTelugu per-character - see MixedFont.
 FONT_PATH = str(BASE / "assets" / "fonts" / "Anton-Regular.ttf")
+TELUGU_FONT_PATH = str(BASE / "assets" / "fonts" / "NotoSansTelugu-Regular.ttf")
 LOGO_PATH = BASE / "assets" / "Logo" / "logo_photo_watermark.png"
 FACE_MODEL_PATH = BASE / "assets" / "models" / "face_detection_yunet_2023mar.onnx"
 LOGO_SIZE = 130                      # px, stamped in the photo's top-right corner
@@ -162,7 +165,7 @@ def fetch_news_image(query: str, save_dir: Path, max_tries: int = 10,
             if w < 900 or h < 650:          # skip thumbnails/small images that'd visibly upscale to 1080x1350
                 print(f"   - too small ({w}x{h}), skipping")
                 continue
-            safe = re.sub(r"\W+", "_", query)[:50]
+            safe = "_".join(_strip_punctuation(query).split())[:50]
             out = save_dir / f"{safe}.jpg"
             if img.format == "JPEG" and img.mode == "RGB":
                 # Write the original bytes directly - re-encoding here would
@@ -188,12 +191,59 @@ def strip_emoji(t: str) -> str:
     return re.sub(r"\s+", " ", t).strip()
 
 
-def wrap_line(draw, text, font, max_w):
+def _strip_punctuation(text: str) -> str:
+    """Like re.sub(r"[^\\w\\s']", " ", text), but Unicode-aware for scripts
+    like Telugu: Python's \\w excludes combining marks (category M), and
+    Telugu vowel signs / the virama are combining marks - the plain regex
+    was shattering Telugu words into single detached consonants."""
+    import unicodedata
+    return "".join(
+        ch if (ch.isalnum() or ch.isspace() or ch == "'" or unicodedata.category(ch).startswith("M"))
+        else " "
+        for ch in text
+    )
+
+
+_anton_cmap = None
+
+
+def _get_anton_cmap() -> dict:
+    """Cached glyph-coverage map for Anton, so MixedFont doesn't re-parse the
+    font file on every size tried in layout_block's shrink-to-fit loop."""
+    global _anton_cmap
+    if _anton_cmap is None:
+        from fontTools.ttLib import TTFont as _TTFont
+        _anton_cmap = _TTFont(FONT_PATH, fontNumber=0).getBestCmap()
+    return _anton_cmap
+
+
+class MixedFont:
+    """Per-character font selection: Anton (condensed ALL-CAPS display look)
+    for characters it has glyphs for, NotoSansTelugu for everything else.
+    Anton has zero Telugu glyphs, so a plain single-font draw would render
+    Telugu-script headlines (now a regular occurrence - Sakshi/TV9 Telugu/
+    123telugu are direct sources) as empty tofu boxes."""
+
+    def __init__(self, size: int):
+        self.primary = ImageFont.truetype(FONT_PATH, size)
+        self.fallback = ImageFont.truetype(TELUGU_FONT_PATH, size)
+        self._primary_cmap = _get_anton_cmap()
+
+    def font_for(self, ch: str) -> ImageFont.FreeTypeFont:
+        if ch.isspace() or ord(ch) in self._primary_cmap:
+            return self.primary
+        return self.fallback
+
+    def text_width(self, text: str) -> float:
+        return sum(self.font_for(ch).getlength(ch) for ch in text)
+
+
+def wrap_line(text, font: MixedFont, max_w):
     """Word-wrap one logical line into as many physical lines as needed."""
     words, lines, cur = text.split(), [], ""
     for w in words:
         cand = f"{cur} {w}".strip()
-        if draw.textlength(cand, font=font) <= max_w or not cur:
+        if font.text_width(cand) <= max_w or not cur:
             cur = cand
         else:
             lines.append(cur)
@@ -211,10 +261,10 @@ def layout_block(draw, block, max_w):
     """
     block = [(strip_emoji(t).upper(), c) for t, c in block if strip_emoji(t)]
     for size in range(FONT_MAX, FONT_MIN - 1, -2):
-        font = ImageFont.truetype(FONT_PATH, size)
+        font = MixedFont(size)
         phys = []
         for text, color in block:
-            for line in wrap_line(draw, text, font, max_w):
+            for line in wrap_line(text, font, max_w):
                 phys.append((line, color))
         line_h = int(size * LINE_SPACING)
         height = line_h * len(phys) + BAR_PAD_Y * 2
@@ -225,11 +275,15 @@ def layout_block(draw, block, max_w):
     raise AssertionError
 
 
-def draw_block(draw, phys_lines, font, line_h, y):
+def draw_block(draw, phys_lines, font: MixedFont, line_h, y):
     for line, color in phys_lines:
-        w = draw.textlength(line, font=font)
+        w = font.text_width(line)
         x = (CANVAS_W - w) // 2
-        draw.text((x, y), line, font=font, fill=color)
+        cx = x
+        for ch in line:
+            ch_font = font.font_for(ch)
+            draw.text((cx, y), ch, font=ch_font, fill=color)
+            cx += ch_font.getlength(ch)
         y += line_h
 
 
