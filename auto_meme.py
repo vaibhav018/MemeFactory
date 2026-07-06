@@ -41,6 +41,7 @@ from datetime import datetime
 if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 from pathlib import Path
+from urllib.parse import urlparse
 
 import requests
 
@@ -78,6 +79,27 @@ def clean_title(title: str) -> str:
     return title
 
 
+# 123telugu (and similar entertainment outlets) route photo-gallery/slideshow
+# listings through a separate "gallery." subdomain and titles like "Latest
+# Photos : Name" / "Glamorous Pics : Name" - these aren't news stories at all
+# (no real headline content to summarize, and they routinely fail image
+# search, silently falling back to an unrelated reaction image). Filter them
+# out at the source rather than relying on the length check to catch them.
+_GALLERY_TITLE_RE = re.compile(
+    r"^(new|latest|glamorous)?\s*(photos?|pics?|stills?)\s*:", re.I
+)
+
+
+def _is_gallery_item(title: str, link: str) -> bool:
+    if _GALLERY_TITLE_RE.match(title):
+        return True
+    try:
+        netloc = urlparse(link).netloc.lower()
+    except Exception:
+        return False
+    return netloc.startswith("gallery.") or "/slideshows/" in link.lower()
+
+
 def fetch_headlines() -> list[dict]:
     items = []
     for category, url in FEEDS:
@@ -91,9 +113,12 @@ def fetch_headlines() -> list[dict]:
         count = 0
         for item in root.iter("item"):
             title = clean_title(item.findtext("title", ""))
+            link = item.findtext("link", "")
             if not title or len(title) < 25 or len(title) > 160:
                 continue
-            items.append({"category": category, "headline": title, "link": item.findtext("link", "")})
+            if _is_gallery_item(title, link):
+                continue
+            items.append({"category": category, "headline": title, "link": link})
             count += 1
             if count >= 8:
                 break
