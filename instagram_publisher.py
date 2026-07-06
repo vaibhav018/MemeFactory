@@ -30,6 +30,7 @@ import os
 import sys
 import time
 from pathlib import Path
+from urllib.parse import quote
 
 import requests
 
@@ -90,7 +91,13 @@ def main() -> None:
     state = json.loads(STATE_FILE.read_text(encoding="utf-8"))
 
     repo = os.environ.get("GITHUB_REPOSITORY", DEFAULT_REPO)
-    image_url = f"https://raw.githubusercontent.com/{repo}/main/{state['path']}"
+    # Filenames can contain Telugu (or other non-ASCII) script now that
+    # headlines come from Telugu-native feeds - a raw Unicode path in the URL
+    # is technically invalid and Instagram's media fetcher rejects it outright
+    # ("Only photo or video can be accepted as media type"), so percent-encode
+    # the path (preserving "/" separators).
+    encoded_path = quote(state["path"], safe="/")
+    image_url = f"https://raw.githubusercontent.com/{repo}/main/{encoded_path}"
     caption = state.get("caption", "")
 
     print(f">> Image URL: {image_url}")
