@@ -39,6 +39,7 @@ BASE = Path(__file__).resolve().parent      # portable: repo root, any OS
 DATA_DIR = BASE / "data"
 DATA_DIR.mkdir(exist_ok=True)
 USED_FILE = DATA_DIR / "used_headlines.json"
+LAST_MEME_FILE = DATA_DIR / "last_meme.json"
 
 # ---------------------------------------------------------------- news feed
 # category -> Google News RSS search query (en-IN edition), in posting priority
@@ -177,6 +178,17 @@ def main():
     slug = re.sub(r"\W+", "_", story["headline"])[:40].strip("_").lower()
     out = OUTPUT_DIR / f"meme_{slug}_{ts}.png"
     render_meme(image_path, top, bottom, out)
+
+    # Recorded so instagram_publisher.py (run as a later CI step, after the
+    # image is pushed to `main` and reachable at a public raw URL) knows
+    # which file + caption to post without re-deriving them.
+    LAST_MEME_FILE.write_text(
+        json.dumps({
+            "path": str(out.relative_to(BASE)).replace("\\", "/"),
+            "caption": story["headline"],
+        }, ensure_ascii=False, indent=1),
+        encoding="utf-8",
+    )
 
     mark_used(story["headline"])
     print(f"\nDone: {out}")
