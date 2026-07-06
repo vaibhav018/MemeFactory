@@ -35,7 +35,13 @@ jobs:
         run: |
           pip install pillow ddgs requests opencv-python-headless numpy fonttools
           pip install trafilatura lxml_html_clean
-          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          # PyTorch's CDN occasionally has a transient TLS/connection blip -
+          # retry a few times before failing the whole run over it.
+          for i in 1 2 3; do
+            pip install torch --index-url https://download.pytorch.org/whl/cpu && break
+            echo "torch install failed (attempt $i/3), retrying in 15s..."
+            sleep 15
+          done
           pip install transformers
 
       - name: Generate meme
