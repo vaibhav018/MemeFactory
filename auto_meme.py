@@ -176,7 +176,7 @@ def main():
     top, bottom = make_captions(story)
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     slug = re.sub(r"\W+", "_", story["headline"])[:40].strip("_").lower()
-    out = OUTPUT_DIR / f"meme_{slug}_{ts}.png"
+    out = OUTPUT_DIR / f"meme_{slug}_{ts}.jpg"
     render_meme(image_path, top, bottom, out)
 
     # Recorded so instagram_publisher.py (run as a later CI step, after the

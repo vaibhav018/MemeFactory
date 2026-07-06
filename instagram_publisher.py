@@ -51,6 +51,8 @@ def publish(image_url: str, caption: str, token: str, ig_user_id: str) -> None:
         data={"image_url": image_url, "caption": caption, "access_token": token},
         timeout=30,
     )
+    if not resp.ok:
+        print(f"!! Instagram API error ({resp.status_code}): {resp.text}")
     resp.raise_for_status()
     creation_id = resp.json()["id"]
     print(f">> Created media container: {creation_id}")
@@ -72,6 +74,8 @@ def publish(image_url: str, caption: str, token: str, ig_user_id: str) -> None:
         data={"creation_id": creation_id, "access_token": token},
         timeout=30,
     )
+    if not publish_resp.ok:
+        print(f"!! Instagram API error ({publish_resp.status_code}): {publish_resp.text}")
     publish_resp.raise_for_status()
     print(f">> Published: {publish_resp.json()}")
 

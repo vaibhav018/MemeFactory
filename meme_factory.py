@@ -259,7 +259,7 @@ def main():
 
     # 2. render
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    out = OUTPUT_DIR / f"meme_{MEME['slug']}_{ts}.png"
+    out = OUTPUT_DIR / f"meme_{MEME['slug']}_{ts}.jpg"
     render_meme(image_path, MEME["top"], MEME["bottom"], out)
 
     print("\nDone. Open the file to check it:")
