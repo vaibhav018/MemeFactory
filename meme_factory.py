@@ -78,6 +78,9 @@ TRUSTED_NEWS_DOMAINS = {
     "outlookindia.com", "outlookbusiness.com", "assettype.com",
     "zeenews.india.com", "republicworld.com", "wionews.com", "bhaskar.com",
     "filmibeat.com", "telanganatoday.com",
+    # international wire/press sources (for the "international" category)
+    "bbc.co.uk", "bbci.co.uk", "reuters.com", "apnews.com",
+    "theguardian.com", "cnn.com",
 }
 
 

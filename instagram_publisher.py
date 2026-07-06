@@ -87,7 +87,11 @@ def main() -> None:
     args = parser.parse_args()
 
     if not STATE_FILE.exists():
-        sys.exit(f"!! {STATE_FILE} not found - run auto_meme.py first")
+        # auto_meme.py deletes this file when it deliberately skips a run (no
+        # headline had a genuinely matching photo) - that's a valid outcome,
+        # not a failure, so exit 0 rather than failing the workflow job.
+        print(f">> {STATE_FILE} not found - no meme was generated this run, nothing to publish.")
+        return
     state = json.loads(STATE_FILE.read_text(encoding="utf-8"))
 
     repo = os.environ.get("GITHUB_REPOSITORY", DEFAULT_REPO)

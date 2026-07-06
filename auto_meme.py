@@ -4,10 +4,19 @@ AUTO MEME - the scheduled pipeline for @bhogeswar_rao_garu
 ==========================================================
 One run = one meme:
   1. Fetch trending headlines from direct outlet RSS feeds (Sakshi,
-     123telugu, TV9 Telugu, Times of India, Sportstar Cricket)
-  2. Pick the freshest unused headline (Tollywood first)
+     123telugu, TV9 Telugu, Times of India, Sportstar Cricket, BBC World)
+  2. Pick the freshest unused headline (Tollywood first, but capped at 50%
+     of posts over the last 20 - see movie_news_over_cap - so movie news
+     doesn't crowd out local/national/international/cricket) that also has
+     a genuinely matching online photo - see step 3. Headlines whose search
+     turns up nothing suitable are marked used and skipped in favor of the
+     next one; if none in the batch have a real photo, no meme is generated
+     for this run at all (quality over always posting something).
   3. Download a related, strictly-filtered news photo (DuckDuckGo image
-     search: safesearch on, trusted-domain-only, no unrelated fallback)
+     search: safesearch on, trusted-domain-only). No local reaction-image
+     fallback anymore - a mismatched reaction photo on a sensitive story
+     (e.g. a comedic reaction image under a hospital-visit headline) is
+     worse than not posting.
   4. Render it in the page's news-card format (meme_factory.py), with
      face-aware cropping so photos of people don't get their heads cut off,
      plus the Bhogeswar Rao garu watermark
@@ -28,7 +37,6 @@ the old reaction-image format; never activated - its deps aren't installed).
 """
 
 import json
-import random
 import re
 import sys
 import xml.etree.ElementTree as ET
@@ -46,7 +54,7 @@ from urllib.parse import urlparse
 import requests
 
 # reuse the renderer + image fetcher from meme_factory
-from meme_factory import (DOWNLOAD_DIR, OUTPUT_DIR, REACTION_DIR, WHITE,
+from meme_factory import (DOWNLOAD_DIR, OUTPUT_DIR, WHITE,
                           YELLOW, fetch_news_image, render_meme)
 from content_summarizer import write_content_caption
 
@@ -68,7 +76,18 @@ FEEDS = [
     ("andhra_telangana", "https://tv9telugu.com/feed"),
     ("cricket", "https://sportstar.thehindu.com/cricket/feeder/default.rss"),
     ("national", "https://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms"),
+    ("international", "http://feeds.bbci.co.uk/news/world/rss.xml"),
 ]
+
+# Movie news was crowding out everything else (123telugu has the deepest,
+# freshest supply of candidates each run, and was always tried first). Capped
+# at 50% over a rolling window of recent posts - once tollywood hits that
+# share, it's excluded from candidates for the run until older posts age out
+# of the window and bring the ratio back down.
+MOVIE_CATEGORY = "tollywood"
+MOVIE_NEWS_CAP = 0.5
+CATEGORY_HISTORY_WINDOW = 20
+CATEGORY_HISTORY_FILE = DATA_DIR / "category_history.json"
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
 
 def clean_title(title: str) -> str:
@@ -139,12 +158,26 @@ def mark_used(headline: str):
                          encoding="utf-8")
 
 
-def pick_headline(items: list[dict]) -> dict | None:
-    used = set(load_used())
-    for item in items:                       # items are already in category priority
-        if item["headline"] not in used:
-            return item
-    return None
+def load_category_history() -> list:
+    if CATEGORY_HISTORY_FILE.exists():
+        return json.loads(CATEGORY_HISTORY_FILE.read_text(encoding="utf-8"))
+    return []
+
+
+def record_category(category: str):
+    history = load_category_history()
+    history.append(category)
+    CATEGORY_HISTORY_FILE.write_text(
+        json.dumps(history[-CATEGORY_HISTORY_WINDOW:], ensure_ascii=False, indent=1),
+        encoding="utf-8",
+    )
+
+
+def movie_news_over_cap() -> bool:
+    history = load_category_history()
+    if not history:
+        return False
+    return history.count(MOVIE_CATEGORY) / len(history) >= MOVIE_NEWS_CAP
 
 
 # ---------------------------------------------------------------- image query
@@ -172,6 +205,7 @@ CATEGORY_SUFFIX = {
     "andhra_telangana": "Telangana Andhra news",
     "cricket": "India cricket match",
     "national": "India",
+    "international": "world news",
 }
 
 # ---------------------------------------------------------------- hashtags
@@ -180,6 +214,7 @@ CATEGORY_HASHTAGS = {
     "andhra_telangana": ["#Telangana", "#AndhraPradesh", "#TeluguNews"],
     "cricket": ["#Cricket", "#TeamIndia", "#INDCricket"],
     "national": ["#India", "#Trending", "#ViralNews"],
+    "international": ["#World", "#International", "#GlobalNews", "#Trending"],
 }
 COMMON_HASHTAGS = ["#TeluguMemes", "#TeluguTrolls", "#TeluguComedy", "#Meme", "#Viral", "#Reels"]
 MAX_HASHTAGS = 12
@@ -258,17 +293,36 @@ def main():
     if not items:
         sys.exit("!! No headlines fetched - aborting this run.")
 
-    story = pick_headline(items)
-    if story is None:
-        sys.exit("!! All fetched headlines already used - aborting this run.")
-    print(f">> Picked [{story['category']}]: {story['headline']}")
+    if movie_news_over_cap():
+        print(f"!! Movie news is at/above the {int(MOVIE_NEWS_CAP*100)}% cap over the last "
+              f"{CATEGORY_HISTORY_WINDOW} posts - excluding {MOVIE_CATEGORY} candidates this run")
+        items = [i for i in items if i["category"] != MOVIE_CATEGORY]
 
-    query, keyword = extract_image_query(story)
-    image_path = fetch_news_image(query, DOWNLOAD_DIR, must_contain=keyword)
-    if image_path is None:
-        print("!! No news photo found, falling back to a reaction image")
-        candidates = list(REACTION_DIR.glob("*.jpg"))
-        image_path = random.choice(candidates)
+    # Try candidates in feed-priority order until one has a genuinely
+    # matching online photo. A headline whose search turns up nothing
+    # suitable is marked used (so it isn't retried forever) and skipped in
+    # favor of the next one - no local reaction-image fallback, since a
+    # mismatched reaction photo on a sensitive story is worse than skipping.
+    used = set(load_used())
+    story = image_path = query = keyword = None
+    for candidate in items:
+        if candidate["headline"] in used:
+            continue
+        q, kw = extract_image_query(candidate)
+        img = fetch_news_image(q, DOWNLOAD_DIR, must_contain=kw)
+        if img is not None:
+            story, image_path, query, keyword = candidate, img, q, kw
+            break
+        print(f"!! No suitable online photo for '{candidate['headline'][:60]}' - trying the next headline")
+        mark_used(candidate["headline"])
+
+    if story is None:
+        print("!! No headline in this batch had a genuinely matching photo - skipping this run, no meme generated.")
+        if LAST_MEME_FILE.exists():
+            LAST_MEME_FILE.unlink()
+        sys.exit(0)
+
+    print(f">> Picked [{story['category']}]: {story['headline']}")
 
     # Computed once, up front, and reused for both the on-image bottom bar
     # and the Instagram post caption below. distilbart's decoder sometimes
@@ -301,6 +355,7 @@ def main():
     )
 
     mark_used(story["headline"])
+    record_category(story["category"])
     print(f"\nDone: {out}")
 
 
