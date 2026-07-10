@@ -24,7 +24,7 @@ import trafilatura
 _TELUGU_BLOCK = range(0x0C00, 0x0C7F + 1)
 
 
-def _is_mostly_telugu(text: str, threshold: float = 0.15) -> bool:
+def _is_mostly_telugu(text: str, threshold: float = 0.05) -> bool:
     letters = [ch for ch in text if ch.isalpha()]
     if not letters:
         return False
@@ -79,6 +79,10 @@ def summarize(text: str) -> str | None:
 def write_content_caption(url: str) -> str | None:
     """Full pipeline: fetch the real article, then summarize it. Returns None
     on any failure - the caller should fall back to the bare headline."""
+    if url.startswith("https://t.me/"):
+        # Telegram message URLs have no article body to fetch; the message text
+        # is already the caption - skip straight to fallback.
+        return None
     text = fetch_article_text(url)
     if not text:
         return None

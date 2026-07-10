@@ -18,6 +18,7 @@ import argparse
 import asyncio
 import json
 import math
+from pathlib import Path
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
@@ -189,12 +190,11 @@ def filter_and_rank(items: list[NewsItem], cfg: dict[str, Any], logger) -> list[
 
     relevant = []
     for item in items:
-        if item.source_type == "newsdataio":
-            # Already filtered server-side by country/language/category params -
-            # Telugu-script prose won't contain our English keyword list, so don't
-            # re-filter it locally. matched_keywords was set to the API's own
-            # category tags at fetch time.
-            matched = item.matched_keywords or ["newsdataio"]
+        if item.source_type in ("newsdataio", "telegram"):
+            # These sources are pre-filtered at origin (newsdata.io by API params,
+            # Telegram by channel selection). Telugu-script text won't match the
+            # English keyword list, so skip local keyword filtering for both.
+            matched = item.matched_keywords or [item.source_type]
         else:
             haystack = f"{item.title} {item.description}".lower()
             matched = [kw for kw in keywords if kw in haystack]
@@ -213,13 +213,17 @@ def filter_and_rank(items: list[NewsItem], cfg: dict[str, Any], logger) -> list[
 
     relevant.sort(key=lambda i: i.score, reverse=True)
 
-    # newsdata.io's free tier delays articles ~12h, so on pure recency they're
-    # almost always outscored by same-day RSS entries - but they're the only
-    # source of genuine native-script Telugu/Hindi text (RSS titles are often
-    # English even on Telugu sites). Reserve a floor so they aren't crowded out.
+    # newsdata.io items are delayed ~12h by the free tier and would be
+    # outscored on recency alone, but they carry real Telugu-script text.
+    # Telegram items are very fresh but unscored (score=0 until filter_and_rank
+    # runs). Reserve floor slots for both so neither gets crowded out by RSS.
     max_stories = cfg["news"]["max_stories"]
     min_newsdataio = cfg["news"]["min_newsdataio_stories"]
-    reserved = [i for i in relevant if i.source_type == "newsdataio"][:min_newsdataio]
+    min_telegram = cfg["news"].get("min_telegram_stories", 3)
+
+    reserved_ndi = [i for i in relevant if i.source_type == "newsdataio"][:min_newsdataio]
+    reserved_tg  = [i for i in relevant if i.source_type == "telegram"][:min_telegram]
+    reserved = reserved_ndi + reserved_tg
     reserved_ids = {id(i) for i in reserved}
     remaining_slots = max_stories - len(reserved)
     fill = [i for i in relevant if id(i) not in reserved_ids][:remaining_slots]
@@ -227,9 +231,26 @@ def filter_and_rank(items: list[NewsItem], cfg: dict[str, Any], logger) -> list[
 
     logger.info(
         f"Filtered {len(items)} raw items -> {len(relevant)} relevant -> top {len(top)} kept "
-        f"({len(reserved)} newsdata.io reserved)"
+        f"({len(reserved_ndi)} newsdata.io + {len(reserved_tg)} telegram reserved)"
     )
     return top
+
+
+def load_telegram_cache(cfg: dict[str, Any], logger) -> list[NewsItem]:
+    """Load items written by telegram_scraper.py (runs on Termux, pushes to repo).
+    Returns [] silently if the file doesn't exist yet."""
+    cache_path = Path(cfg["paths"].get("telegram_cache_file", "data/telegram_cache.json"))
+    if not cache_path.exists():
+        return []
+    try:
+        with open(cache_path, encoding="utf-8") as f:
+            raw = json.load(f)
+        items = [NewsItem(**r) for r in raw]
+        logger.info(f"Telegram cache: loaded {len(items)} items from {cache_path}")
+        return items
+    except Exception as exc:
+        logger.warning(f"Could not load telegram cache ({exc}) - skipping")
+        return []
 
 
 async def fetch_trending_stories(cfg: dict[str, Any], logger, offline: bool = False) -> list[NewsItem]:
@@ -241,8 +262,9 @@ async def fetch_trending_stories(cfg: dict[str, Any], logger, offline: bool = Fa
     newsdataio_task = fetch_newsdataio(cfg, logger)
     rss_task = fetch_all_rss(cfg, logger)
     newsdataio_items, rss_items = await asyncio.gather(newsdataio_task, rss_task)
+    telegram_items = load_telegram_cache(cfg, logger)
 
-    all_items = newsdataio_items + rss_items
+    all_items = newsdataio_items + rss_items + telegram_items
     if not all_items:
         logger.warning("No news items fetched from any source this run")
     return filter_and_rank(all_items, cfg, logger)

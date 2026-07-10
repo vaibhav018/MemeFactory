@@ -33,16 +33,24 @@
     "rss_feeds": [
       { "name": "Sakshi", "url": "https://www.sakshi.com/rss.xml", "language": "te" },
       { "name": "123telugu", "url": "https://www.123telugu.com/feed", "language": "te" },
-      { "name": "TV9 Telugu", "url": "https://tv9telugu.com/feed", "language": "te" }
+      { "name": "TV9 Telugu", "url": "https://tv9telugu.com/feed", "language": "te" },
+      { "name": "NTV Telugu", "url": "https://www.ntvtelugu.com/rss.xml", "language": "te" },
+      { "name": "ETV Bharat", "url": "https://www.etvbharat.com/rss/telugu-news.xml", "language": "te" },
+      { "name": "Hans India Telugu", "url": "https://www.thehansindia.com/feeds/telugu-news.xml", "language": "te" }
     ],
     "keywords": [
-      "cinema", "movie", "box office", "collection", "trailer", "teaser",
-      "politics", "election", "minister", "party",
+      "cinema", "movie",
+      "politics", "election", "minister", "party", "government", "council",
       "viral", "trending", "controversy", "troll",
-      "sports", "cricket", "ipl", "match"
+      "sports", "cricket", "ipl", "match", "kabaddi",
+      "crime", "accident", "police", "arrest",
+      "weather", "rain", "flood", "disaster",
+      "technology", "startup", "jobs", "economy",
+      "health", "hospital", "disease"
     ],
-    "max_stories": 10,
+    "max_stories": 12,
     "min_newsdataio_stories": 3,
+    "min_telegram_stories": 3,
     "request_timeout_seconds": 15,
     "recency_half_life_hours": 18
   },
@@ -151,6 +159,7 @@
     "local_memes_dir": "output/memes",
     "local_logs_dir": "output/logs",
     "news_cache_file": "data/news_cache.json",
+    "telegram_cache_file": "data/telegram_cache.json",
     "queue_file": "data/queue.json"
   },
 

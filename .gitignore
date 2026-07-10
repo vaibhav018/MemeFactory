@@ -2,6 +2,7 @@
 .env
 credentials/service_account.json
 credentials/oauth_token.json
+.telegram_session.session
 
 # Generated content
 output/memes/*
