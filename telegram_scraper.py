@@ -51,14 +51,18 @@ SESSION_FILE = _REPO / ".telegram_session"
 OUTPUT_FILE = _REPO / "data" / "telegram_cache.json"
 
 CHANNELS = [
-    {"username": "tv9telugu",        "name": "TV9 Telugu",        "language": "te"},
-    {"username": "sakshitv",         "name": "Sakshi TV",         "language": "te"},
-    {"username": "ntv_telugu",       "name": "NTV Telugu",        "language": "te"},
-    {"username": "bbctelugu",        "name": "BBC Telugu",        "language": "te"},
-    {"username": "abnnews",          "name": "ABN Andhra Jyothi", "language": "te"},
-    {"username": "etvbharat_te",     "name": "ETV Bharat Telugu", "language": "te"},
-    {"username": "eenadu_telugu",    "name": "Eenadu",            "language": "te"},
+    {"username": "V6Newstelugu",                    "name": "V6 News Telugu",  "language": "te"},
+    {"username": "telugu_news_papers_eenadu_sakshi", "name": "Telugu News",    "language": "te"},
 ]
+
+# Patterns to skip — ad/spam messages common in aggregator channels
+_SKIP_PATTERNS = ["amzn", "flipkart", "realme", "offer", "deal", "₹", "discount", "coupon", "http"]
+
+
+def _is_ad(text: str) -> bool:
+    lower = text.lower()
+    matches = sum(1 for p in _SKIP_PATTERNS if p in lower)
+    return matches >= 2
 
 # Minimum message length to bother including (filters out stickers, emojis-only, etc.)
 _MIN_MSG_LEN = 25
@@ -85,7 +89,7 @@ async def _scrape_channel(
             if msg_date < since:
                 break
             text = " ".join(msg.text.split())  # collapse whitespace
-            if len(text) < _MIN_MSG_LEN:
+            if len(text) < _MIN_MSG_LEN or _is_ad(text):
                 continue
             title, description = _split_title_desc(msg.text)
             items.append({
