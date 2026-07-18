@@ -71,12 +71,13 @@ LAST_MEME_FILE = DATA_DIR / "last_meme.json"
 # Direct outlet feeds give real article URLs that content_summarizer.py can
 # actually fetch and summarize. Verified live before wiring in - see commit.
 FEEDS = [
-    ("tollywood", "https://www.123telugu.com/feed"),
-    ("andhra_telangana", "https://www.sakshi.com/rss.xml"),
+    ("tollywood",        "https://www.123telugu.com/feed"),
     ("andhra_telangana", "https://tv9telugu.com/feed"),
-    ("cricket", "https://sportstar.thehindu.com/cricket/feeder/default.rss"),
-    ("national", "https://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms"),
-    ("international", "http://feeds.bbci.co.uk/news/world/rss.xml"),
+    ("andhra_telangana", "https://www.ntvtelugu.com/rss.xml"),
+    ("andhra_telangana", "https://www.etvbharat.com/rss/telugu-news.xml"),
+    ("cricket",          "https://sportstar.thehindu.com/cricket/feeder/default.rss"),
+    ("national",         "https://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms"),
+    ("international",    "http://feeds.bbci.co.uk/news/world/rss.xml"),
 ]
 
 # Movie news was crowding out everything else (123telugu has the deepest,
@@ -143,6 +144,34 @@ def fetch_headlines() -> list[dict]:
                 break
         print(f">> {category}: {count} headlines from {url}")
     return items
+
+
+TELEGRAM_CACHE_FILE = DATA_DIR / "telegram_cache.json"
+
+
+def load_telegram_headlines() -> list[dict]:
+    """Load headlines from telegram_scraper.py's cache (written on Termux, committed to repo).
+    Messages are already the headline text — use the first line as the headline."""
+    if not TELEGRAM_CACHE_FILE.exists():
+        return []
+    try:
+        items = json.loads(TELEGRAM_CACHE_FILE.read_text(encoding="utf-8"))
+    except Exception as e:
+        print(f"!! telegram cache unreadable: {e}")
+        return []
+    out = []
+    for item in items:
+        title = (item.get("title") or "").strip()
+        if not title or len(title) < 25 or len(title) > 200:
+            continue
+        out.append({
+            "category": "andhra_telangana",
+            "headline": title,
+            "link": item.get("url", ""),
+        })
+    if out:
+        print(f">> telegram_cache: {len(out)} headlines loaded")
+    return out
 
 
 def load_used() -> list:
@@ -289,7 +318,7 @@ def main():
     print(f"AUTO MEME run @ {datetime.now():%Y-%m-%d %H:%M:%S}")
     print("=" * 70)
 
-    items = fetch_headlines()
+    items = fetch_headlines() + load_telegram_headlines()
     if not items:
         sys.exit("!! No headlines fetched - aborting this run.")
 
