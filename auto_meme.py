@@ -73,8 +73,7 @@ LAST_MEME_FILE = DATA_DIR / "last_meme.json"
 FEEDS = [
     ("tollywood",        "https://www.123telugu.com/feed"),
     ("andhra_telangana", "https://tv9telugu.com/feed"),
-    ("andhra_telangana", "https://www.ntvtelugu.com/rss.xml"),
-    ("andhra_telangana", "https://www.etvbharat.com/rss/telugu-news.xml"),
+    ("andhra_telangana", "https://www.thehansindia.com/feeds/telugu-news.xml"),
     ("cricket",          "https://sportstar.thehindu.com/cricket/feeder/default.rss"),
     ("national",         "https://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms"),
     ("international",    "http://feeds.bbci.co.uk/news/world/rss.xml"),
