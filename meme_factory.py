@@ -221,25 +221,73 @@ def _get_anton_cmap() -> dict:
     return _anton_cmap
 
 
+# Telugu Unicode block + ZWJ/ZWNJ used for conjunct control
+_TELUGU_LO, _TELUGU_HI = 0x0C00, 0x0C7F
+_ZWJ, _ZWNJ = 0x200D, 0x200C
+
+
+def _is_telugu_char(ch: str) -> bool:
+    cp = ord(ch)
+    return _TELUGU_LO <= cp <= _TELUGU_HI or cp in (_ZWJ, _ZWNJ)
+
+
+def _split_into_runs(text: str) -> list[tuple[bool, str]]:
+    """Split text into [(is_telugu, chunk), ...] runs for mixed rendering.
+    Telugu runs are passed as complete strings to a Raqm-shaped font so that
+    vowel signs, conjuncts, and the virama combine correctly. Latin/digit
+    runs continue to use Anton per-character (Anton has no Telugu glyphs)."""
+    if not text:
+        return []
+    runs: list[tuple[bool, str]] = []
+    current_is_telugu = _is_telugu_char(text[0])
+    buf = text[0]
+    for ch in text[1:]:
+        ct = _is_telugu_char(ch)
+        if ct == current_is_telugu:
+            buf += ch
+        else:
+            runs.append((current_is_telugu, buf))
+            current_is_telugu, buf = ct, ch
+    runs.append((current_is_telugu, buf))
+    return runs
+
+
+# Pillow 9.2+ manylinux wheels ship libraqm (HarfBuzz-based shaping). RAQM
+# layout is required for Telugu: without it Pillow renders each codepoint as
+# an isolated glyph, so vowel signs float detached and conjuncts don't form.
+try:
+    _TELUGU_LAYOUT = ImageFont.Layout.RAQM
+except AttributeError:
+    _TELUGU_LAYOUT = ImageFont.Layout.BASIC  # older Pillow, best-effort
+
+
 class MixedFont:
-    """Per-character font selection: Anton (condensed ALL-CAPS display look)
-    for characters it has glyphs for, NotoSansTelugu for everything else.
-    Anton has zero Telugu glyphs, so a plain single-font draw would render
-    Telugu-script headlines (now a regular occurrence - Sakshi/TV9 Telugu/
-    123telugu are direct sources) as empty tofu boxes."""
+    """Run-based font selection: Anton for Latin/ASCII, NotoSansTelugu (with
+    Raqm shaping) for Telugu script. The critical difference from the old
+    character-by-character approach: Telugu is rendered as complete runs so
+    that HarfBuzz can apply GSUB ligatures and GPOS positioning rules —
+    otherwise matras, the virama, and conjunct consonants all appear broken."""
 
     def __init__(self, size: int):
         self.primary = ImageFont.truetype(FONT_PATH, size)
-        self.fallback = ImageFont.truetype(TELUGU_FONT_PATH, size)
+        self.telugu = ImageFont.truetype(TELUGU_FONT_PATH, size, layout_engine=_TELUGU_LAYOUT)
         self._primary_cmap = _get_anton_cmap()
 
     def font_for(self, ch: str) -> ImageFont.FreeTypeFont:
+        """Single-character fallback used only for non-Telugu, non-Anton chars."""
         if ch.isspace() or ord(ch) in self._primary_cmap:
             return self.primary
-        return self.fallback
+        return self.telugu
 
     def text_width(self, text: str) -> float:
-        return sum(self.font_for(ch).getlength(ch) for ch in text)
+        """Width using run-aware measurement so Telugu metrics account for shaping."""
+        total = 0.0
+        for is_telugu, chunk in _split_into_runs(text):
+            if is_telugu:
+                total += self.telugu.getlength(chunk)
+            else:
+                total += sum(self.primary.getlength(ch) for ch in chunk)
+        return total
 
 
 def wrap_line(text, font: MixedFont, max_w):
@@ -282,12 +330,18 @@ def layout_block(draw, block, max_w):
 def draw_block(draw, phys_lines, font: MixedFont, line_h, y):
     for line, color in phys_lines:
         w = font.text_width(line)
-        x = (CANVAS_W - w) // 2
-        cx = x
-        for ch in line:
-            ch_font = font.font_for(ch)
-            draw.text((cx, y), ch, font=ch_font, fill=color)
-            cx += ch_font.getlength(ch)
+        cx = (CANVAS_W - w) // 2
+        for is_telugu, chunk in _split_into_runs(line):
+            if is_telugu:
+                # Render the entire Telugu run as one string — Raqm applies
+                # GSUB/GPOS shaping so matras and conjuncts form correctly.
+                draw.text((cx, y), chunk, font=font.telugu, fill=color)
+                cx += font.telugu.getlength(chunk)
+            else:
+                for ch in chunk:
+                    ch_font = font.font_for(ch)
+                    draw.text((cx, y), ch, font=ch_font, fill=color)
+                    cx += ch_font.getlength(ch)
         y += line_h
 
 
