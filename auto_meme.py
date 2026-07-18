@@ -288,19 +288,38 @@ def extract_image_query(story: dict) -> tuple[str, str | None]:
 
 
 # ---------------------------------------------------------------- captions
-def make_captions(story: dict, content_caption: str | None):
-    """Two-tone brand look (matches assets/Reference Memes): a yellow "hook"
-    highlight against white supporting text, top AND bottom bars populated.
-    Still no filler - the bottom bar is the real AI-generated article
-    summary (content_caption), not a canned punchline; it's simply omitted
-    when that summary isn't available instead of inventing one.
+def _split_headline(headline: str) -> list[tuple[str, tuple]]:
+    """Split a headline into (text, color) chunks for two-tone rendering.
+
+    Handles three break patterns in priority order:
+      1. "Subject: detail" or "Subject, detail" (English + Telugu with colon)
+      2. "Hook..! detail" — common Telugu news format (V6, TV9, Sakshi)
+      3. "Hook.. detail"  — Telugu ellipsis used as a soft break
+      4. Fallback: first ~1/3 of words in yellow, rest white
     """
-    headline = story["headline"]
+    # Pattern 1: colon/comma split — cap hook at 55% so one word isn't all yellow
     m = re.match(r"^(.+?[,:])\s*(.+)$", headline)
+    if m and len(m.group(1)) < len(headline) * 0.55:
+        return [(m.group(1).rstrip(",:").strip(), YELLOW), (m.group(2).strip(), WHITE)]
+
+    # Pattern 2: "hook..! rest" or "hook..? rest"
+    m = re.match(r"^(.+?\.\.+[!?])\s*(.+)$", headline)
     if m:
-        top = [(m.group(1).rstrip(",:"), YELLOW), (m.group(2), WHITE)]
-    else:
-        top = [(headline, WHITE)]
+        return [(m.group(1).strip(), YELLOW), (m.group(2).strip(), WHITE)]
+
+    # Pattern 3: "hook..  rest" (Telugu ellipsis as break, space after)
+    m = re.match(r"^(.+?)\.\.\s+(.+)$", headline)
+    if m:
+        return [(m.group(1).strip(), YELLOW), (m.group(2).strip(), WHITE)]
+
+    # Fallback: first ~1/3 of words yellow, rest white
+    words = headline.split()
+    split = max(1, len(words) // 3)
+    return [(" ".join(words[:split]), YELLOW), (" ".join(words[split:]), WHITE)]
+
+
+def make_captions(story: dict, content_caption: str | None):
+    top = _split_headline(story["headline"])
 
     bottom = []
     if content_caption:

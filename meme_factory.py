@@ -47,7 +47,12 @@ BLACK = (10, 10, 10)
 # glyphs, so Telugu-script headlines (Sakshi/TV9 Telugu/123telugu are now
 # direct sources) fall back to NotoSansTelugu per-character - see MixedFont.
 FONT_PATH = str(BASE / "assets" / "fonts" / "Anton-Regular.ttf")
-TELUGU_FONT_PATH = str(BASE / "assets" / "fonts" / "NotoSansTelugu-Regular.ttf")
+# Baloo Tammudu 2 ExtraBold — the standard choice for Telugu meme/troll pages:
+# thick strokes that read clearly on dark bars, Raqm-shaped for correct
+# conjuncts/matras. Falls back to NotoSansTelugu if the file isn't present.
+_BALOO_PATH = BASE / "assets" / "fonts" / "BalooTammudu2-ExtraBold.ttf"
+TELUGU_FONT_PATH = str(_BALOO_PATH if _BALOO_PATH.exists()
+                       else BASE / "assets" / "fonts" / "NotoSansTelugu-Regular.ttf")
 LOGO_PATH = BASE / "assets" / "Logo" / "logo_photo_watermark.png"
 FACE_MODEL_PATH = BASE / "assets" / "models" / "face_detection_yunet_2023mar.onnx"
 LOGO_SIZE = 130                      # px, stamped in the photo's top-right corner
