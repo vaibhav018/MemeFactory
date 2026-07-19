@@ -145,13 +145,19 @@ def publish_approved_post(post: dict, dry_run: bool = False) -> str:
     repo_paths = post["slide_repo_paths"]
 
     if not dry_run:
-        # Stage and push images
+        import time
+        # Pull latest remote changes first to avoid push rejection
+        subprocess.run(["git", "-C", str(_BASE), "pull", "--rebase", "origin", "main"],
+                       check=True)
         subprocess.run(["git", "-C", str(_BASE), "add"] + repo_paths, check=True)
         stamp = datetime.utcnow().strftime("%Y-%m-%dT%H:%MZ")
-        subprocess.run(["git", "-C", str(_BASE), "commit", "-m",
-                        f"carousel: {post['topic'][:50]} [{stamp}]"], check=True)
-        subprocess.run(["git", "-C", str(_BASE), "push"], check=True)
-        import time; time.sleep(5)  # let GitHub CDN propagate
+        result = subprocess.run(["git", "-C", str(_BASE), "commit", "-m",
+                        f"carousel: {post['topic'][:50]} [{stamp}]"])
+        if result.returncode != 0:
+            print("  Nothing new to commit (slides may already be pushed)")
+        else:
+            subprocess.run(["git", "-C", str(_BASE), "push"], check=True)
+        time.sleep(8)  # let GitHub CDN propagate raw URL
 
     media_id = publish_carousel(repo_paths, post["caption"], dry_run=dry_run)
     return media_id
