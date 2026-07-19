@@ -1,0 +1,30 @@
+id: science_nature
+name: "Science & Nature"
+emoji: "🔬"
+weight: 1.0
+
+description: >
+  Mind-blowing discoveries from physics, biology, space, and the natural world.
+  Focus on facts that sound impossible but are absolutely real — the stranger
+  the better.
+
+topic_seeds:
+  - quantum entanglement explained simply
+  - extremophiles surviving impossible conditions
+  - the scale of the universe (numbers that break brains)
+  - time dilation and everyday GPS
+  - how trees communicate underground
+  - CRISPR gene editing implications
+  - the Fermi paradox and the great filter
+  - dark matter and dark energy
+  - convergent evolution
+  - the surprising chemistry of fire
+
+visual_palette:
+  primary: "#0A1628"     # deep space blue
+  accent: "#00B4D8"      # cyan
+  text: "#FFFFFF"
+  gradient_to: "#023E8A"
+
+hook_style: "impossible-but-true"  # "This fact sounds fake. It isn't."
+cta_style: "share-and-amaze"       # "Share this with someone who needs their mind blown"

@@ -1,0 +1,30 @@
+id: technology_future
+name: "Technology & Future"
+emoji: "⚙️"
+weight: 1.0
+
+description: >
+  What's coming that most people aren't ready for. Breakthroughs in AI,
+  biotech, energy, and computing — explained in human terms with real
+  implications for everyday life.
+
+topic_seeds:
+  - how AI actually learns (without jargon)
+  - brain-computer interfaces (current state, not sci-fi)
+  - the fusion energy timeline
+  - quantum computing real-world applications
+  - CRISPR babies and bioethics
+  - the satellite internet revolution
+  - why Moore's law is ending
+  - longevity science and aging reversal
+  - autonomous weapons and AI governance
+  - how cities will change by 2040
+
+visual_palette:
+  primary: "#001A12"     # dark emerald
+  accent: "#00FF88"      # neon green
+  text: "#FFFFFF"
+  gradient_to: "#003320"
+
+hook_style: "future-already-here"  # "This already exists. Most people just don't know."
+cta_style: "share-before-mainstream"  # "Share before this goes mainstream"

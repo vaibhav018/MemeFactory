@@ -1,0 +1,43 @@
+# Proven high-engagement hooks by pillar and style
+# Each hook template uses {TOPIC} as a substitution placeholder.
+# performance_score is updated by the analytics feedback loop.
+
+challenge_belief:
+  - template: "Your {TOPIC} is completely wrong. Here's the science."
+    performance_score: 1.0
+  - template: "Everything you think you know about {TOPIC} is backwards."
+    performance_score: 1.0
+  - template: "The uncomfortable truth about {TOPIC} nobody tells you."
+    performance_score: 1.0
+
+impossible_but_true:
+  - template: "This {TOPIC} fact sounds impossible. It's 100% real."
+    performance_score: 1.0
+  - template: "{TOPIC} defies every intuition you have. Here's proof."
+    performance_score: 1.0
+  - template: "Scientists discovered this about {TOPIC}. Nobody talks about it."
+    performance_score: 1.0
+
+schools_lied:
+  - template: "Your school taught you {TOPIC} wrong. The real story:"
+    performance_score: 1.0
+  - template: "The {TOPIC} they never taught you in school."
+    performance_score: 1.0
+  - template: "Historians buried the truth about {TOPIC}. Until now."
+    performance_score: 1.0
+
+future_already_here:
+  - template: "This {TOPIC} technology already exists. Most people don't know."
+    performance_score: 1.0
+  - template: "{TOPIC} is changing everything. Here's what's actually happening."
+    performance_score: 1.0
+  - template: "In 10 years {TOPIC} will seem obvious. Right now it's invisible."
+    performance_score: 1.0
+
+hard_truth:
+  - template: "The hard truth about {TOPIC} nobody wants to hear."
+    performance_score: 1.0
+  - template: "{TOPIC} will make you uncomfortable. That's the point."
+    performance_score: 1.0
+  - template: "Ancient philosophers solved {TOPIC}. We forgot the answer."
+    performance_score: 1.0

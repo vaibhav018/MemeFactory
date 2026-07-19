@@ -12,10 +12,17 @@ output/logs/*
 data/queue.json
 data/news_cache.json
 
-# new-pipeline local caches (Generated_Memes IS committed - Actions needs it
-# for public raw URLs used by Instagram publishing)
-logs/
+# Modern Mastery pipeline
+data/post_history.db
+queue/pending/*.json
+queue/approved/*.json
+queue/posted/*.json
+!queue/pending/.gitkeep
+!queue/approved/.gitkeep
+!queue/posted/.gitkeep
+# Generated_Memes IS committed — Actions needs public raw URLs for Instagram
 assets/Downloaded/
+logs/
 
 # Python
 __pycache__/

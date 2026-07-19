@@ -1,0 +1,30 @@
+id: mind_psychology
+name: "Mind & Psychology"
+emoji: "🧠"
+weight: 1.0
+
+description: >
+  Counterintuitive facts about human cognition, behavioral science, and the
+  hidden patterns that drive decisions. Focus on the gap between how we think
+  we think vs. how our brain actually works.
+
+topic_seeds:
+  - cognitive biases nobody talks about
+  - how memory is reconstructed not replayed
+  - the science of motivation (why willpower fails)
+  - social conformity experiments (Milgram, Asch)
+  - neuroplasticity and habit formation
+  - why smart people make dumb decisions
+  - the psychology of procrastination
+  - how advertising hijacks the subconscious
+  - sleep and emotional regulation
+  - the placebo effect beyond medicine
+
+visual_palette:
+  primary: "#1A0533"     # deep purple
+  accent: "#9B59B6"      # violet
+  text: "#FFFFFF"
+  gradient_to: "#2C1654"
+
+hook_style: "challenge-belief"   # "Did you know your memory is a liar?"
+cta_style: "save-and-test"       # "Save this and test it on someone today"

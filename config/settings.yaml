@@ -1,0 +1,47 @@
+account:
+  ig_user_id: "${IG_USER_ID}"
+  ig_access_token: "${IG_ACCESS_TOKEN}"
+  github_repo: "vaibhav018/MemeFactory"
+
+claude:
+  model: "claude-opus-4-7"
+  thinking: "adaptive"
+
+openai:
+  image_model: "dall-e-3"
+  image_size: "1024x1024"
+  image_quality: "hd"
+
+carousel:
+  slides: 7                     # hook + 5 content + CTA
+  width: 1080
+  height: 1080
+  font_size_hook: 72
+  font_size_body: 56
+  font_size_footer: 28
+  slide_duration_reels: 3       # seconds per slide if exported as Reel
+
+schedule:
+  # Times in IST (UTC+5:30)
+  weekday_post_time: "19:30"    # 7:30 PM weekdays
+  weekend_post_time: "11:00"    # 11 AM weekends
+  posts_per_day: 2              # 1 carousel + 1 single
+
+quality:
+  min_hook_words: 6
+  max_hook_words: 14
+  min_slide_words: 15
+  max_slide_words: 55
+  min_total_slides: 7
+  max_total_slides: 7
+  required_emoji_ratio: 0.0     # no forced emoji; quality gate checks presence
+  duplicate_lookback_days: 30
+
+paths:
+  post_history_db: "data/post_history.db"
+  queue_pending: "queue/pending"
+  queue_approved: "queue/approved"
+  queue_posted: "queue/posted"
+  generated_memes: "Generated_Memes"
+  library_hooks: "library/hooks_library.yaml"
+  library_top_performers: "library/top_performers.json"

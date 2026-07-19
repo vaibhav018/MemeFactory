@@ -1,0 +1,30 @@
+id: philosophy_meaning
+name: "Philosophy & Meaning"
+emoji: "💡"
+weight: 1.0
+
+description: >
+  Ancient wisdom reframed for the modern world. Stoicism, Buddhism, and
+  existentialism stripped of academic language and applied to the real problems
+  people face today — distraction, anxiety, purpose, death.
+
+topic_seeds:
+  - Stoic techniques for anxiety (actual exercises)
+  - the Hedonic treadmill and why you can't buy happiness
+  - Memento Mori — how contemplating death improves life
+  - Epictetus and what you actually control
+  - the paradox of choice
+  - Nietzsche's ideas for non-philosophers
+  - Buddhist impermanence and modern productivity
+  - the Trolley Problem and real moral dilemmas
+  - why meaning matters more than happiness
+  - Camus and the absurd applied to daily life
+
+visual_palette:
+  primary: "#0D0D0D"     # near black
+  accent: "#F4D03F"      # gold
+  text: "#FFFFFF"
+  gradient_to: "#1A1A1A"
+
+hook_style: "hard-truth"           # "Nobody told you this because it's uncomfortable."
+cta_style: "save-reflect"          # "Save this. Read it again tonight."

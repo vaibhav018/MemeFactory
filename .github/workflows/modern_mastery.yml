@@ -1,0 +1,63 @@
+name: modern-mastery
+
+on:
+  schedule:
+    # 7:30 PM IST weekdays = 14:00 UTC Mon-Fri
+    - cron: "0 14 * * 1-5"
+    # 11:00 AM IST weekends = 05:30 UTC Sat-Sun
+    - cron: "30 5 * * 0,6"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (no API calls, no publish)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  generate-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Download fonts
+        run: |
+          mkdir -p assets/fonts
+          # Montserrat ExtraBold — the primary carousel font
+          curl -L -o assets/fonts/Montserrat-ExtraBold.ttf \
+            "https://github.com/JulietaUla/Montserrat/raw/master/fonts/ttf/Montserrat-ExtraBold.ttf" || true
+          curl -L -o assets/fonts/Montserrat-Regular.ttf \
+            "https://github.com/JulietaUla/Montserrat/raw/master/fonts/ttf/Montserrat-Regular.ttf" || true
+
+      - name: Generate carousel
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            python pipeline.py --dry-run
+          else
+            python pipeline.py --publish
+          fi
+
+      - name: Commit generated slides
+        if: ${{ inputs.dry_run != 'true' }}
+        run: |
+          git config user.name "modern-mastery-bot"
+          git config user.email "actions@github.com"
+          git add Generated_Memes/ data/post_history.db queue/posted/ || true
+          git diff --cached --quiet && echo "Nothing to commit" && exit 0
+          git commit -m "carousel $(date -u +%Y-%m-%dT%H:%MZ)"
+          git pull --rebase origin main
+          git push

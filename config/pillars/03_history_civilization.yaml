@@ -1,0 +1,30 @@
+id: history_civilization
+name: "History & Civilization"
+emoji: "⚡"
+weight: 1.0
+
+description: >
+  Hidden turning points, forgotten geniuses, and the butterfly-effect moments
+  that shaped the modern world. Focus on events schools never taught — the
+  untold version of history.
+
+topic_seeds:
+  - inventions that changed history by accident
+  - the Byzantine Empire's 1000-year survival tactics
+  - how the printing press created chaos
+  - Ancient Rome's welfare state
+  - the Library of Alexandria myth vs. reality
+  - women scientists erased from history
+  - the Mongol Empire's surprising tolerance
+  - how diseases changed military outcomes
+  - forgotten trade routes and cultural exchange
+  - near-misses that almost changed everything
+
+visual_palette:
+  primary: "#1C0A00"     # dark amber
+  accent: "#E76F00"      # burnt orange
+  text: "#FFFFFF"
+  gradient_to: "#3D1A00"
+
+hook_style: "schools-lied"        # "Your school didn't teach you this."
+cta_style: "save-history"         # "Save this before it gets buried again"
