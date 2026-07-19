@@ -265,25 +265,49 @@ def build_hashtags(story: dict, keyword: str | None) -> list[str]:
     return deduped[:MAX_HASHTAGS]
 
 
+_TELUGU_RE = re.compile(r"[\u0C00-\u0C7F]")
+
+
 def extract_image_query(story: dict) -> tuple[str, str | None]:
     """Distill the headline into a focused image query + a relevance keyword.
 
-    'Nagabandham Box Office Collection Day 1: Registers ...' ->
-    ('Nagabandham Telugu movie', 'Nagabandham')
+    For Telugu-script headlines (Telegram/Sakshi sources) the full title can't
+    be fed to DDG — it finds nothing. Extract only the Latin-script tokens
+    (proper nouns, numbers, brand names that appear transliterated even in
+    Telugu headlines like 'Sukumar', 'Pushpa 2', 'CBSE') and pair them with
+    a category suffix so the search still lands on relevant images.
     """
-    subject = re.split(r"[:\-–|]", story["headline"])[0]
+    headline = story["headline"]
+    subject = re.split(r"[:\-–|]", headline)[0]
     subject = FILLER.sub(" ", subject)
     subject = _strip_punctuation(subject)
     words = subject.split()[:6]
-    subject = " ".join(words).strip()
-    if not subject:
-        subject = " ".join(story["headline"].split()[:6])
 
-    # relevance keyword: first distinctive word (likely the name/subject)
-    keyword = next((w for w in words if len(w) > 3 and w.lower() not in STOPWORDS),
-                   None)
+    # For Telugu-dominant headlines, keep only Latin-script words (names,
+    # numbers, transliterations) for the search query.
+    if _TELUGU_RE.search(headline):
+        latin_words = [w for w in words if not _TELUGU_RE.search(w) and len(w) > 1]
+        if latin_words:
+            subject = " ".join(latin_words)
+        else:
+            # Fully Telugu headline — use category suffix alone; DDG will
+            # surface relevant images based on the category context.
+            subject = ""
+    else:
+        subject = " ".join(words).strip()
+        if not subject:
+            subject = " ".join(headline.split()[:6])
 
-    query = f"{subject} {CATEGORY_SUFFIX[story['category']]}"
+    # relevance keyword: first distinctive Latin word (name/subject)
+    all_words = (latin_words if _TELUGU_RE.search(headline)
+                 else words)  # type: ignore[possibly-undefined]
+    keyword = next(
+        (w for w in all_words if len(w) > 3 and w.lower() not in STOPWORDS),
+        None,
+    )
+
+    suffix = CATEGORY_SUFFIX[story["category"]]
+    query = f"{subject} {suffix}".strip() if subject else suffix
     return query, keyword
 
 
