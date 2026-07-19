@@ -125,13 +125,29 @@ def publish_carousel(image_repo_paths: list[str], caption: str, dry_run: bool = 
     carousel_cid = r.json()["id"]
     _wait_for_container(carousel_cid)
 
-    # Step 3: publish
-    pub = requests.post(
-        f"{GRAPH}/{uid}/media_publish",
-        data={"creation_id": carousel_cid, "access_token": token},
-        timeout=30,
-    )
-    pub.raise_for_status()
-    media_id = pub.json()["id"]
-    print(f"  Published carousel: {media_id}")
-    return media_id
+    # Step 3: publish — retry on transient app-rate-limit (code 4 / subcode 2207051)
+    for attempt in range(1, 5):
+        pub = requests.post(
+            f"{GRAPH}/{uid}/media_publish",
+            data={"creation_id": carousel_cid, "access_token": token},
+            timeout=30,
+        )
+        if pub.ok:
+            media_id = pub.json()["id"]
+            print(f"  Published carousel: {media_id}")
+            return media_id
+
+        err = pub.json().get("error", {})
+        code = err.get("code")
+        subcode = err.get("error_subcode")
+
+        if code == 4 and subcode == 2207051:
+            wait = 60 * attempt  # 60s, 120s, 180s
+            print(f"  App rate limit hit — waiting {wait}s before retry {attempt}/4...")
+            time.sleep(wait)
+            continue
+
+        # Any other error: fail immediately with details
+        raise RuntimeError(f"Instagram publish failed ({pub.status_code}): {pub.json()}")
+
+    raise RuntimeError("Instagram publish failed after 4 retries — rate limit persisting")
