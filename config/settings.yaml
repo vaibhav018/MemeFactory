@@ -3,14 +3,17 @@ account:
   ig_access_token: "${IG_ACCESS_TOKEN}"
   github_repo: "vaibhav018/MemeFactory"
 
-claude:
-  model: "claude-opus-4-7"
-  thinking: "adaptive"
-
-openai:
-  image_model: "dall-e-3"
-  image_size: "1024x1024"
-  image_quality: "hd"
+# LLM provider — set LLM_PROVIDER env var to switch, or change default here.
+# Supported: groq | gemini | openrouter
+# All are free-tier. Set the corresponding API key in .env:
+#   GROQ_API_KEY      — get free at console.groq.com
+#   GEMINI_API_KEY    — get free at aistudio.google.com
+#   OPENROUTER_API_KEY— get free at openrouter.ai
+llm:
+  provider: "groq"          # default — change to gemini or openrouter
+  groq_model: "llama-3.3-70b-versatile"
+  gemini_model: "gemini-2.0-flash"
+  openrouter_model: "meta-llama/llama-3.3-70b-instruct:free"
 
 carousel:
   slides: 7                     # hook + 5 content + CTA
