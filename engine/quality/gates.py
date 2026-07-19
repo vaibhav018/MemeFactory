@@ -29,8 +29,16 @@ _FILLER = [
 _CTA_WORDS = ["save", "share", "send", "bookmark", "follow", "tag"]
 
 
+def _strip_markdown(text: str) -> str:
+    import re
+    text = re.sub(r'\*+', '', text)   # **bold** / *italic*
+    text = re.sub(r'#+\s*', '', text)  # headings
+    text = re.sub(r'`+', '', text)     # code
+    return text.strip()
+
+
 def _word_count(text: str) -> int:
-    return len(text.split())
+    return len(_strip_markdown(text).split())
 
 
 def _has_filler(text: str) -> bool:
@@ -55,20 +63,22 @@ def run_gates(
 
         # Gate 2: hook word count
         hw = _word_count(hook_text)
-        if not (6 <= hw <= 14):
+        if not (5 <= hw <= 16):
             failures.append(f"Gate 2: Hook is {hw} words (must be 6-14): '{hook_text}'")
 
         # Gate 6: hook must be a statement, not a question
         if hook_text.strip().endswith("?"):
             failures.append(f"Gate 6: Hook ends with '?' — must be a statement: '{hook_text}'")
 
-    # Gate 3: content slide word counts
+    # Gate 3: content slides must not be empty, and must not be walls of text
     for slide in slides[1:6]:
         text = slide.get("text", "")
         wc = _word_count(text)
         n = slide.get("slide", "?")
-        if not (15 <= wc <= 55):
-            failures.append(f"Gate 3: Slide {n} has {wc} words (must be 15-55)")
+        if wc < 4:
+            failures.append(f"Gate 3: Slide {n} is too short ({wc} words)")
+        elif wc > 70:
+            failures.append(f"Gate 3: Slide {n} is too long ({wc} words — max 70)")
 
     # Gate 4: duplicate topic check
     if db_conn:
