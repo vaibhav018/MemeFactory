@@ -163,15 +163,39 @@ def publish_approved_post(post: dict, dry_run: bool = False) -> str:
     return media_id
 
 
+def _publish_post(conn, post: dict) -> None:
+    media_id = publish_approved_post(post)
+    record_post(conn, post_id=post["id"], topic=post["topic"], pillar_id=post["pillar_id"],
+                hook=post["hook"], caption=post["caption"],
+                slide_paths=post["slide_repo_paths"], ig_media_id=media_id)
+    pending = _QUEUE_PENDING / f"{post['id']}.json"
+    posted  = _BASE / "queue" / "posted" / f"{post['id']}.json"
+    if pending.exists():
+        shutil.move(str(pending), str(posted))
+    print(f"\nPublished: {media_id}")
+    update_pillar_weights(conn)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Modern Mastery content pipeline")
     parser.add_argument("--dry-run", action="store_true", help="No API calls, no queue writes")
     parser.add_argument("--publish", action="store_true", help="Auto-approve and publish (CI mode)")
+    parser.add_argument("--retry-pending", action="store_true", help="Publish oldest pending post (no regeneration)")
     parser.add_argument("--retries", type=int, default=2, help="Quality gate retry limit")
     args = parser.parse_args()
 
     _DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     conn = get_db(_DB_PATH)
+
+    if args.retry_pending:
+        pending_files = sorted(_QUEUE_PENDING.glob("*.json"))
+        if not pending_files:
+            print("No pending posts to retry.")
+            conn.close(); return
+        post = json.loads(pending_files[0].read_text(encoding="utf-8"))
+        print(f"Retrying pending post: {post['topic']}")
+        _publish_post(conn, post)
+        conn.close(); return
 
     post = generate_post(conn, retries=args.retries, dry_run=args.dry_run)
     if post is None:
@@ -179,24 +203,7 @@ def main() -> None:
 
     if args.publish and not args.dry_run:
         print("\nAuto-publishing (--publish mode)...")
-        media_id = publish_approved_post(post)
-        record_post(
-            conn,
-            post_id=post["id"],
-            topic=post["topic"],
-            pillar_id=post["pillar_id"],
-            hook=post["hook"],
-            caption=post["caption"],
-            slide_paths=post["slide_repo_paths"],
-            ig_media_id=media_id,
-        )
-        # Move from pending to posted
-        pending = _QUEUE_PENDING / f"{post['id']}.json"
-        posted = _BASE / "queue" / "posted" / f"{post['id']}.json"
-        if pending.exists():
-            shutil.move(str(pending), str(posted))
-        print(f"\nPublished: {media_id}")
-        update_pillar_weights(conn)
+        _publish_post(conn, post)
     elif args.dry_run:
         print("\n[dry-run] Pipeline complete. No files written.")
         # show slide texts

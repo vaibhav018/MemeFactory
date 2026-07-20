@@ -141,9 +141,14 @@ def publish_carousel(image_repo_paths: list[str], caption: str, dry_run: bool = 
         code = err.get("code")
         subcode = err.get("error_subcode")
 
-        if code == 4 and subcode == 2207051:
-            wait = 60 * attempt  # 60s, 120s, 180s
-            print(f"  App rate limit hit — waiting {wait}s before retry {attempt}/4...")
+        # Transient Instagram errors — back off and retry
+        transient = (
+            (code == 4 and subcode == 2207051) or   # app rate limit
+            (code == -1 and subcode == 2207085)      # generic internal error
+        )
+        if transient:
+            wait = 90 * attempt  # 90s, 180s, 270s
+            print(f"  Instagram transient error ({code}/{subcode}) — waiting {wait}s (retry {attempt}/4)...")
             time.sleep(wait)
             continue
 
