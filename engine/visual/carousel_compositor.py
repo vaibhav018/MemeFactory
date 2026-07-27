@@ -81,53 +81,71 @@ def _bg(path: Path) -> Image.Image:
 
 def _slide_hook(bg: Image.Image, text: str, pillar: dict, num: int, total: int,
                 handle: str) -> Image.Image:
-    """Slide 1: full dark bg, massive uppercase text, accent bottom block."""
+    """Slide 1: curiosity-first — category pill, massive hook, teaser line, progress dots."""
     palette = pillar["visual_palette"]
     acc = _hex(palette["accent"])
     dark = _hex(palette["primary"])
 
     img = Image.new("RGB", (_W, _H), dark)
-    # subtle bg texture from generated bg (blurred, very dark)
-    blurred = bg.filter(ImageFilter.GaussianBlur(28))
-    overlay = Image.new("RGBA", (_W, _H), (*dark, 210))
+    blurred = bg.filter(ImageFilter.GaussianBlur(30))
+    overlay = Image.new("RGBA", (_W, _H), (*dark, 205))
     img = Image.alpha_composite(blurred.convert("RGBA"), overlay).convert("RGB")
-
     draw = ImageDraw.Draw(img)
-    margin = 72
+    margin = 80
     content_w = _W - 2 * margin
 
-    # Accent bottom block
-    accent_block_h = 220
-    draw.rectangle([(0, _H - accent_block_h), (_W, _H)], fill=acc)
+    # ── Category pill (top center) ────────────────────────────────
+    pill_font = _font(_BODY, 30)
+    pill_text = "  " + pillar["emoji"] + "  " + pillar["name"].upper() + "  "
+    pw = int(draw.textlength(pill_text, font=pill_font))
+    pill_x = (_W - pw) // 2
+    pill_y = 90
+    pill_h = 54
+    draw.rounded_rectangle([pill_x - 4, pill_y, pill_x + pw + 4, pill_y + pill_h],
+                           radius=27, fill=(*acc, 220))
+    draw.text((pill_x, pill_y + 12), pill_text, font=pill_font, fill=(255, 255, 255))
 
-    # "1 / 7" in accent block
-    counter_font = _font(_BODY, 32)
-    counter = f"{num}  /  {total}"
-    cw = draw.textlength(counter, font=counter_font)
-    draw.text(((_W - cw) // 2, _H - accent_block_h + 28), counter,
-              font=counter_font, fill=(255, 255, 255))
-
-    # Handle in accent block
-    handle_font = _font(_BODY, 26)
-    hw = draw.textlength(handle, font=handle_font)
-    draw.text(((_W - hw) // 2, _H - accent_block_h + 72), handle,
-              font=handle_font, fill=(255, 255, 255, 200))
-
-    # Thin accent line separator
-    draw.rectangle([(0, _H - accent_block_h - 4), (_W, _H - accent_block_h)],
-                   fill=(255, 255, 255, 80))
-
-    # Hook text — massive, centered vertically in dark zone
-    hook_font = _font(_DISPLAY, 96)
+    # ── Hook text — massive uppercase ─────────────────────────────
+    hook_font = _font(_DISPLAY, 100)
     lines = _wrap(text.upper(), hook_font, content_w, draw)
-    line_h = 96 + 20
+    line_h = 110
     total_text_h = len(lines) * line_h
-    dark_zone_h = _H - accent_block_h
-    y = (dark_zone_h - total_text_h) // 2 - 30
-    _draw_centered(draw, lines, hook_font, _W, y, (255, 255, 255), gap=20)
+    y_hook = max(pill_y + pill_h + 90, (_H - total_text_h) // 2 - 100)
+    y_after = _draw_centered(draw, lines, hook_font, _W, y_hook, (255, 255, 255), gap=14)
 
-    # Left accent bar
-    draw.rectangle([(0, 0), (7, _H - accent_block_h)], fill=acc)
+    # ── Accent underline ──────────────────────────────────────────
+    line_y = y_after + 32
+    bar_w = int(_W * 0.20)
+    bar_x = (_W - bar_w) // 2
+    draw.rectangle([(bar_x, line_y), (bar_x + bar_w, line_y + 7)], fill=acc)
+
+    # ── Teaser line ───────────────────────────────────────────────
+    teaser_font = _font(_BODY, 34)
+    teaser = str(total - 1) + " facts inside  →"
+    tw = draw.textlength(teaser, font=teaser_font)
+    draw.text(((_W - tw) // 2, line_y + 40), teaser, font=teaser_font, fill=(*acc, 230))
+
+    # ── Progress dots ─────────────────────────────────────────────
+    dot_y = _H - 190
+    dot_r = 10
+    dot_gap = 32
+    total_dot_w = total * dot_gap
+    dot_x_start = (_W - total_dot_w) // 2
+    for i in range(total):
+        cx = dot_x_start + i * dot_gap + dot_r
+        if i == 0:
+            draw.ellipse([cx - dot_r, dot_y - dot_r, cx + dot_r, dot_y + dot_r], fill=acc)
+        else:
+            draw.ellipse([cx - dot_r + 3, dot_y - dot_r + 3,
+                         cx + dot_r - 3, dot_y + dot_r - 3], fill=(255, 255, 255, 55))
+
+    # ── Handle ────────────────────────────────────────────────────
+    handle_font = _font(_BODY, 28)
+    hw = draw.textlength(handle, font=handle_font)
+    draw.text(((_W - hw) // 2, _H - 120), handle, font=handle_font, fill=(180, 180, 180))
+
+    # ── Left accent bar ───────────────────────────────────────────
+    draw.rectangle([(0, 0), (7, _H)], fill=acc)
 
     return img
 
