@@ -1,4 +1,19 @@
-"""Compose carousel slides: rich background + bold text + pillar branding."""
+"""Modern color-blocked carousel compositor — 1080×1350 portrait format.
+
+Layout per slide:
+  ┌─────────────────────────────────┐
+  │  ACCENT HEADER BLOCK (220px)    │  ← pillar name + slide counter
+  ├─────────────────────────────────┤
+  │                                 │
+  │   DARK CONTENT ZONE (~940px)    │  ← big faint number + centered text
+  │                                 │
+  ├─────────────────────────────────┤
+  │  DARK FOOTER STRIP (190px)      │  ← handle + swipe hint
+  └─────────────────────────────────┘
+
+Hook slide flips: full dark bg, massive text, accent bottom block.
+CTA slide: accent top, dark bottom with CTA text.
+"""
 from __future__ import annotations
 
 import textwrap
@@ -7,188 +22,277 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 _FONTS_DIR = Path(__file__).parent.parent.parent / "assets" / "fonts"
+_W, _H = 1080, 1350          # portrait — 20% more screen on mobile
+_HEADER_H = 220
+_FOOTER_H = 130
+_CONTENT_H = _H - _HEADER_H - _FOOTER_H   # ~1000px
 
-# Font candidates in priority order (what's actually in assets/fonts/)
-_DISPLAY_FONTS = ["Anton-Regular.ttf", "Montserrat-ExtraBold.ttf", "BalooTammudu2-ExtraBold.ttf"]
-_BODY_FONTS    = ["Montserrat-Regular.ttf", "NotoSans-Regular.ttf", "BalooTammudu2-Bold.ttf"]
+_DISPLAY = ["Anton-Regular.ttf", "Montserrat-ExtraBold.ttf", "BalooTammudu2-ExtraBold.ttf"]
+_BODY    = ["Montserrat-Regular.ttf", "NotoSans-Regular.ttf", "BalooTammudu2-Bold.ttf"]
 
 
-def _load_font(candidates: list[str], size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
+def _font(candidates: list[str], size: int):
     for name in candidates:
-        path = _FONTS_DIR / name
-        if path.exists():
+        p = _FONTS_DIR / name
+        if p.exists():
             try:
-                return ImageFont.truetype(str(path), size)
+                return ImageFont.truetype(str(p), size)
             except Exception:
                 continue
     return ImageFont.load_default(size=size)
 
 
-def _hex_rgb(h: str) -> tuple[int, int, int]:
+def _hex(h: str) -> tuple[int, int, int]:
     h = h.lstrip("#")
     return tuple(int(h[i:i+2], 16) for i in (0, 2, 4))  # type: ignore[return-value]
 
 
-def _wrap_text(text: str, font, max_width: int, draw: ImageDraw.ImageDraw) -> list[str]:
+def _wrap(text: str, font, max_w: int, draw: ImageDraw.ImageDraw) -> list[str]:
     words = text.split()
-    lines: list[str] = []
-    current = ""
-    for word in words:
-        test = (current + " " + word).strip()
-        w = draw.textlength(test, font=font)
-        if w <= max_width:
-            current = test
+    lines, cur = [], ""
+    for w in words:
+        test = (cur + " " + w).strip()
+        if draw.textlength(test, font=font) <= max_w:
+            cur = test
         else:
-            if current:
-                lines.append(current)
-            current = word
-    if current:
-        lines.append(current)
+            if cur:
+                lines.append(cur)
+            cur = w
+    if cur:
+        lines.append(cur)
     return lines
 
 
-def _draw_text_centered(
-    draw: ImageDraw.ImageDraw,
-    lines: list[str],
-    font,
-    canvas_w: int,
-    y: int,
-    color: tuple,
-    line_gap: int = 14,
-) -> int:
-    """Draw lines centered horizontally. Returns y after last line."""
+def _draw_centered(draw, lines, font, canvas_w, y, color, gap=16) -> int:
     for line in lines:
-        w = draw.textlength(line, font=font)
-        x = (canvas_w - w) // 2
+        lw = draw.textlength(line, font=font)
+        x = (canvas_w - lw) // 2
         draw.text((x, y), line, font=font, fill=color)
-        bbox = draw.textbbox((x, y), line, font=font)
-        y += (bbox[3] - bbox[1]) + line_gap
+        bb = draw.textbbox((x, y), line, font=font)
+        y += (bb[3] - bb[1]) + gap
     return y
 
 
-def _darken(img: Image.Image, strength: int = 160) -> Image.Image:
-    overlay = Image.new("RGBA", img.size, (0, 0, 0, strength))
-    return Image.alpha_composite(img.convert("RGBA"), overlay).convert("RGB")
+def _bg(path: Path) -> Image.Image:
+    return Image.open(path).convert("RGB").resize((_W, _H), Image.LANCZOS)
 
 
-def compose_slide(
-    bg_path: Path,
-    slide_data: dict,
-    slide_num: int,
-    total_slides: int,
-    pillar: dict,
-    output_path: Path,
-    handle: str = "@modernmastery",
-    size: int = 1080,
-) -> Path:
-    palette = pillar.get("visual_palette", {})
-    accent = _hex_rgb(palette.get("accent", "#FFFFFF"))
-    text_color = (255, 255, 255)
-    dim_color  = (200, 200, 200)
+# ── individual slide composers ──────────────────────────────────────────────
 
-    img = Image.open(bg_path).convert("RGB").resize((size, size), Image.LANCZOS)
+def _slide_hook(bg: Image.Image, text: str, pillar: dict, num: int, total: int,
+                handle: str) -> Image.Image:
+    """Slide 1: full dark bg, massive uppercase text, accent bottom block."""
+    palette = pillar["visual_palette"]
+    acc = _hex(palette["accent"])
+    dark = _hex(palette["primary"])
 
-    # Darker overlay on hook slide for maximum text contrast
-    img = _darken(img, strength=175 if slide_num == 1 else 145)
+    img = Image.new("RGB", (_W, _H), dark)
+    # subtle bg texture from generated bg (blurred, very dark)
+    blurred = bg.filter(ImageFilter.GaussianBlur(28))
+    overlay = Image.new("RGBA", (_W, _H), (*dark, 210))
+    img = Image.alpha_composite(blurred.convert("RGBA"), overlay).convert("RGB")
+
+    draw = ImageDraw.Draw(img)
+    margin = 72
+    content_w = _W - 2 * margin
+
+    # Accent bottom block
+    accent_block_h = 220
+    draw.rectangle([(0, _H - accent_block_h), (_W, _H)], fill=acc)
+
+    # "1 / 7" in accent block
+    counter_font = _font(_BODY, 32)
+    counter = f"{num}  /  {total}"
+    cw = draw.textlength(counter, font=counter_font)
+    draw.text(((_W - cw) // 2, _H - accent_block_h + 28), counter,
+              font=counter_font, fill=(255, 255, 255))
+
+    # Handle in accent block
+    handle_font = _font(_BODY, 26)
+    hw = draw.textlength(handle, font=handle_font)
+    draw.text(((_W - hw) // 2, _H - accent_block_h + 72), handle,
+              font=handle_font, fill=(255, 255, 255, 200))
+
+    # Thin accent line separator
+    draw.rectangle([(0, _H - accent_block_h - 4), (_W, _H - accent_block_h)],
+                   fill=(255, 255, 255, 80))
+
+    # Hook text — massive, centered vertically in dark zone
+    hook_font = _font(_DISPLAY, 96)
+    lines = _wrap(text.upper(), hook_font, content_w, draw)
+    line_h = 96 + 20
+    total_text_h = len(lines) * line_h
+    dark_zone_h = _H - accent_block_h
+    y = (dark_zone_h - total_text_h) // 2 - 30
+    _draw_centered(draw, lines, hook_font, _W, y, (255, 255, 255), gap=20)
+
+    # Left accent bar
+    draw.rectangle([(0, 0), (7, _H - accent_block_h)], fill=acc)
+
+    return img
+
+
+def _slide_content(bg: Image.Image, text: str, slide_num: int, total: int,
+                   pillar: dict, handle: str) -> Image.Image:
+    """Slides 2-6: color header block + dark content + footer."""
+    palette = pillar["visual_palette"]
+    acc = _hex(palette["accent"])
+    dark = _hex(palette["primary"])
+    grad = _hex(palette["gradient_to"])
+
+    img = Image.new("RGB", (_W, _H), dark)
+    blurred = bg.filter(ImageFilter.GaussianBlur(22))
+    overlay = Image.new("RGBA", (_W, _H), (*dark, 195))
+    img = Image.alpha_composite(blurred.convert("RGBA"), overlay).convert("RGB")
     draw = ImageDraw.Draw(img)
 
     margin = 80
-    content_w = size - 2 * margin
+    content_w = _W - 2 * margin
 
-    # ── Slide counter pill (top-right) ──────────────────────────
-    counter_font = _load_font(_BODY_FONTS, 30)
-    counter_text = f"{slide_num} / {total_slides}"
-    cw = draw.textlength(counter_text, font=counter_font)
-    pill_x, pill_y = size - margin - int(cw) - 24, 44
-    pill_w, pill_h = int(cw) + 24, 44
-    draw.rounded_rectangle(
-        [pill_x, pill_y, pill_x + pill_w, pill_y + pill_h],
-        radius=22, fill=(*accent, 60)
-    )
-    draw.text((pill_x + 12, pill_y + 7), counter_text, font=counter_font, fill=text_color)
+    # ── HEADER BLOCK ──────────────────────────────────────────────
+    draw.rectangle([(0, 0), (_W, _HEADER_H)], fill=acc)
 
-    # ── Pillar accent dot (top-left, replaces emoji which Anton can't render) ──
-    dot_r = 18
-    draw.ellipse([margin, 48, margin + dot_r * 2, 48 + dot_r * 2], fill=accent)
+    # Pillar name in header
+    label_font = _font(_DISPLAY, 36)
+    label = pillar["name"].upper()
+    lw = draw.textlength(label, font=label_font)
+    draw.text(((_W - lw) // 2, 42), label, font=label_font,
+              fill=(255, 255, 255))
 
-    # ── Main text ────────────────────────────────────────────────
-    text = slide_data.get("text", "")
-    is_hook = slide_num == 1
-    is_cta  = slide_num == total_slides
+    # Slide counter pill in header (right side)
+    count_font = _font(_BODY, 28)
+    count_txt = f"{slide_num} / {total}"
+    ctw = draw.textlength(count_txt, font=count_font)
+    pill_x = _W - margin - int(ctw) - 20
+    pill_y = _HEADER_H - 68
+    draw.rounded_rectangle([pill_x, pill_y, pill_x + int(ctw) + 20, pill_y + 48],
+                           radius=24, fill=(0, 0, 0, 90))
+    draw.text((pill_x + 10, pill_y + 10), count_txt, font=count_font,
+              fill=(255, 255, 255))
 
-    if is_hook:
-        font = _load_font(_DISPLAY_FONTS, 88)
-        lines = _wrap_text(text.upper(), font, content_w, draw)
-        # vertical center
-        total_h = sum(
-            draw.textbbox((0, 0), l, font=font)[3] - draw.textbbox((0, 0), l, font=font)[1] + 18
-            for l in lines
-        )
-        y = (size - total_h) // 2 - 40
-        _draw_text_centered(draw, lines, font, size, y, text_color, line_gap=18)
+    # Thin white separator under header
+    draw.rectangle([( 0, _HEADER_H), (_W, _HEADER_H + 4)],
+                   fill=(255, 255, 255, 40))
 
-        # Accent underline beneath hook text
-        line_y = y + total_h + 24
-        bar_w = int(size * 0.18)
-        draw.rectangle(
-            [(size // 2 - bar_w // 2, line_y), (size // 2 + bar_w // 2, line_y + 6)],
-            fill=accent
-        )
+    # ── LARGE FAINT NUMBER (design element) ────────────────────────
+    num_font = _font(_DISPLAY, 380)
+    num_str = str(slide_num)
+    nw = draw.textlength(num_str, font=num_font)
+    draw.text((_W - int(nw) - 10, _H - _FOOTER_H - 360),
+              num_str, font=num_font, fill=(*acc, 22))
 
-    elif is_cta:
-        font = _load_font(_DISPLAY_FONTS, 66)
-        lines = _wrap_text(text, font, content_w, draw)
-        total_h = len(lines) * 80
-        y = (size - total_h) // 2
-        _draw_text_centered(draw, lines, font, size, y, text_color, line_gap=20)
+    # ── CONTENT TEXT ───────────────────────────────────────────────
+    body_font = _font(_BODY, 58)
+    lines = _wrap(text, body_font, content_w, draw)
+    line_h = 58 + 18
+    total_text_h = len(lines) * line_h
+    content_mid = _HEADER_H + (_H - _HEADER_H - _FOOTER_H) // 2
+    y = content_mid - total_text_h // 2
+    _draw_centered(draw, lines, body_font, _W, y, (255, 255, 255), gap=18)
 
-    else:
-        # Content slide — slide number as large background watermark
-        num_font = _load_font(_DISPLAY_FONTS, 320)
-        num_str = str(slide_num)
-        nw = draw.textlength(num_str, font=num_font)
-        # Draw large faint number
-        draw.text(
-            (size - int(nw) - 20, size - 340),
-            num_str, font=num_font,
-            fill=(*accent, 18)
-        )
+    # Left accent bar (content zone only)
+    draw.rectangle([(0, _HEADER_H + 4), (7, _H - _FOOTER_H)], fill=acc)
 
-        body_font = _load_font(_BODY_FONTS, 56)
-        lines = _wrap_text(text, body_font, content_w, draw)
-        total_h = sum(
-            draw.textbbox((0, 0), l, font=body_font)[3] - draw.textbbox((0, 0), l, font=body_font)[1] + 16
-            for l in lines
-        )
-        y = (size - total_h) // 2
-        _draw_text_centered(draw, lines, body_font, size, y, text_color, line_gap=16)
-
-    # ── Left accent bar ──────────────────────────────────────────
-    draw.rectangle([(0, 0), (6, size)], fill=accent)
-
-    # ── Handle branding (bottom) ─────────────────────────────────
-    handle_font = _load_font(_BODY_FONTS, 28)
+    # ── FOOTER ─────────────────────────────────────────────────────
+    draw.rectangle([(0, _H - _FOOTER_H), (_W, _H)], fill=(*grad, 255))
+    handle_font = _font(_BODY, 26)
     hw = draw.textlength(handle, font=handle_font)
-    draw.text(((size - hw) // 2, size - 52), handle, font=handle_font, fill=(*dim_color, 200))
+    draw.text(((_W - hw) // 2, _H - _FOOTER_H + 38), handle,
+              font=handle_font, fill=(200, 200, 200))
 
-    img.save(output_path, format="JPEG", quality=92)
+    # Swipe hint on non-last slide
+    if slide_num < total - 1:
+        hint_font = _font(_BODY, 22)
+        hint = "swipe →"
+        hiw = draw.textlength(hint, font=hint_font)
+        draw.text((_W - margin - int(hiw), _H - _FOOTER_H + 40), hint,
+                  font=hint_font, fill=(*acc, 180))
+
+    return img
+
+
+def _slide_cta(bg: Image.Image, text: str, pillar: dict, num: int, total: int,
+               handle: str) -> Image.Image:
+    """Slide 7: accent top block + dark body with CTA."""
+    palette = pillar["visual_palette"]
+    acc = _hex(palette["accent"])
+    dark = _hex(palette["primary"])
+
+    img = Image.new("RGB", (_W, _H), dark)
+    blurred = bg.filter(ImageFilter.GaussianBlur(22))
+    overlay = Image.new("RGBA", (_W, _H), (*dark, 195))
+    img = Image.alpha_composite(blurred.convert("RGBA"), overlay).convert("RGB")
+    draw = ImageDraw.Draw(img)
+
+    margin = 80
+    content_w = _W - 2 * margin
+
+    # Large accent top block
+    cta_header_h = 300
+    draw.rectangle([(0, 0), (_W, cta_header_h)], fill=acc)
+
+    # Save icon (stylized bookmark shape using rectangles)
+    bm_x, bm_y = _W // 2 - 40, 60
+    draw.rectangle([bm_x, bm_y, bm_x + 80, bm_y + 110], fill=(255, 255, 255))
+    draw.polygon([(bm_x, bm_y + 110), (bm_x + 40, bm_y + 80),
+                  (bm_x + 80, bm_y + 110)], fill=acc)
+
+    # Counter in top block
+    count_font = _font(_BODY, 28)
+    count_txt = f"{num} / {total}"
+    ctw = draw.textlength(count_txt, font=count_font)
+    draw.text(((_W - ctw) // 2, cta_header_h - 52), count_txt,
+              font=count_font, fill=(255, 255, 255, 200))
+
+    draw.rectangle([(0, cta_header_h), (_W, cta_header_h + 5)],
+                   fill=(255, 255, 255, 50))
+
+    # CTA text in dark zone
+    cta_font = _font(_DISPLAY, 68)
+    lines = _wrap(text, cta_font, content_w, draw)
+    dark_zone_h = _H - cta_header_h
+    total_text_h = len(lines) * (68 + 20)
+    y = cta_header_h + (dark_zone_h - total_text_h) // 2 - 40
+    _draw_centered(draw, lines, cta_font, _W, y, (255, 255, 255), gap=20)
+
+    # Handle
+    handle_font = _font(_BODY, 28)
+    hw = draw.textlength(handle, font=handle_font)
+    draw.text(((_W - hw) // 2, _H - 60), handle,
+              font=handle_font, fill=(*_hex(palette["accent"]), 180))
+
+    # Left accent bar
+    draw.rectangle([(0, cta_header_h + 5), (7, _H)], fill=acc)
+
+    return img
+
+
+# ── public API ──────────────────────────────────────────────────────────────
+
+def compose_slide(bg_path: Path, slide_data: dict, slide_num: int, total_slides: int,
+                  pillar: dict, output_path: Path, handle: str = "@modernmastery") -> Path:
+    bg = _bg(bg_path)
+    text = slide_data.get("text", "")
+
+    if slide_num == 1:
+        img = _slide_hook(bg, text, pillar, slide_num, total_slides, handle)
+    elif slide_num == total_slides:
+        img = _slide_cta(bg, text, pillar, slide_num, total_slides, handle)
+    else:
+        img = _slide_content(bg, text, slide_num, total_slides, pillar, handle)
+
+    img.save(output_path, format="JPEG", quality=93)
     return output_path
 
 
-def compose_carousel(
-    bg_path: Path,
-    slides: list[dict],
-    pillar: dict,
-    output_dir: Path,
-    post_id: str,
-    handle: str = "@modernmastery",
-) -> list[Path]:
+def compose_carousel(bg_path: Path, slides: list[dict], pillar: dict,
+                     output_dir: Path, post_id: str,
+                     handle: str = "@modernmastery") -> list[Path]:
     output_dir.mkdir(parents=True, exist_ok=True)
     paths = []
-    total = len(slides)
     for i, slide in enumerate(slides, start=1):
         out = output_dir / f"{post_id}_slide_{i:02d}.jpg"
-        compose_slide(bg_path, slide, i, total, pillar, out, handle)
+        compose_slide(bg_path, slide, i, len(slides), pillar, out, handle)
         paths.append(out)
-        print(f"    slide {i}/{total} ✓")
+        print(f"    slide {i}/{len(slides)} ✓")
     return paths
