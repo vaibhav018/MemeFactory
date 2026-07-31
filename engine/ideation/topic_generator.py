@@ -12,6 +12,7 @@ from __future__ import annotations
 
 from engine.llm_client import complete_json
 from engine.trends.fetch import get_pillar_candidates
+from engine.ideation.watchlist import get_pillar_reference_handles
 
 _SYSTEM = """\
 You are a world-class Instagram content strategist for a "Modern Mastery" education page.
@@ -40,6 +41,19 @@ def generate_topic(pillar: dict, recent_topics: list[str]) -> dict:
     """Return a topic dict with keys: topic, angle, hook, dall_e_prompt, caption."""
     recent_str = "\n".join(f"  - {t}" for t in recent_topics[-10:]) or "  (none yet)"
     seeds_str = "\n".join(f"  - {s}" for s in pillar.get("topic_seeds", []))
+
+    handles = get_pillar_reference_handles(pillar["id"])
+    if handles:
+        handle_lines = "\n".join(
+            f"  - @{h['handle']}: {h.get('why','').strip().splitlines()[0]}"
+            for h in handles
+        )
+        handles_block = f"""
+
+REFERENCE CREATORS (audience overlap — use for TONE and TOPIC AREA only, NEVER copy):
+{handle_lines}"""
+    else:
+        handles_block = ""
 
     trends = _fetch_trend_candidates(pillar["id"])
     if trends:
@@ -72,7 +86,7 @@ Topic seeds (use as direction only, do NOT repeat verbatim):
 
 Recently posted topics to AVOID:
 {recent_str}
-{trend_block}
+{handles_block}{trend_block}
 
 Return ONE topic as JSON with exactly these keys:
 {{

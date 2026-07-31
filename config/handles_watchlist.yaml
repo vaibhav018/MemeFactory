@@ -1,0 +1,129 @@
+# Handles Watchlist — reference creators, NOT scraping targets.
+#
+# Instagram doesn't expose a practical public API, so this file has two jobs:
+#
+#   1. Institutional memory: when you're checking manually "what's working
+#      right now for our audience", these are the creators to open first.
+#
+#   2. Style anchor for ideation: engine/ideation/watchlist.py loads this and
+#      injects a compact "REFERENCE CREATORS" block into topic_generator's
+#      prompt for pillars that have affinity handles. Claude uses them for
+#      TONE and TOPIC AREA, never to copy content verbatim.
+#
+# How to edit:
+#   - Add a handle when you notice a creator whose format is repeatedly
+#     landing with our target 18-35 audience.
+#   - Remove a handle if their content drifts off-pillar or their engagement
+#     dies. This file rots fast — audit quarterly.
+#   - pillar_affinity: list only pillars where THIS creator's style would
+#     genuinely inform a post. Wide affinity dilutes the signal.
+#
+# Provenance: initial 7 handles pulled from the 2026-07-31 trend audit of
+# 62 IG screenshots (see the pipeline commit da1328c neighborhood for context).
+
+handles:
+  - handle: wealthpill_
+    platform: instagram
+    pillar_affinity: [wealth_hustles, ai_tools_workflows]
+    why: |
+      Highest-signal creator in the audit — 8+ posts across the 62-screenshot
+      sample. Frames money content around "why salary won't make you rich"
+      and layers AI tool comparisons on top. Save-worthy carousels, tight
+      hooks, book recs.
+    sample_topics:
+      - "why nobody got rich from salary alone"
+      - "5 books that changed how I think about money"
+      - "AI tools that replaced my $200/mo SaaS stack"
+    style_notes: |
+      Yellow-on-dark, short bold hook, 6-8 slide carousels, personal
+      voice ("here's what I do"), single-question CTA.
+
+  - handle: vanik.businessinstitute
+    platform: instagram
+    pillar_affinity: [wealth_hustles]
+    why: |
+      India-focused Amazon FBA / seller-central pipeline. Concrete SOPs,
+      product research walkthroughs, GST/current-account basics.
+      Hinglish tone that resonates with the India segment.
+    sample_topics:
+      - "Amazon FBA — what still works in 2026"
+      - "product research using Jungle Scout in 10 minutes"
+      - "seller central setup mistakes that cost you Rs 50K"
+    style_notes: |
+      Screen recordings + face-on-camera hybrid. Numbered lists. Heavy
+      use of red highlights on money figures.
+
+  - handle: aimasteryhub_
+    platform: instagram
+    pillar_affinity: [ai_tools_workflows, wealth_hustles]
+    why: |
+      GitHub-repo-hunter aesthetic. Frames open-source tools as insider
+      knowledge ("only 1% know about this"). Overlaps well with our
+      ai_tools pillar's "hidden repos" angle.
+    sample_topics:
+      - "5 GitHub repos that replace paid SaaS"
+      - "the AI tools trending on GitHub this week"
+      - "how to monetize an open-source project"
+    style_notes: |
+      Dark cinematic backgrounds, neon logo overlays, scarcity framing
+      ("comment LUCK", "swipe if you dare"), single-color palette per post.
+
+  - handle: evolving.ai
+    platform: instagram
+    pillar_affinity: [technology_future, ai_tools_workflows]
+    why: |
+      Tech-news aggregator format. Multi-panel breakdowns of AI/tech
+      breakthroughs. Good template inspiration for "what's coming"
+      content on the technology_future pillar.
+    sample_topics:
+      - "China nuclear fusion breakthrough — what it means"
+      - "Anthropic's Claude 4.8 vs GPT-5 quick compare"
+      - "ASML/DUV lithography — why one company matters"
+    style_notes: |
+      Multi-panel carousels (4-6 panels showing a chart / diagram / quote).
+      Very little face-on-camera. Neutral color palette, blue accents.
+
+  - handle: coderss_world
+    platform: instagram
+    pillar_affinity: [ai_tools_workflows, technology_future]
+    why: |
+      Drama-driven AI tech commentary. Frames model launches and AI
+      controversies (detection, book scanning, Yahoo/Anthropic feud)
+      as narrative arcs. Useful for high-engagement hooks.
+    sample_topics:
+      - "the Yahoo vs Anthropic feud, explained in 60s"
+      - "6 prompts that beat every AI detector"
+      - "GPT-5 vs Claude vs Gemini — the honest scorecard"
+    style_notes: |
+      Meme-forward. Question-hook + reveal structure. Colored text
+      blocks, playful emoji use, screenshot mockups.
+
+  - handle: aifired.studio
+    platform: instagram
+    pillar_affinity: [ai_tools_workflows, technology_future]
+    why: |
+      AI image/video enhancement demos — "cinematic edit" prompts for
+      real photos. Bridges practical AI usage with visual results the
+      audience can replicate.
+    sample_topics:
+      - "the AI photo prompt that made this look cinematic"
+      - "Nano Banana vs Midjourney — free tier showdown"
+      - "before/after AI edits with the exact prompt"
+    style_notes: |
+      Split-screen before/after visuals. Prompt overlay in monospaced
+      text. Minimal caption text, all value in the image.
+
+  - handle: alamin.8020ai
+    platform: instagram
+    pillar_affinity: [ai_tools_workflows, technology_future]
+    why: |
+      iPhone / Apple optimization tricks + AI workflow tips. Utility
+      framing ("this one setting saves 4h of battery") that lands high
+      saves. Model for evergreen tech-utility content.
+    sample_topics:
+      - "the iPhone battery setting Apple hides"
+      - "3 AI shortcuts I run daily on my phone"
+      - "what your iPhone is actually doing in the background"
+    style_notes: |
+      Phone screenshot mockups with red circles/arrows over the exact
+      setting. Numbered walkthroughs. Utility over drama.
