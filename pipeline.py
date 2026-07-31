@@ -206,9 +206,12 @@ def main() -> None:
         _publish_post(conn, post)
     elif args.dry_run:
         print("\n[dry-run] Pipeline complete. No files written.")
-        # show slide texts
         for s in post["slides"]:
-            print(f"  Slide {s['slide']}: {s['text'][:80]}")
+            if s.get("layout") == "split":
+                preview = f"[SPLIT] {s.get('left_label','?')}: {s.get('left_text','')[:35]} | {s.get('right_label','?')}: {s.get('right_text','')[:35]}"
+            else:
+                preview = s.get("text", "")[:80]
+            print(f"  Slide {s['slide']}: {preview}")
 
     conn.close()
 
