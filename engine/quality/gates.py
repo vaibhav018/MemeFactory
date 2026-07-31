@@ -1,4 +1,4 @@
-"""8 hard quality gates — every post must pass all gates or is rejected.
+"""9 hard quality gates — every post must pass all gates or is rejected.
 
 Gates:
   1. Slide count == 7
@@ -10,6 +10,8 @@ Gates:
   7. CTA slide contains save/share directive
   8. Trend freshness: if the topic was anchored on a trend, reject when the
      trend is >48h old since first seen (or when it can't be verified)
+  9. Reading level: no banned jargon words, no sentences over 14 words
+     (@profit_prompts_ targets grade-6 reading)
 
 Returns (passed: bool, failures: list[str])
 """
@@ -29,6 +31,25 @@ _FILLER = [
     "at the end of the day",
     "in today's world",
 ]
+
+# Corporate-speak buzzwords that break the "12-year-old can read it" rule.
+# Kept short — false positives are annoying. Match whole words only.
+_BANNED_JARGON = {
+    "utilize", "leverage", "leverages", "leveraging", "paradigm", "synergy",
+    "robust", "seamless", "seamlessly", "holistic", "disrupt", "disruptive",
+    "empower", "empowers", "unlock", "unleash", "unleashes", "revolutionize",
+    "revolutionary", "streamline", "streamlines", "optimize", "optimizes",
+    "methodology", "transformative", "cutting-edge", "next-level",
+    "game-changer", "game-changing", "best-in-class", "world-class",
+    "mission-critical", "thought-leader",
+}
+_JARGON_RE = re.compile(r"\b(" + "|".join(re.escape(w) for w in _BANNED_JARGON) + r")\b",
+                        flags=re.IGNORECASE)
+
+# Sentences over this many words break the school-kid readability target.
+# Enforced only softly (warn if just over, hard-fail at 20+).
+_SENTENCE_HARD_WORD_LIMIT = 20
+_SENTENCE_RE = re.compile(r"[.!?]+\s+|[.!?]+$")
 
 _CTA_WORDS = ["save", "share", "send", "bookmark", "follow", "tag"]
 
@@ -134,5 +155,22 @@ def run_gates(
             failures.append(
                 f"Gate 8: trend '{trend_source}' is {age:.1f}h old "
                 f"(max {_TREND_MAX_AGE_HOURS:.0f}h)")
+
+    # Gate 9: reading level. Ban corporate buzzwords and cap sentence length.
+    all_text_for_lang = " ".join(_slide_all_text(s) for s in slides)
+    bad_words = sorted({m.group(1).lower() for m in _JARGON_RE.finditer(all_text_for_lang)})
+    if bad_words:
+        failures.append(f"Gate 9: banned jargon detected: {bad_words}")
+    for s in slides:
+        text = _slide_all_text(s)
+        n = s.get("slide", "?")
+        for sentence in _SENTENCE_RE.split(text):
+            wc = len(sentence.split())
+            if wc >= _SENTENCE_HARD_WORD_LIMIT:
+                failures.append(
+                    f"Gate 9: slide {n} sentence is {wc} words "
+                    f"(max {_SENTENCE_HARD_WORD_LIMIT - 1}): "
+                    f"'{sentence.strip()[:80]}...'")
+                break  # one report per slide is enough
 
     return (len(failures) == 0, failures)
