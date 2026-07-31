@@ -24,6 +24,8 @@
 handles:
   - handle: wealthpill_
     platform: instagram
+    added_on: 2026-07-31
+    last_reviewed_at: 2026-07-31
     pillar_affinity: [wealth_hustles, ai_tools_workflows]
     why: |
       Highest-signal creator in the audit — 8+ posts across the 62-screenshot
@@ -40,6 +42,8 @@ handles:
 
   - handle: vanik.businessinstitute
     platform: instagram
+    added_on: 2026-07-31
+    last_reviewed_at: 2026-07-31
     pillar_affinity: [wealth_hustles]
     why: |
       India-focused Amazon FBA / seller-central pipeline. Concrete SOPs,
@@ -55,6 +59,8 @@ handles:
 
   - handle: aimasteryhub_
     platform: instagram
+    added_on: 2026-07-31
+    last_reviewed_at: 2026-07-31
     pillar_affinity: [ai_tools_workflows, wealth_hustles]
     why: |
       GitHub-repo-hunter aesthetic. Frames open-source tools as insider
@@ -70,6 +76,8 @@ handles:
 
   - handle: evolving.ai
     platform: instagram
+    added_on: 2026-07-31
+    last_reviewed_at: 2026-07-31
     pillar_affinity: [technology_future, ai_tools_workflows]
     why: |
       Tech-news aggregator format. Multi-panel breakdowns of AI/tech
@@ -85,6 +93,8 @@ handles:
 
   - handle: coderss_world
     platform: instagram
+    added_on: 2026-07-31
+    last_reviewed_at: 2026-07-31
     pillar_affinity: [ai_tools_workflows, technology_future]
     why: |
       Drama-driven AI tech commentary. Frames model launches and AI
@@ -100,6 +110,8 @@ handles:
 
   - handle: aifired.studio
     platform: instagram
+    added_on: 2026-07-31
+    last_reviewed_at: 2026-07-31
     pillar_affinity: [ai_tools_workflows, technology_future]
     why: |
       AI image/video enhancement demos — "cinematic edit" prompts for
@@ -115,6 +127,8 @@ handles:
 
   - handle: alamin.8020ai
     platform: instagram
+    added_on: 2026-07-31
+    last_reviewed_at: 2026-07-31
     pillar_affinity: [ai_tools_workflows, technology_future]
     why: |
       iPhone / Apple optimization tricks + AI workflow tips. Utility
