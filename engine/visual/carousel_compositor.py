@@ -16,6 +16,7 @@ CTA slide: accent top, dark bottom with CTA text.
 """
 from __future__ import annotations
 
+import re
 import textwrap
 from pathlib import Path
 
@@ -73,6 +74,29 @@ def _draw_centered(draw, lines, font, canvas_w, y, color, gap=16) -> int:
     return y
 
 
+_NUMBER_RE = re.compile(r"(\$?\d[\d,]*\.?\d*%?)")
+
+
+def _draw_centered_highlighted(draw, lines: list[str], font, canvas_w: int, y: int,
+                               text_color: tuple[int, int, int],
+                               accent_color: tuple[int, int, int],
+                               gap: int = 16) -> int:
+    """Draw centered lines, colouring number/percent/currency tokens in accent."""
+    for line in lines:
+        parts = [p for p in _NUMBER_RE.split(line) if p != ""]
+        widths = [draw.textlength(p, font=font) for p in parts]
+        total_w = sum(widths)
+        x = (canvas_w - total_w) // 2
+        line_top = y
+        for part, w in zip(parts, widths):
+            colour = accent_color if _NUMBER_RE.fullmatch(part) else text_color
+            draw.text((x, line_top), part, font=font, fill=colour)
+            x += w
+        bb = draw.textbbox((0, line_top), line, font=font)
+        y += (bb[3] - bb[1]) + gap
+    return y
+
+
 def _bg(path: Path) -> Image.Image:
     return Image.open(path).convert("RGB").resize((_W, _H), Image.LANCZOS)
 
@@ -86,10 +110,16 @@ def _slide_hook(bg: Image.Image, text: str, pillar: dict, num: int, total: int,
     acc = _hex(palette["accent"])
     dark = _hex(palette["primary"])
 
-    img = Image.new("RGB", (_W, _H), dark)
-    blurred = bg.filter(ImageFilter.GaussianBlur(30))
-    overlay = Image.new("RGBA", (_W, _H), (*dark, 205))
-    img = Image.alpha_composite(blurred.convert("RGBA"), overlay).convert("RGB")
+    # Scale bg to cover the full slide (crop overflow, no distortion)
+    scale = max(_W / bg.width, _H / bg.height)
+    new_w, new_h = int(bg.width * scale), int(bg.height * scale)
+    scaled = bg.resize((new_w, new_h), Image.LANCZOS)
+    crop_x = (new_w - _W) // 2
+    crop_y = (new_h - _H) // 2
+    bg_cover = scaled.crop((crop_x, crop_y, crop_x + _W, crop_y + _H))
+    # Modest darkening so palette matches without erasing the image
+    tint = Image.new("RGBA", (_W, _H), (*dark, 110))
+    img = Image.alpha_composite(bg_cover.convert("RGBA"), tint).convert("RGB")
     draw = ImageDraw.Draw(img)
     margin = 80
     content_w = _W - 2 * margin
@@ -102,15 +132,27 @@ def _slide_hook(bg: Image.Image, text: str, pillar: dict, num: int, total: int,
     pill_y = 90
     pill_h = 54
     draw.rounded_rectangle([pill_x - 4, pill_y, pill_x + pw + 4, pill_y + pill_h],
-                           radius=27, fill=(*acc, 220))
+                           radius=27, fill=(*acc, 235))
     draw.text((pill_x, pill_y + 12), pill_text, font=pill_font, fill=(255, 255, 255))
 
-    # ── Hook text — massive uppercase ─────────────────────────────
+    # ── Hook text on a rounded dark panel so it stays readable on any image ──
     hook_font = _font(_DISPLAY, 100)
     lines = _wrap(text.upper(), hook_font, content_w, draw)
     line_h = 110
     total_text_h = len(lines) * line_h
     y_hook = max(pill_y + pill_h + 90, (_H - total_text_h) // 2 - 100)
+    panel_pad_x, panel_pad_y = 40, 32
+    panel_top = y_hook - panel_pad_y
+    panel_bot = y_hook + total_text_h + panel_pad_y
+    # Semi-transparent dark panel (needs an RGBA composite pass)
+    panel_layer = Image.new("RGBA", (_W, _H), (0, 0, 0, 0))
+    panel_draw = ImageDraw.Draw(panel_layer)
+    panel_draw.rounded_rectangle(
+        [(margin - panel_pad_x, panel_top), (_W - margin + panel_pad_x, panel_bot)],
+        radius=24, fill=(*dark, 200),
+    )
+    img = Image.alpha_composite(img.convert("RGBA"), panel_layer).convert("RGB")
+    draw = ImageDraw.Draw(img)
     y_after = _draw_centered(draw, lines, hook_font, _W, y_hook, (255, 255, 255), gap=14)
 
     # ── Accent underline ──────────────────────────────────────────
@@ -152,78 +194,106 @@ def _slide_hook(bg: Image.Image, text: str, pillar: dict, num: int, total: int,
 
 def _slide_content(bg: Image.Image, text: str, slide_num: int, total: int,
                    pillar: dict, handle: str) -> Image.Image:
-    """Slides 2-6: color header block + dark content + footer."""
+    """Slides 2-6: accent header + visible image mid-band + text panel + footer.
+
+    Layout (1080x1350):
+      HEADER  120px accent  — pillar name + counter
+      IMAGE   600px         — full CF image, lightly overlaid so palette matches
+      TEXT    500px dark    — body text on a semi-transparent dark panel with
+                              a bold accent slide-number anchor and highlighted
+                              numbers/currency/percent tokens
+      FOOTER   130px grad   — handle + swipe hint
+    """
     palette = pillar["visual_palette"]
     acc = _hex(palette["accent"])
     dark = _hex(palette["primary"])
     grad = _hex(palette["gradient_to"])
 
-    img = Image.new("RGB", (_W, _H), dark)
-    blurred = bg.filter(ImageFilter.GaussianBlur(22))
-    overlay = Image.new("RGBA", (_W, _H), (*dark, 195))
-    img = Image.alpha_composite(blurred.convert("RGBA"), overlay).convert("RGB")
-    draw = ImageDraw.Draw(img)
-
+    header_h = 120
+    image_h = 600
+    footer_h = 130
+    text_top = header_h + image_h
+    text_bot = _H - footer_h
     margin = 80
     content_w = _W - 2 * margin
 
-    # ── HEADER BLOCK ──────────────────────────────────────────────
-    draw.rectangle([(0, 0), (_W, _HEADER_H)], fill=acc)
+    # Base canvas — solid dark so any transparency shows a pillar-consistent color
+    img = Image.new("RGB", (_W, _H), dark)
 
-    # Pillar name in header
+    # ── HEADER: solid accent band ──────────────────────────────────
+    draw = ImageDraw.Draw(img)
+    draw.rectangle([(0, 0), (_W, header_h)], fill=acc)
     label_font = _font(_DISPLAY, 36)
     label = pillar["name"].upper()
     lw = draw.textlength(label, font=label_font)
-    draw.text(((_W - lw) // 2, 42), label, font=label_font,
+    draw.text(((_W - lw) // 2, (header_h - 40) // 2), label, font=label_font,
               fill=(255, 255, 255))
-
-    # Slide counter pill in header (right side)
-    count_font = _font(_BODY, 28)
+    # Counter pill (right)
+    count_font = _font(_BODY, 26)
     count_txt = f"{slide_num} / {total}"
     ctw = draw.textlength(count_txt, font=count_font)
     pill_x = _W - margin - int(ctw) - 20
-    pill_y = _HEADER_H - 68
-    draw.rounded_rectangle([pill_x, pill_y, pill_x + int(ctw) + 20, pill_y + 48],
-                           radius=24, fill=(0, 0, 0, 90))
-    draw.text((pill_x + 10, pill_y + 10), count_txt, font=count_font,
+    pill_y = (header_h - 42) // 2
+    draw.rounded_rectangle([pill_x, pill_y, pill_x + int(ctw) + 20, pill_y + 42],
+                           radius=21, fill=(0, 0, 0, 110))
+    draw.text((pill_x + 10, pill_y + 8), count_txt, font=count_font,
               fill=(255, 255, 255))
 
-    # Thin white separator under header
-    draw.rectangle([( 0, _HEADER_H), (_W, _HEADER_H + 4)],
-                   fill=(255, 255, 255, 40))
+    # ── IMAGE ZONE: crop-fit the CF background full-width ──────────
+    #   Scale bg to cover the zone (crop overflow, no distortion)
+    scale = max(_W / bg.width, image_h / bg.height)
+    new_w, new_h = int(bg.width * scale), int(bg.height * scale)
+    scaled = bg.resize((new_w, new_h), Image.LANCZOS)
+    crop_x = (new_w - _W) // 2
+    crop_y = (new_h - image_h) // 2
+    zone = scaled.crop((crop_x, crop_y, crop_x + _W, crop_y + image_h))
+    # Very light dark overlay so the image tone matches the palette without
+    # obliterating the image itself.
+    tint = Image.new("RGBA", (_W, image_h), (*dark, 55))
+    zone = Image.alpha_composite(zone.convert("RGBA"), tint).convert("RGB")
+    img.paste(zone, (0, header_h))
 
-    # ── LARGE FAINT NUMBER (design element) ────────────────────────
-    num_font = _font(_DISPLAY, 380)
+    # Thin accent separator between image and text zone
+    draw.rectangle([(0, text_top - 4), (_W, text_top)], fill=acc)
+
+    # ── TEXT ZONE: dark panel with body text + big number anchor ──
+    #   Because the image ends cleanly at text_top, we can draw the text
+    #   zone as a solid dark region — no fighting readability.
+    draw.rectangle([(0, text_top), (_W, text_bot)], fill=dark)
+
+    # Massive accent slide-number as visual anchor (bottom-right of text zone)
+    num_font = _font(_DISPLAY, 320)
     num_str = str(slide_num)
-    nw = draw.textlength(num_str, font=num_font)
-    draw.text((_W - int(nw) - 10, _H - _FOOTER_H - 360),
-              num_str, font=num_font, fill=(*acc, 22))
+    nw_num = draw.textlength(num_str, font=num_font)
+    draw.text((_W - int(nw_num) - 24, text_bot - 340),
+              num_str, font=num_font, fill=(*acc, 55))
 
-    # ── CONTENT TEXT ───────────────────────────────────────────────
-    body_font = _font(_BODY, 58)
+    # Body text — highlighted numbers, centered vertically
+    body_font = _font(_BODY, 52)
     lines = _wrap(text, body_font, content_w, draw)
-    line_h = 58 + 18
+    line_h = 52 + 16
+    text_zone_h = text_bot - text_top
     total_text_h = len(lines) * line_h
-    content_mid = _HEADER_H + (_H - _HEADER_H - _FOOTER_H) // 2
-    y = content_mid - total_text_h // 2
-    _draw_centered(draw, lines, body_font, _W, y, (255, 255, 255), gap=18)
+    y = text_top + max((text_zone_h - total_text_h) // 2, 40)
+    _draw_centered_highlighted(
+        draw, lines, body_font, _W, y,
+        text_color=(245, 245, 245), accent_color=acc, gap=16,
+    )
 
-    # Left accent bar (content zone only)
-    draw.rectangle([(0, _HEADER_H + 4), (7, _H - _FOOTER_H)], fill=acc)
+    # Left accent bar spanning image+text zones
+    draw.rectangle([(0, header_h), (7, text_bot)], fill=acc)
 
     # ── FOOTER ─────────────────────────────────────────────────────
-    draw.rectangle([(0, _H - _FOOTER_H), (_W, _H)], fill=(*grad, 255))
+    draw.rectangle([(0, text_bot), (_W, _H)], fill=(*grad, 255))
     handle_font = _font(_BODY, 26)
     hw = draw.textlength(handle, font=handle_font)
-    draw.text(((_W - hw) // 2, _H - _FOOTER_H + 38), handle,
+    draw.text(((_W - hw) // 2, text_bot + 38), handle,
               font=handle_font, fill=(200, 200, 200))
-
-    # Swipe hint on non-last slide
     if slide_num < total - 1:
         hint_font = _font(_BODY, 22)
         hint = "swipe →"
         hiw = draw.textlength(hint, font=hint_font)
-        draw.text((_W - margin - int(hiw), _H - _FOOTER_H + 40), hint,
+        draw.text((_W - margin - int(hiw), text_bot + 40), hint,
                   font=hint_font, fill=(*acc, 180))
 
     return img
