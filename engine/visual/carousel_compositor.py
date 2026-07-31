@@ -23,10 +23,17 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 _FONTS_DIR = Path(__file__).parent.parent.parent / "assets" / "fonts"
+_LOGO_PATH = Path(__file__).parent.parent.parent / "assets" / "Logo" / "profit_prompts_logo.png"
 _W, _H = 1080, 1350          # portrait — 20% more screen on mobile
 _HEADER_H = 220
 _FOOTER_H = 130
 _CONTENT_H = _H - _HEADER_H - _FOOTER_H   # ~1000px
+
+# Small brand logo overlay drawn on every slide. Kept small and pinned to
+# the top-left so it never overlaps hero text / faces in the image band.
+_LOGO_SIZE = 90
+_LOGO_MARGIN = 24
+_LOGO_ALPHA = 235  # slight transparency so it blends with any background
 
 _DISPLAY = ["Anton-Regular.ttf", "Montserrat-ExtraBold.ttf", "BalooTammudu2-ExtraBold.ttf"]
 _BODY    = ["Montserrat-Regular.ttf", "NotoSans-Regular.ttf", "BalooTammudu2-Bold.ttf"]
@@ -99,6 +106,41 @@ def _draw_centered_highlighted(draw, lines: list[str], font, canvas_w: int, y: i
 
 def _bg(path: Path) -> Image.Image:
     return Image.open(path).convert("RGB").resize((_W, _H), Image.LANCZOS)
+
+
+_LOGO_CACHE: Image.Image | None = None
+
+
+def _load_logo() -> Image.Image | None:
+    """Load and size the Profit Prompts logo once, cached across slides."""
+    global _LOGO_CACHE
+    if _LOGO_CACHE is not None:
+        return _LOGO_CACHE
+    if not _LOGO_PATH.exists():
+        return None
+    try:
+        logo = Image.open(_LOGO_PATH).convert("RGBA")
+        logo = logo.resize((_LOGO_SIZE, _LOGO_SIZE), Image.LANCZOS)
+        # apply overall alpha
+        alpha = logo.split()[-1]
+        alpha = alpha.point(lambda a: int(a * _LOGO_ALPHA / 255))
+        logo.putalpha(alpha)
+        _LOGO_CACHE = logo
+        return logo
+    except Exception:
+        return None
+
+
+def _stamp_logo(img: Image.Image) -> Image.Image:
+    """Overlay the logo in the top-left corner. Composed in RGBA so alpha wins."""
+    logo = _load_logo()
+    if logo is None:
+        return img
+    rgba = img.convert("RGBA")
+    overlay = Image.new("RGBA", rgba.size, (0, 0, 0, 0))
+    overlay.paste(logo, (_LOGO_MARGIN, _LOGO_MARGIN), logo)
+    merged = Image.alpha_composite(rgba, overlay)
+    return merged.convert("RGB")
 
 
 # ── individual slide composers ──────────────────────────────────────────────
@@ -220,23 +262,13 @@ def _slide_content(bg: Image.Image, text: str, slide_num: int, total: int,
     # Base canvas — solid dark so any transparency shows a pillar-consistent color
     img = Image.new("RGB", (_W, _H), dark)
 
-    # ── HEADER: solid accent band ──────────────────────────────────
+    # ── HEADER: solid accent band, pillar name centered, no counter ──
     draw = ImageDraw.Draw(img)
     draw.rectangle([(0, 0), (_W, header_h)], fill=acc)
     label_font = _font(_DISPLAY, 36)
     label = pillar["name"].upper()
     lw = draw.textlength(label, font=label_font)
     draw.text(((_W - lw) // 2, (header_h - 40) // 2), label, font=label_font,
-              fill=(255, 255, 255))
-    # Counter pill (right)
-    count_font = _font(_BODY, 26)
-    count_txt = f"{slide_num} / {total}"
-    ctw = draw.textlength(count_txt, font=count_font)
-    pill_x = _W - margin - int(ctw) - 20
-    pill_y = (header_h - 42) // 2
-    draw.rounded_rectangle([pill_x, pill_y, pill_x + int(ctw) + 20, pill_y + 42],
-                           radius=21, fill=(0, 0, 0, 110))
-    draw.text((pill_x + 10, pill_y + 8), count_txt, font=count_font,
               fill=(255, 255, 255))
 
     # ── IMAGE ZONE: crop-fit the CF background full-width ──────────
@@ -260,13 +292,6 @@ def _slide_content(bg: Image.Image, text: str, slide_num: int, total: int,
     #   Because the image ends cleanly at text_top, we can draw the text
     #   zone as a solid dark region — no fighting readability.
     draw.rectangle([(0, text_top), (_W, text_bot)], fill=dark)
-
-    # Massive accent slide-number as visual anchor (bottom-right of text zone)
-    num_font = _font(_DISPLAY, 320)
-    num_str = str(slide_num)
-    nw_num = draw.textlength(num_str, font=num_font)
-    draw.text((_W - int(nw_num) - 24, text_bot - 340),
-              num_str, font=num_font, fill=(*acc, 55))
 
     # Body text — highlighted numbers, centered vertically
     body_font = _font(_BODY, 52)
@@ -323,21 +348,12 @@ def _slide_split(bg: Image.Image, slide_data: dict, slide_num: int, total: int,
     img = Image.alpha_composite(blurred.convert("RGBA"), overlay).convert("RGB")
     draw = ImageDraw.Draw(img)
 
-    # ── HEADER: pillar name + slide counter ────────────────────────
+    # ── HEADER: pillar name (no counter — keeps the split composition clean) ──
     draw.rectangle([(0, 0), (_W, _HEADER_H)], fill=acc)
     label_font = _font(_DISPLAY, 36)
     label = pillar["name"].upper()
     lw = draw.textlength(label, font=label_font)
     draw.text(((_W - lw) // 2, 42), label, font=label_font, fill=(255, 255, 255))
-
-    count_font = _font(_BODY, 28)
-    count_txt = f"{slide_num} / {total}"
-    ctw = draw.textlength(count_txt, font=count_font)
-    pill_x = _W - 80 - int(ctw) - 20
-    pill_y = _HEADER_H - 68
-    draw.rounded_rectangle([pill_x, pill_y, pill_x + int(ctw) + 20, pill_y + 48],
-                           radius=24, fill=(0, 0, 0, 90))
-    draw.text((pill_x + 10, pill_y + 10), count_txt, font=count_font, fill=(255, 255, 255))
     draw.rectangle([(0, _HEADER_H), (_W, _HEADER_H + 4)], fill=(255, 255, 255, 40))
 
     # ── SPLIT COLUMNS ──────────────────────────────────────────────
@@ -456,13 +472,6 @@ def _slide_cta(bg: Image.Image, text: str, pillar: dict, num: int, total: int,
     draw.polygon([(bm_x, bm_y + 110), (bm_x + 40, bm_y + 80),
                   (bm_x + 80, bm_y + 110)], fill=acc)
 
-    # Counter in top block
-    count_font = _font(_BODY, 28)
-    count_txt = f"{num} / {total}"
-    ctw = draw.textlength(count_txt, font=count_font)
-    draw.text(((_W - ctw) // 2, cta_header_h - 52), count_txt,
-              font=count_font, fill=(255, 255, 255, 200))
-
     draw.rectangle([(0, cta_header_h), (_W, cta_header_h + 5)],
                    fill=(255, 255, 255, 50))
 
@@ -501,6 +510,9 @@ def compose_slide(bg_path: Path, slide_data: dict, slide_num: int, total_slides:
         img = _slide_split(bg, slide_data, slide_num, total_slides, pillar, handle)
     else:
         img = _slide_content(bg, text, slide_num, total_slides, pillar, handle)
+
+    # Uniform brand watermark on every slide type (top-left, small, semi-transparent)
+    img = _stamp_logo(img)
 
     img.save(output_path, format="JPEG", quality=93)
     return output_path
