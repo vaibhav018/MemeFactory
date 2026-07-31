@@ -1,4 +1,4 @@
-"""Modern Mastery — Instagram carousel content pipeline.
+"""Profit Prompts — Instagram carousel content pipeline (@profit_prompts_).
 
 Usage:
   python pipeline.py                  # full run: generate → quality → queue
@@ -182,7 +182,7 @@ def _publish_post(conn, post: dict) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Modern Mastery content pipeline")
+    parser = argparse.ArgumentParser(description="Profit Prompts content pipeline")
     parser.add_argument("--dry-run", action="store_true", help="No API calls, no queue writes")
     parser.add_argument("--publish", action="store_true", help="Auto-approve and publish (CI mode)")
     parser.add_argument("--retry-pending", action="store_true", help="Publish oldest pending post (no regeneration)")

@@ -419,7 +419,7 @@ def _slide_cta(bg: Image.Image, text: str, pillar: dict, num: int, total: int,
 # ── public API ──────────────────────────────────────────────────────────────
 
 def compose_slide(bg_path: Path, slide_data: dict, slide_num: int, total_slides: int,
-                  pillar: dict, output_path: Path, handle: str = "@modernmastery") -> Path:
+                  pillar: dict, output_path: Path, handle: str = "@profit_prompts_") -> Path:
     bg = _bg(bg_path)
     text = slide_data.get("text", "")
 
@@ -438,7 +438,7 @@ def compose_slide(bg_path: Path, slide_data: dict, slide_num: int, total_slides:
 
 def compose_carousel(bg_path: Path, slides: list[dict], pillar: dict,
                      output_dir: Path, post_id: str,
-                     handle: str = "@modernmastery") -> list[Path]:
+                     handle: str = "@profit_prompts_") -> list[Path]:
     output_dir.mkdir(parents=True, exist_ok=True)
     paths = []
     for i, slide in enumerate(slides, start=1):
