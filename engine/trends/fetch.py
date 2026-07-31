@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from xml.etree import ElementTree as ET
@@ -36,6 +37,7 @@ import requests
 
 _BASE = Path(__file__).parent.parent.parent
 _CACHE_PATH = _BASE / "data" / "trend_cache.json"
+_FIRST_SEEN_PATH = _BASE / "data" / "trend_first_seen.json"
 _CACHE_TTL_SEC = 6 * 3600
 _HTTP_TIMEOUT = 12
 _UA = "MemeFactory/1.0 (+https://github.com/vaibhav018/MemeFactory)"
@@ -194,17 +196,89 @@ def _refresh() -> dict:
     return snapshot
 
 
+_SOURCE_PREFIX_RE = re.compile(r"^\s*\[[^\]]+\]\s*")
+
+
+def _normalize_title(title: str) -> str:
+    """Case-fold + collapse whitespace so equivalent titles resolve to one key.
+
+    Also strips a leading '[source_name] ' prefix — Claude tends to copy the
+    prompt's display format ('[hackernews] Some Title') into trend_source
+    verbatim, so lookups need to survive that.
+    """
+    stripped = _SOURCE_PREFIX_RE.sub("", title)
+    return " ".join(stripped.strip().lower().split())
+
+
+def _load_first_seen() -> dict:
+    if not _FIRST_SEEN_PATH.exists():
+        return {}
+    try:
+        return json.loads(_FIRST_SEEN_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def _update_first_seen(snapshot: dict) -> None:
+    """Record first-seen timestamp for every trend title we haven't seen before.
+
+    Freshness is defined by when a title FIRST appeared in our cache, not by
+    the cache-refresh timestamp — a Google Trends daily list can re-list the
+    same title for 2-3 days but the topic itself is stale after 48h.
+    """
+    log = _load_first_seen()
+    now = datetime.now(timezone.utc).isoformat()
+    changed = False
+    for items in snapshot.get("sources", {}).values():
+        for it in items:
+            key = _normalize_title(it.get("title", ""))
+            if key and key not in log:
+                log[key] = now
+                changed = True
+    if changed:
+        _FIRST_SEEN_PATH.parent.mkdir(parents=True, exist_ok=True)
+        _FIRST_SEEN_PATH.write_text(json.dumps(log, indent=2, ensure_ascii=False))
+
+
+def get_trend_age_hours(title: str) -> float | None:
+    """Return hours since this trend title was first seen in our cache.
+
+    Returns None if the title has never been logged (either it never existed
+    in a snapshot, or Claude hallucinated it). Callers should treat None as
+    'unverifiable' — usually a reject signal for the freshness gate.
+    """
+    key = _normalize_title(title)
+    if not key:
+        return None
+    log = _load_first_seen()
+    ts = log.get(key)
+    if not ts:
+        return None
+    try:
+        first = datetime.fromisoformat(ts)
+    except ValueError:
+        return None
+    return (datetime.now(timezone.utc) - first).total_seconds() / 3600.0
+
+
 def _load_or_refresh(force: bool = False) -> dict:
+    snap = None
     if not force and _CACHE_PATH.exists():
         try:
             snap = json.loads(_CACHE_PATH.read_text(encoding="utf-8"))
             fetched_at = datetime.fromisoformat(snap["fetched_at"])
             age = (datetime.now(timezone.utc) - fetched_at).total_seconds()
-            if age < _CACHE_TTL_SEC:
-                return snap
+            if age >= _CACHE_TTL_SEC:
+                snap = None
         except Exception:
-            pass
-    return _refresh()
+            snap = None
+    if snap is None:
+        snap = _refresh()
+    # Populate first-seen log on every load, not just on refresh — otherwise
+    # the log stays empty for the entire cache-hit window and gate 8 falsely
+    # rejects everything as unverifiable.
+    _update_first_seen(snap)
+    return snap
 
 
 def get_pillar_candidates(pillar_id: str, limit: int = 8,

@@ -74,11 +74,16 @@ def generate_post(
         print(f"  Topic: {topic_data['topic']}")
         print(f"  Angle: {topic_data['angle']}")
         print(f"  Hook:  {topic_data['hook']}")
+        if ts := topic_data.get("trend_source"):
+            print(f"  Trend: {ts}")
 
         print("Writing carousel slides...")
         slides = write_carousel(topic_data, pillar)
 
-        passed, failures = run_gates(slides, topic_data["topic"], conn)
+        passed, failures = run_gates(
+            slides, topic_data["topic"], conn,
+            trend_source=topic_data.get("trend_source"),
+        )
         if not passed:
             print(f"Quality gates FAILED ({len(failures)} issues):")
             for f in failures:

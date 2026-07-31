@@ -53,12 +53,16 @@ TRENDING NOW (last 24-48h, mixed signal — some will fit the pillar, some won't
 
 If ONE of the trending items above is a natural fit for this pillar's audience
 (curious 18-35 year-olds who save/share educational carousels), anchor your
-topic on it — use language they'd recognize from the trend. Otherwise ignore
-trends entirely and pick a fresh angle from the topic seeds. Never force a
-politics/news/finance-ticker trend into an educational pillar; when in doubt,
-use the seeds."""
+topic on it — use language they'd recognize from the trend, and set
+"trend_source" in the JSON to the EXACT title of that trend (copy-paste from
+the list above). Otherwise ignore trends, set "trend_source" to null, and
+pick a fresh angle from the topic seeds. Never force a politics/news/
+finance-ticker trend into an educational pillar; when in doubt, use the seeds
+and null."""
+        trend_source_field = '  "trend_source": "exact trend title you anchored on, or null if none used",\n'
     else:
         trend_block = ""
+        trend_source_field = ""
 
     user = f"""Pillar: {pillar['name']} {pillar['emoji']}
 Description: {pillar['description']}
@@ -75,7 +79,7 @@ Return ONE topic as JSON with exactly these keys:
   "topic": "specific subject in 3-6 words",
   "angle": "the counterintuitive entry point in 1 sentence",
   "hook": "slide 1 text — 8-14 words, bold statement, NO question mark",
-  "dall_e_prompt": "background image for DALL-E 3, no text, dramatic lighting, 1 sentence",
+{trend_source_field}  "dall_e_prompt": "background image for DALL-E 3, no text, dramatic lighting, 1 sentence",
   "caption": "Instagram caption, 3-5 sentences expanding the hook's promise, ends with a question for comments, then 8-12 hashtags on a new line"
 }}"""
 

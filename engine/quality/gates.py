@@ -1,19 +1,23 @@
-"""7 hard quality gates — every post must pass all gates or is rejected.
+"""8 hard quality gates — every post must pass all gates or is rejected.
 
 Gates:
   1. Slide count == 7
   2. Hook length: 6-14 words
-  3. All content slides: 15-55 words
+  3. All content slides: 15-55 words (split slides sum both sides)
   4. No duplicate topic in last 30 days (SQLite check)
   5. No filler phrases detected
   6. Hook is a statement, not a question
   7. CTA slide contains save/share directive
+  8. Trend freshness: if the topic was anchored on a trend, reject when the
+     trend is >48h old since first seen (or when it can't be verified)
 
 Returns (passed: bool, failures: list[str])
 """
 from __future__ import annotations
 
 import re
+
+from engine.trends.fetch import get_trend_age_hours
 
 _FILLER = [
     "it's important to note",
@@ -46,11 +50,15 @@ def _has_filler(text: str) -> bool:
     return any(f in lower for f in _FILLER)
 
 
+_TREND_MAX_AGE_HOURS = 48.0
+
+
 def run_gates(
     slides: list[dict],
     topic: str,
     db_conn,  # sqlite3.Connection or None
     lookback_days: int = 30,
+    trend_source: str | None = None,
 ) -> tuple[bool, list[str]]:
     failures: list[str] = []
 
@@ -113,5 +121,18 @@ def run_gates(
         cta_text = slides[-1].get("text", "").lower()
         if not any(w in cta_text for w in _CTA_WORDS):
             failures.append(f"Gate 7: CTA slide missing save/share directive: '{slides[-1].get('text','')}'")
+
+    # Gate 8: trend freshness — only enforced when Claude claimed to anchor
+    # on a specific trend. Silent no-op when trend_source is None/empty.
+    if trend_source:
+        age = get_trend_age_hours(trend_source)
+        if age is None:
+            failures.append(
+                f"Gate 8: trend_source '{trend_source}' not found in first-seen log "
+                "(hallucinated or already pruned)")
+        elif age > _TREND_MAX_AGE_HOURS:
+            failures.append(
+                f"Gate 8: trend '{trend_source}' is {age:.1f}h old "
+                f"(max {_TREND_MAX_AGE_HOURS:.0f}h)")
 
     return (len(failures) == 0, failures)
