@@ -1,0 +1,33 @@
+id: ai_tools_workflows
+name: "AI Tools & Workflows"
+emoji: "🤖"
+weight: 1.5
+
+description: >
+  Practical, ship-tonight uses of Claude, ChatGPT, Gemini, and open-source AI
+  tools. Prompts, workflows, tool comparisons, and quiet tricks the top 1% of
+  users know. Not sci-fi speculation — things the reader can copy-paste and
+  run in the next hour.
+
+topic_seeds:
+  - 5 Claude prompts that replace an entire SaaS subscription
+  - free vs paid — when the open-source AI tool actually wins
+  - the ChatGPT prompt structure that beats "act as a..."
+  - how to stack Gemini + Claude + Perplexity for research
+  - one-shot vs chain-of-thought — which to use when
+  - the AI tools GitHub is quietly obsessed with this month
+  - why your prompts fail — the 3 things missing from most
+  - Claude Projects vs ChatGPT GPTs — real workflow differences
+  - the free tier limits nobody tells you about
+  - AI-detector bypass — what actually works (and what doesn't)
+  - build a personal RAG in 30 minutes with free tools
+  - the prompt caching trick that cuts your API bill 90%
+
+visual_palette:
+  primary: "#0A0A0F"     # near-black
+  accent: "#FFD400"      # signal yellow
+  text: "#FFFFFF"
+  gradient_to: "#1A1A2E"
+
+hook_style: "insider-shortcut"    # "Most people use ChatGPT wrong. This is what the 1% do."
+cta_style: "save-and-try-tonight" # "Save this and try prompt #3 tonight — screenshot the result."

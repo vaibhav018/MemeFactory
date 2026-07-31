@@ -1,0 +1,34 @@
+id: wealth_hustles
+name: "Wealth & Hustles"
+emoji: "💸"
+weight: 1.3
+
+description: >
+  Practical income and money-skill ideas for curious 18-35 year-olds:
+  side-hustles, freelance angles, marketplace arbitrage, AI-native services,
+  and honest breakdowns of the "$10K/month" claims flooding the feed.
+  Bias toward what a beginner can start this week with a laptop and Wi-Fi,
+  not passive-income fairy tales.
+
+topic_seeds:
+  - Amazon FBA in 2026 — what actually still works vs what died
+  - the freelance stack that replaces a full-time salary
+  - selling AI services to local businesses (5 offers that convert)
+  - dropshipping — the honest math nobody shows you
+  - print-on-demand niches that aren't oversaturated
+  - the $10K/month claim — reverse-engineered
+  - Fiverr categories with the best hourly rate right now
+  - digital products vs services — which to start first
+  - the "boring business" playbook — laundromats, vending, storage
+  - build once, sell forever — Notion templates, prompts, GPTs
+  - India-specific — GST, current account, freelance invoicing basics
+  - the one skill that turns any hustle profitable
+
+visual_palette:
+  primary: "#0B0F0A"     # near-black with green undertone
+  accent: "#00E676"      # money green
+  text: "#FFFFFF"
+  gradient_to: "#132818"
+
+hook_style: "myth-vs-math"        # "Everyone posts $10K/month. Almost none show the math."
+cta_style: "start-this-week"      # "Save this and pick ONE to start this week. Comment which."
