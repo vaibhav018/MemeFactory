@@ -170,15 +170,28 @@ def publish_approved_post(post: dict, dry_run: bool = False) -> str:
 
 def _publish_post(conn, post: dict) -> None:
     media_id = publish_approved_post(post)
-    record_post(conn, post_id=post["id"], topic=post["topic"], pillar_id=post["pillar_id"],
-                hook=post["hook"], caption=post["caption"],
-                slide_paths=post["slide_repo_paths"], ig_media_id=media_id)
+    # Move the pending JSON to posted/ IMMEDIATELY after IG succeeds — before
+    # any bookkeeping that might throw. Otherwise a schema mismatch in
+    # record_post or a shell timeout leaves an orphaned pending file even
+    # though the post is already live on Instagram.
     pending = _QUEUE_PENDING / f"{post['id']}.json"
-    posted  = _BASE / "queue" / "posted" / f"{post['id']}.json"
+    posted_dir = _BASE / "queue" / "posted"
+    posted_dir.mkdir(parents=True, exist_ok=True)
+    posted = posted_dir / f"{post['id']}.json"
     if pending.exists():
-        shutil.move(str(pending), str(posted))
+        try:
+            shutil.move(str(pending), str(posted))
+        except Exception as e:
+            print(f"  [WARN] failed to move pending -> posted: {type(e).__name__}: {e}")
     print(f"\nPublished: {media_id}")
-    update_pillar_weights(conn)
+    try:
+        record_post(conn, post_id=post["id"], topic=post["topic"], pillar_id=post["pillar_id"],
+                    hook=post["hook"], caption=post["caption"],
+                    slide_paths=post["slide_repo_paths"], ig_media_id=media_id)
+        update_pillar_weights(conn)
+    except Exception as e:
+        print(f"  [WARN] analytics bookkeeping failed (post already published): "
+              f"{type(e).__name__}: {e}")
 
 
 def main() -> None:
