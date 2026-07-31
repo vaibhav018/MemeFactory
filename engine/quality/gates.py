@@ -72,9 +72,14 @@ def run_gates(
 
     # Gate 3: content slides must not be empty, and must not be walls of text
     for slide in slides[1:6]:
-        text = slide.get("text", "")
-        wc = _word_count(text)
         n = slide.get("slide", "?")
+        if slide.get("layout") == "split":
+            text = (slide.get("left_text", "") + " " + slide.get("right_text", "")).strip()
+            if not slide.get("left_label") or not slide.get("right_label"):
+                failures.append(f"Gate 3: Slide {n} split-layout missing left_label/right_label")
+        else:
+            text = slide.get("text", "")
+        wc = _word_count(text)
         if wc < 4:
             failures.append(f"Gate 3: Slide {n} is too short ({wc} words)")
         elif wc > 70:
@@ -93,7 +98,12 @@ def run_gates(
             pass  # DB not yet initialized; skip gate 4
 
     # Gate 5: filler phrases
-    all_text = " ".join(s.get("text", "") for s in slides)
+    def _slide_all_text(s: dict) -> str:
+        if s.get("layout") == "split":
+            return " ".join([s.get("left_label", ""), s.get("left_text", ""),
+                             s.get("right_label", ""), s.get("right_text", "")])
+        return s.get("text", "")
+    all_text = " ".join(_slide_all_text(s) for s in slides)
     if _has_filler(all_text):
         found = [f for f in _FILLER if f in all_text.lower()]
         failures.append(f"Gate 5: Filler phrases detected: {found}")

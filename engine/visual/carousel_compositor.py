@@ -229,6 +229,137 @@ def _slide_content(bg: Image.Image, text: str, slide_num: int, total: int,
     return img
 
 
+def _slide_split(bg: Image.Image, slide_data: dict, slide_num: int, total: int,
+                 pillar: dict, handle: str) -> Image.Image:
+    """Content slide, split-screen comparison layout (Free|Paid, Myth|Reality, etc.).
+
+    Expects slide_data with: left_label, left_text, right_label, right_text.
+    Left column uses white bg + dark text; right column uses accent bg + white text —
+    high-contrast side-by-side that reads as "vs" at a glance while thumb-scrolling.
+    """
+    palette = pillar["visual_palette"]
+    acc = _hex(palette["accent"])
+    dark = _hex(palette["primary"])
+    grad = _hex(palette["gradient_to"])
+
+    left_label = slide_data.get("left_label", "A").upper()
+    left_text = slide_data.get("left_text", "")
+    right_label = slide_data.get("right_label", "B").upper()
+    right_text = slide_data.get("right_text", "")
+
+    img = Image.new("RGB", (_W, _H), dark)
+    blurred = bg.filter(ImageFilter.GaussianBlur(22))
+    overlay = Image.new("RGBA", (_W, _H), (*dark, 210))
+    img = Image.alpha_composite(blurred.convert("RGBA"), overlay).convert("RGB")
+    draw = ImageDraw.Draw(img)
+
+    # ── HEADER: pillar name + slide counter ────────────────────────
+    draw.rectangle([(0, 0), (_W, _HEADER_H)], fill=acc)
+    label_font = _font(_DISPLAY, 36)
+    label = pillar["name"].upper()
+    lw = draw.textlength(label, font=label_font)
+    draw.text(((_W - lw) // 2, 42), label, font=label_font, fill=(255, 255, 255))
+
+    count_font = _font(_BODY, 28)
+    count_txt = f"{slide_num} / {total}"
+    ctw = draw.textlength(count_txt, font=count_font)
+    pill_x = _W - 80 - int(ctw) - 20
+    pill_y = _HEADER_H - 68
+    draw.rounded_rectangle([pill_x, pill_y, pill_x + int(ctw) + 20, pill_y + 48],
+                           radius=24, fill=(0, 0, 0, 90))
+    draw.text((pill_x + 10, pill_y + 10), count_txt, font=count_font, fill=(255, 255, 255))
+    draw.rectangle([(0, _HEADER_H), (_W, _HEADER_H + 4)], fill=(255, 255, 255, 40))
+
+    # ── SPLIT COLUMNS ──────────────────────────────────────────────
+    body_top = _HEADER_H + 4
+    body_bot = _H - _FOOTER_H
+    mid_x = _W // 2
+
+    # Left column — off-white bg, dark ink
+    draw.rectangle([(0, body_top), (mid_x - 3, body_bot)], fill=(245, 245, 245))
+    # Right column — accent bg
+    draw.rectangle([(mid_x + 3, body_top), (_W, body_bot)], fill=acc)
+    # Center divider
+    draw.rectangle([(mid_x - 3, body_top), (mid_x + 3, body_bot)], fill=dark)
+
+    # "VS" chip anchored on the divider
+    vs_font = _font(_DISPLAY, 40)
+    vs_txt = "VS"
+    vsw = draw.textlength(vs_txt, font=vs_font)
+    vs_r = 44
+    vs_cy = body_top + 90
+    draw.ellipse([mid_x - vs_r, vs_cy - vs_r, mid_x + vs_r, vs_cy + vs_r], fill=dark)
+    draw.text((mid_x - vsw // 2, vs_cy - 26), vs_txt, font=vs_font, fill=(255, 255, 255))
+
+    # Column labels — top of each column, sized to fit
+    col_w = mid_x - 3
+    col_pad = 44
+    inner_w = col_w - 2 * col_pad
+    label_size = 60
+    label_font_l = _font(_DISPLAY, label_size)
+    while draw.textlength(left_label, font=label_font_l) > inner_w and label_size > 30:
+        label_size -= 4
+        label_font_l = _font(_DISPLAY, label_size)
+    r_size = 60
+    label_font_r = _font(_DISPLAY, r_size)
+    while draw.textlength(right_label, font=label_font_r) > inner_w and r_size > 30:
+        r_size -= 4
+        label_font_r = _font(_DISPLAY, r_size)
+
+    # Text color on the accent (right) side is chosen by luminance —
+    # bright accents (yellow/lime) need dark ink, dark accents need white.
+    ar, ag, ab = acc
+    accent_lum = (0.299 * ar + 0.587 * ag + 0.114 * ab) / 255.0
+    right_ink = (20, 20, 25) if accent_lum > 0.6 else (255, 255, 255)
+    right_rule = (20, 20, 25, 220) if accent_lum > 0.6 else (255, 255, 255, 220)
+
+    label_y = vs_cy + vs_r + 40
+    lw_l = draw.textlength(left_label, font=label_font_l)
+    draw.text(((col_w - lw_l) // 2, label_y), left_label, font=label_font_l, fill=dark)
+    lw_r = draw.textlength(right_label, font=label_font_r)
+    draw.text((mid_x + 3 + (col_w - lw_r) // 2, label_y), right_label,
+              font=label_font_r, fill=right_ink)
+
+    # Divider under each label
+    ul_y = label_y + label_size + 20
+    draw.rectangle([(col_pad, ul_y), (col_w - col_pad, ul_y + 4)], fill=(*dark, 200))
+    draw.rectangle([(mid_x + 3 + col_pad, ul_y), (_W - col_pad, ul_y + 4)], fill=right_rule)
+
+    # Body text — same body font both sides, shrink-to-fit
+    def _fit_and_draw(text: str, x_start: int, color: tuple[int, int, int]) -> None:
+        text_w = inner_w
+        body_size = 42
+        body_font = _font(_BODY, body_size)
+        lines = _wrap(text, body_font, text_w, draw)
+        avail_h = body_bot - (ul_y + 40) - 30
+        while len(lines) * (body_size + 12) > avail_h and body_size > 24:
+            body_size -= 2
+            body_font = _font(_BODY, body_size)
+            lines = _wrap(text, body_font, text_w, draw)
+        y = ul_y + 40
+        for line in lines:
+            draw.text((x_start + col_pad, y), line, font=body_font, fill=color)
+            y += body_size + 12
+
+    _fit_and_draw(left_text, 0, (25, 25, 30))
+    _fit_and_draw(right_text, mid_x + 3, right_ink)
+
+    # ── FOOTER ─────────────────────────────────────────────────────
+    draw.rectangle([(0, _H - _FOOTER_H), (_W, _H)], fill=(*grad, 255))
+    handle_font = _font(_BODY, 26)
+    hw = draw.textlength(handle, font=handle_font)
+    draw.text(((_W - hw) // 2, _H - _FOOTER_H + 38), handle,
+              font=handle_font, fill=(200, 200, 200))
+    if slide_num < total - 1:
+        hint_font = _font(_BODY, 22)
+        hint = "swipe →"
+        hiw = draw.textlength(hint, font=hint_font)
+        draw.text((_W - 80 - int(hiw), _H - _FOOTER_H + 40), hint,
+                  font=hint_font, fill=(*acc, 180))
+
+    return img
+
+
 def _slide_cta(bg: Image.Image, text: str, pillar: dict, num: int, total: int,
                handle: str) -> Image.Image:
     """Slide 7: accent top block + dark body with CTA."""
@@ -296,6 +427,8 @@ def compose_slide(bg_path: Path, slide_data: dict, slide_num: int, total_slides:
         img = _slide_hook(bg, text, pillar, slide_num, total_slides, handle)
     elif slide_num == total_slides:
         img = _slide_cta(bg, text, pillar, slide_num, total_slides, handle)
+    elif slide_data.get("layout") == "split":
+        img = _slide_split(bg, slide_data, slide_num, total_slides, pillar, handle)
     else:
         img = _slide_content(bg, text, slide_num, total_slides, pillar, handle)
 

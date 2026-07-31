@@ -28,11 +28,34 @@ Return ONLY a valid JSON array. No markdown fences, no explanation.
 """
 
 
+_SPLIT_ELIGIBLE_PILLARS = {"ai_tools_workflows", "wealth_hustles"}
+
+
 def write_carousel(topic_data: dict, pillar: dict) -> list[dict]:
     """Return list of 7 slide dicts."""
+
+    split_block = ""
+    if pillar.get("id") in _SPLIT_ELIGIBLE_PILLARS:
+        split_block = """
+
+OPTIONAL SPLIT-SCREEN LAYOUT (only for slides 2-6, and ONLY if the point is a
+natural side-by-side comparison — Free vs Paid, Myth vs Reality, Old vs New,
+Wrong vs Right, Beginner vs Pro). Use it for AT MOST 2 of the 5 content slides.
+Do NOT force it; if the point isn't a comparison, use the normal single-text slide.
+
+When you use it, that slide's JSON object uses this shape instead:
+  {"slide": N, "layout": "split", "emoji": "...",
+   "left_label": "1-3 UPPERCASE words (e.g. FREE, MYTH, OLD WAY)",
+   "left_text":  "12-28 words — concrete, specific, one fact",
+   "right_label": "1-3 UPPERCASE words (e.g. PAID, REALITY, NEW WAY)",
+   "right_text": "12-28 words — concrete, specific, one fact"}
+Left and right must contrast on the SAME dimension. No "text" field on split slides.
+"""
+
     user = f"""Topic: {topic_data['topic']}
 Angle: {topic_data['angle']}
 Hook to use (or write a stronger version): {topic_data['hook']}
+Pillar: {pillar.get('id')}
 CTA style: {pillar.get('cta_style', 'save-reflect')}
 
 Write exactly 7 slides as a JSON array. STRICT word count rules — failure to follow = rejected:
@@ -41,7 +64,7 @@ Write exactly 7 slides as a JSON array. STRICT word count rules — failure to f
 - Slide 7 (CTA): EXACTLY 15-30 words. Save/share directive.
 
 NO markdown. Plain text only. No **bold**, no bullet points.
-
+{split_block}
 [
   {{"slide": 1, "text": "8 to 14 word hook statement here", "emoji": "⚡"}},
   {{"slide": 2, "text": "20 to 50 word content with specific fact or name or number here", "emoji": "..."}},
@@ -65,6 +88,8 @@ NO markdown. Plain text only. No **bold**, no bullet points.
     # Strip any markdown the model adds despite instructions
     import re
     for s in result:
-        s["text"] = re.sub(r'\*+', '', s.get("text", "")).strip()
+        for key in ("text", "left_label", "left_text", "right_label", "right_text"):
+            if key in s and isinstance(s[key], str):
+                s[key] = re.sub(r'\*+', '', s[key]).strip()
 
     return result
