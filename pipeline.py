@@ -100,18 +100,27 @@ def generate_post(
         bg_dir = _GENERATED / post_id
         bg_dir.mkdir(parents=True, exist_ok=True)
 
-        print("Generating background image...")
-        bg_path = bg_dir / "background.jpg"
-        if not dry_run:
-            generate_background(topic_data["dall_e_prompt"], pillar, bg_path)
-        else:
-            # placeholder for dry-run
-            from PIL import Image, ImageDraw
-            img = Image.new("RGB", (1080, 1080), color=(20, 20, 30))
-            img.save(bg_path)
+        # Resolve image prompts: prefer the new list, fall back to legacy single
+        raw_prompts = topic_data.get("image_prompts") or []
+        if not raw_prompts and topic_data.get("dall_e_prompt"):
+            raw_prompts = [topic_data["dall_e_prompt"]]
+        if not raw_prompts:
+            raw_prompts = [f"editorial illustration for a post about {topic_data['topic']}, "
+                           f"dark navy background, cyan and green accents, no text"]
+
+        print(f"Generating {len(raw_prompts)} background image(s)...")
+        bg_paths: list[Path] = []
+        for idx, prompt in enumerate(raw_prompts):
+            bg_path = bg_dir / f"background_{idx+1:02d}.jpg"
+            if not dry_run:
+                generate_background(prompt, pillar, bg_path)
+            else:
+                from PIL import Image
+                Image.new("RGB", (1080, 1080), color=(20, 20, 30)).save(bg_path)
+            bg_paths.append(bg_path)
 
         print("Composing slides...")
-        slide_paths = compose_carousel(bg_path, slides, pillar, bg_dir, post_id)
+        slide_paths = compose_carousel(bg_paths, slides, pillar, bg_dir, post_id)
         print(f"  {len(slide_paths)} slides -> {bg_dir}")
 
         # Repo-relative paths for GitHub raw URLs

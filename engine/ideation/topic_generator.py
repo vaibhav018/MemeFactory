@@ -95,8 +95,19 @@ Return ONE topic as JSON with exactly these keys:
   "topic": "specific subject in 3-6 words",
   "angle": "the counterintuitive entry point in 1 sentence",
   "hook": "slide 1 text — 8-14 words, bold statement, NO question mark",
-{trend_source_field}  "dall_e_prompt": "background image for DALL-E 3, no text, dramatic lighting, 1 sentence",
+{trend_source_field}  "image_prompts": [
+    "hero visual: what the topic literally shows (dark navy background, cyan and green accents, no text, editorial illustration)",
+    "supporting visual: a data / chart / metaphor angle on the same topic (dark navy, no text, editorial)",
+    "human context: a person / scene that grounds the topic emotionally (dark navy, cinematic, no text)"
+  ],
+  "dall_e_prompt": "legacy single-image fallback prompt — same as image_prompts[0]",
   "caption": "Instagram caption, 3-5 sentences expanding the hook's promise, ends with a question for comments, then 8-12 hashtags on a new line"
-}}"""
+}}
+
+Rules for image_prompts:
+- EXACTLY 3 prompts, distinct visual angles on the SAME topic (not the same image).
+- Every prompt must include: "dark navy background", "no text, no letters".
+- Never mention brand logos or trademarked characters (FLUX cannot render them).
+- Keep each prompt 15-40 words — too short trips the content filter."""
 
     return complete_json(_SYSTEM, user)

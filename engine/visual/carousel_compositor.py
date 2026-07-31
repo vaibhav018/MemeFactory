@@ -518,14 +518,28 @@ def compose_slide(bg_path: Path, slide_data: dict, slide_num: int, total_slides:
     return output_path
 
 
-def compose_carousel(bg_path: Path, slides: list[dict], pillar: dict,
+def compose_carousel(bg_paths, slides: list[dict], pillar: dict,
                      output_dir: Path, post_id: str,
                      handle: str = "@profit_prompts_") -> list[Path]:
+    """Compose a full carousel.
+
+    bg_paths may be a single Path (legacy) or a list of Paths. When a list is
+    given, slides rotate through them so the post has visual variety
+    (slide 1 -> bg_paths[0], slide 2 -> bg_paths[1 % N], etc.).
+    """
+    if isinstance(bg_paths, (str, Path)):
+        bg_paths = [Path(bg_paths)]
+    else:
+        bg_paths = [Path(p) for p in bg_paths]
+    if not bg_paths:
+        raise ValueError("compose_carousel needs at least one bg_path")
+
     output_dir.mkdir(parents=True, exist_ok=True)
     paths = []
     for i, slide in enumerate(slides, start=1):
+        chosen_bg = bg_paths[(i - 1) % len(bg_paths)]
         out = output_dir / f"{post_id}_slide_{i:02d}.jpg"
-        compose_slide(bg_path, slide, i, len(slides), pillar, out, handle)
+        compose_slide(chosen_bg, slide, i, len(slides), pillar, out, handle)
         paths.append(out)
-        print(f"    slide {i}/{len(slides)} ✓")
+        print(f"    slide {i}/{len(slides)} ✓ (bg: {chosen_bg.name})")
     return paths
