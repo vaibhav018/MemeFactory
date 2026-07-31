@@ -14,6 +14,7 @@ data/news_cache.json
 
 # Modern Mastery pipeline
 data/post_history.db
+data/trend_cache.json
 queue/pending/*.json
 queue/approved/*.json
 queue/posted/*.json

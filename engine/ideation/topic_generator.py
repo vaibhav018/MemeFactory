@@ -1,10 +1,17 @@
 """Generate a specific carousel topic + angle using a free LLM.
 
-Returns a dict with: topic, angle, hook, dall_e_prompt, caption
+Returns a dict with: topic, angle, hook, dall_e_prompt, caption.
+
+For pillars wired to trend sources (see engine.trends.fetch._PILLAR_SOURCES),
+the current top-N trending items are injected into the prompt so Claude can
+anchor the topic on something people are actually searching/reading TODAY
+rather than generating from imagination alone. Evergreen pillars get no
+trend injection -- their seeds are already good.
 """
 from __future__ import annotations
 
 from engine.llm_client import complete_json
+from engine.trends.fetch import get_pillar_candidates
 
 _SYSTEM = """\
 You are a world-class Instagram content strategist for a "Modern Mastery" education page.
@@ -21,10 +28,37 @@ Rules:
 """
 
 
+def _fetch_trend_candidates(pillar_id: str, limit: int = 8) -> list[dict]:
+    """Wrapped in try/except so a fetch outage never blocks ideation."""
+    try:
+        return get_pillar_candidates(pillar_id, limit=limit)
+    except Exception:
+        return []
+
+
 def generate_topic(pillar: dict, recent_topics: list[str]) -> dict:
     """Return a topic dict with keys: topic, angle, hook, dall_e_prompt, caption."""
     recent_str = "\n".join(f"  - {t}" for t in recent_topics[-10:]) or "  (none yet)"
     seeds_str = "\n".join(f"  - {s}" for s in pillar.get("topic_seeds", []))
+
+    trends = _fetch_trend_candidates(pillar["id"])
+    if trends:
+        trend_lines = "\n".join(
+            f"  - [{t['source']}] {t['title']}" for t in trends
+        )
+        trend_block = f"""
+
+TRENDING NOW (last 24-48h, mixed signal — some will fit the pillar, some won't):
+{trend_lines}
+
+If ONE of the trending items above is a natural fit for this pillar's audience
+(curious 18-35 year-olds who save/share educational carousels), anchor your
+topic on it — use language they'd recognize from the trend. Otherwise ignore
+trends entirely and pick a fresh angle from the topic seeds. Never force a
+politics/news/finance-ticker trend into an educational pillar; when in doubt,
+use the seeds."""
+    else:
+        trend_block = ""
 
     user = f"""Pillar: {pillar['name']} {pillar['emoji']}
 Description: {pillar['description']}
@@ -34,6 +68,7 @@ Topic seeds (use as direction only, do NOT repeat verbatim):
 
 Recently posted topics to AVOID:
 {recent_str}
+{trend_block}
 
 Return ONE topic as JSON with exactly these keys:
 {{
