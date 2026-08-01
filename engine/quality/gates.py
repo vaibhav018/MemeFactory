@@ -162,15 +162,27 @@ def run_gates(
     if bad_words:
         failures.append(f"Gate 9: banned jargon detected: {bad_words}")
     for s in slides:
-        text = _slide_all_text(s)
         n = s.get("slide", "?")
-        for sentence in _SENTENCE_RE.split(text):
-            wc = len(sentence.split())
-            if wc >= _SENTENCE_HARD_WORD_LIMIT:
-                failures.append(
-                    f"Gate 9: slide {n} sentence is {wc} words "
-                    f"(max {_SENTENCE_HARD_WORD_LIMIT - 1}): "
-                    f"'{sentence.strip()[:80]}...'")
-                break  # one report per slide is enough
+        # Split slides have two natural sentence buckets (left_text / right_text);
+        # concatenating them into one string turns a valid pair of short lines
+        # into a false 20+-word "sentence". Check each side separately.
+        if s.get("layout") == "split":
+            texts = [s.get("left_text", ""), s.get("right_text", "")]
+        else:
+            texts = [s.get("text", "")]
+        offending = None
+        for text in texts:
+            for sentence in _SENTENCE_RE.split(text):
+                wc = len(sentence.split())
+                if wc >= _SENTENCE_HARD_WORD_LIMIT:
+                    offending = (wc, sentence.strip())
+                    break
+            if offending:
+                break
+        if offending:
+            wc, sentence = offending
+            failures.append(
+                f"Gate 9: slide {n} sentence is {wc} words "
+                f"(max {_SENTENCE_HARD_WORD_LIMIT - 1}): '{sentence[:80]}...'")
 
     return (len(failures) == 0, failures)
