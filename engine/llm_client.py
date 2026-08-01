@@ -158,3 +158,42 @@ def complete_json(system: str, user: str) -> dict | list:
         if raw.startswith("json"):
             raw = raw[4:]
     return json.loads(raw.strip())
+
+
+# ── creative-writing lane ───────────────────────────────────────────────────
+# Slide copy has a different quality bar than topic-generation JSON. Llama
+# 3.3 70B is a solid "helpful assistant" but writes teacher-voice, not
+# insider-voice. Route slide copy through Qwen3-235B via OpenRouter when the
+# key is present (top-3 on Creative Writing v3 leaderboard). Fall back to the
+# configured provider so the pipeline never fails just because OpenRouter
+# isn't configured.
+
+_CREATIVE_MODEL = "qwen/qwen3-235b-a22b-2507:free"
+
+
+def _openrouter_available() -> bool:
+    return bool(os.getenv("OPENROUTER_API_KEY"))
+
+
+def complete_creative_json(system: str, user: str) -> dict | list:
+    """Same contract as complete_json but prefers a creative-writing model.
+
+    Currently: Qwen3-235B via OpenRouter (free tier, if OPENROUTER_API_KEY set).
+    Fallback: whichever provider complete_json() would have used.
+    """
+    if _openrouter_available():
+        try:
+            raw = _openrouter(system, user, _CREATIVE_MODEL, json_mode=True)
+            raw = raw.strip()
+            if raw.startswith("```"):
+                raw = raw.split("```")[1]
+                if raw.startswith("json"):
+                    raw = raw[4:]
+            return json.loads(raw.strip())
+        except Exception as e:
+            # Any hiccup (rate limit, JSON parse fail, network) → transparent
+            # fallback to the default provider. Never block a scheduled post
+            # over a creative-lane failure.
+            print(f"  [llm] OpenRouter/Qwen creative call failed "
+                  f"({type(e).__name__}: {e}); falling back to default provider")
+    return complete_json(system, user)
