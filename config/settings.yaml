@@ -25,10 +25,12 @@ carousel:
   slide_duration_reels: 3       # seconds per slide if exported as Reel
 
 schedule:
-  # Times in IST (UTC+5:30)
-  weekday_post_time: "19:30"    # 7:30 PM weekdays
-  weekend_post_time: "11:00"    # 11 AM weekends
-  posts_per_day: 2              # 1 carousel + 1 single
+  # Note: authoritative schedule lives in .github/workflows/profit_prompts.yml
+  # (this file is documentation only — GH Actions cron is what actually fires).
+  # Times in IST (UTC+5:30) — both slots fire every day.
+  morning_post_time: "11:00"    # 05:30 UTC daily
+  evening_post_time: "19:30"    # 14:00 UTC daily
+  posts_per_day: 2
 
 quality:
   min_hook_words: 6

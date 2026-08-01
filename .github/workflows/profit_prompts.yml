@@ -16,10 +16,11 @@ name: profit-prompts
 
 on:
   schedule:
-    # 7:30 PM IST weekdays = 14:00 UTC Mon-Fri
-    - cron: "0 14 * * 1-5"
-    # 11:00 AM IST weekends = 05:30 UTC Sat-Sun
-    - cron: "30 5 * * 0,6"
+    # Two posts/day, every day:
+    # 11:00 AM IST morning slot   = 05:30 UTC daily
+    - cron: "30 5 * * *"
+    # 7:30 PM IST evening slot    = 14:00 UTC daily
+    - cron: "0 14 * * *"
   workflow_dispatch:
     inputs:
       dry_run:
