@@ -235,8 +235,19 @@ def main() -> None:
     elif args.dry_run:
         print("\n[dry-run] Pipeline complete. No files written.")
         for s in post["slides"]:
-            if s.get("layout") == "split":
-                preview = f"[SPLIT] {s.get('left_label','?')}: {s.get('left_text','')[:35]} | {s.get('right_label','?')}: {s.get('right_text','')[:35]}"
+            layout = s.get("layout")
+            if layout == "split":
+                preview = (f"[SPLIT] {s.get('left_label','?')}: {s.get('left_text','')[:30]}"
+                           f" | {s.get('right_label','?')}: {s.get('right_text','')[:30]}")
+            elif layout == "step":
+                preview = f"[STEP {s.get('step_num','?')}] {s.get('title','')}: {s.get('body','')[:50]}"
+            elif layout == "big_stat":
+                preview = f"[BIG_STAT] {s.get('stat','?')} {s.get('unit','')} — {s.get('caption','')[:40]}"
+            elif layout == "numbered":
+                items = s.get("items", [])
+                preview = f"[NUMBERED {len(items)}] " + " / ".join(f"{it.get('num','')} {it.get('title','')}" for it in items[:3])
+                if len(items) > 3:
+                    preview += " ..."
             else:
                 preview = s.get("text", "")[:80]
             print(f"  Slide {s['slide']}: {preview}")

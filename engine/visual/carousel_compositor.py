@@ -446,6 +446,254 @@ def _slide_split(bg: Image.Image, slide_data: dict, slide_num: int, total: int,
     return img
 
 
+def _slide_step_card(bg: Image.Image, slide_data: dict, slide_num: int, total: int,
+                     pillar: dict, handle: str) -> Image.Image:
+    """How-to slide: big STEP N label + action title + body paragraph.
+
+    Expects slide_data with: step_num, title, body.
+    Ignores bg — dark solid background keeps the step clean.
+    """
+    palette = pillar["visual_palette"]
+    acc = _hex(palette["accent"])
+    dark = _hex(palette["primary"])
+    grad = _hex(palette["gradient_to"])
+
+    step_num = str(slide_data.get("step_num", slide_num - 1))
+    title = slide_data.get("title", "")
+    body = slide_data.get("body", "")
+
+    img = Image.new("RGB", (_W, _H), dark)
+    draw = ImageDraw.Draw(img)
+
+    header_h = 120
+    footer_h = 130
+    margin = 80
+
+    # Header — solid accent band with pillar name
+    draw.rectangle([(0, 0), (_W, header_h)], fill=acc)
+    label_font = _font(_DISPLAY, 36)
+    label = pillar["name"].upper()
+    lw = draw.textlength(label, font=label_font)
+    draw.text(((_W - lw) // 2, (header_h - 40) // 2), label, font=label_font,
+              fill=(255, 255, 255))
+    draw.rectangle([(0, header_h), (_W, header_h + 4)], fill=(255, 255, 255, 40))
+
+    # STEP N — huge accent label
+    step_label_font = _font(_DISPLAY, 90)
+    step_txt = f"STEP {step_num}"
+    stw = draw.textlength(step_txt, font=step_label_font)
+    step_y = header_h + 90
+    draw.text(((_W - stw) // 2, step_y), step_txt, font=step_label_font, fill=acc)
+
+    # Accent underline
+    ul_y = step_y + 108
+    ul_w = int(_W * 0.28)
+    draw.rectangle([((_W - ul_w) // 2, ul_y), ((_W + ul_w) // 2, ul_y + 6)], fill=acc)
+
+    # Title — bold, white
+    title_font = _font(_DISPLAY, 66)
+    title_lines = _wrap(title, title_font, _W - 2 * margin, draw)
+    y = ul_y + 60
+    for line in title_lines:
+        lw2 = draw.textlength(line, font=title_font)
+        draw.text(((_W - lw2) // 2, y), line, font=title_font, fill=(255, 255, 255))
+        y += 78
+
+    # Body — grade-6 paragraph
+    body_font = _font(_BODY, 42)
+    body_lines = _wrap(body, body_font, _W - 2 * margin, draw)
+    y += 40
+    _draw_centered_highlighted(draw, body_lines, body_font, _W, y,
+                               text_color=(230, 230, 230), accent_color=acc, gap=14)
+
+    # Left accent bar + footer
+    draw.rectangle([(0, header_h), (7, _H - footer_h)], fill=acc)
+    draw.rectangle([(0, _H - footer_h), (_W, _H)], fill=(*grad, 255))
+    handle_font = _font(_BODY, 26)
+    hw = draw.textlength(handle, font=handle_font)
+    draw.text(((_W - hw) // 2, _H - footer_h + 38), handle,
+              font=handle_font, fill=(200, 200, 200))
+    if slide_num < total - 1:
+        hint_font = _font(_BODY, 22)
+        hint = "swipe →"
+        hiw = draw.textlength(hint, font=hint_font)
+        draw.text((_W - margin - int(hiw), _H - footer_h + 40),
+                  hint, font=hint_font, fill=(*acc, 180))
+    return img
+
+
+def _slide_big_stat(bg: Image.Image, slide_data: dict, slide_num: int, total: int,
+                    pillar: dict, handle: str) -> Image.Image:
+    """PROOF slide: one massive accent number + optional unit + small caption.
+
+    Expects slide_data with: stat (required), unit (optional), caption (optional).
+    """
+    palette = pillar["visual_palette"]
+    acc = _hex(palette["accent"])
+    dark = _hex(palette["primary"])
+    grad = _hex(palette["gradient_to"])
+
+    stat = slide_data.get("stat", "")
+    unit = slide_data.get("unit", "")
+    caption = slide_data.get("caption", "")
+
+    img = Image.new("RGB", (_W, _H), dark)
+    draw = ImageDraw.Draw(img)
+
+    header_h = 120
+    footer_h = 130
+    margin = 80
+
+    # Header
+    draw.rectangle([(0, 0), (_W, header_h)], fill=acc)
+    label_font = _font(_DISPLAY, 36)
+    label = pillar["name"].upper()
+    lw = draw.textlength(label, font=label_font)
+    draw.text(((_W - lw) // 2, (header_h - 40) // 2), label, font=label_font,
+              fill=(255, 255, 255))
+    draw.rectangle([(0, header_h), (_W, header_h + 4)], fill=(255, 255, 255, 40))
+
+    # Massive stat — shrink-to-fit
+    stat_size = 340
+    stat_font = _font(_DISPLAY, stat_size)
+    while draw.textlength(stat, font=stat_font) > _W - 2 * margin and stat_size > 120:
+        stat_size -= 20
+        stat_font = _font(_DISPLAY, stat_size)
+    stat_w = draw.textlength(stat, font=stat_font)
+    stat_y = header_h + 140
+    draw.text(((_W - stat_w) // 2, stat_y), stat, font=stat_font, fill=acc)
+
+    # Real rendered height (font-size ≠ ascent+descent for big display fonts)
+    stat_bbox = draw.textbbox((0, stat_y), stat, font=stat_font)
+    stat_bottom = stat_bbox[3]
+
+    # Unit — small, safely below the actual rendered stat
+    unit_y = stat_bottom + 24
+    if unit:
+        unit_font = _font(_DISPLAY, 54)
+        uw = draw.textlength(unit, font=unit_font)
+        draw.text(((_W - uw) // 2, unit_y), unit, font=unit_font, fill=(230, 230, 230))
+        unit_y += 74
+
+    # Divider below the whole stat+unit block
+    div_w = int(_W * 0.28)
+    draw.rectangle([((_W - div_w) // 2, unit_y + 20),
+                    ((_W + div_w) // 2, unit_y + 26)], fill=acc)
+
+    # Caption — insider voice one-liner
+    if caption:
+        cap_font = _font(_BODY, 40)
+        cap_lines = _wrap(caption, cap_font, _W - 2 * margin, draw)
+        y = unit_y + 90
+        for line in cap_lines:
+            lw2 = draw.textlength(line, font=cap_font)
+            draw.text(((_W - lw2) // 2, y), line, font=cap_font, fill=(210, 210, 210))
+            y += 54
+
+    # Left accent bar + footer
+    draw.rectangle([(0, header_h), (7, _H - footer_h)], fill=acc)
+    draw.rectangle([(0, _H - footer_h), (_W, _H)], fill=(*grad, 255))
+    handle_font = _font(_BODY, 26)
+    hw = draw.textlength(handle, font=handle_font)
+    draw.text(((_W - hw) // 2, _H - footer_h + 38), handle,
+              font=handle_font, fill=(200, 200, 200))
+    if slide_num < total - 1:
+        hint_font = _font(_BODY, 22)
+        hint = "swipe →"
+        hiw = draw.textlength(hint, font=hint_font)
+        draw.text((_W - margin - int(hiw), _H - footer_h + 40),
+                  hint, font=hint_font, fill=(*acc, 180))
+    return img
+
+
+def _slide_numbered_list(bg: Image.Image, slide_data: dict, slide_num: int, total: int,
+                         pillar: dict, handle: str) -> Image.Image:
+    """Listicle slide: 3-5 numbered rows of tool/tip + one-line description.
+
+    Expects slide_data with: items = [{"num": "01", "title": "Perplexity",
+    "desc": "Best for research"}, ...]. items count clamped to 5.
+    """
+    palette = pillar["visual_palette"]
+    acc = _hex(palette["accent"])
+    dark = _hex(palette["primary"])
+    grad = _hex(palette["gradient_to"])
+
+    items = (slide_data.get("items") or [])[:5]
+    if not items:
+        # Degrade gracefully to a plain content slide if the writer forgot items
+        return _slide_content(bg, slide_data.get("text", ""), slide_num, total, pillar, handle)
+
+    img = Image.new("RGB", (_W, _H), dark)
+    draw = ImageDraw.Draw(img)
+
+    header_h = 120
+    footer_h = 130
+    margin = 80
+    inner_w = _W - 2 * margin
+
+    # Header
+    draw.rectangle([(0, 0), (_W, header_h)], fill=acc)
+    label_font = _font(_DISPLAY, 36)
+    label = pillar["name"].upper()
+    lw = draw.textlength(label, font=label_font)
+    draw.text(((_W - lw) // 2, (header_h - 40) // 2), label, font=label_font,
+              fill=(255, 255, 255))
+    draw.rectangle([(0, header_h), (_W, header_h + 4)], fill=(255, 255, 255, 40))
+
+    # Rows evenly-spaced in the body zone
+    body_top = header_h + 60
+    body_bot = _H - footer_h - 40
+    row_h = (body_bot - body_top) // len(items)
+
+    num_font = _font(_DISPLAY, 64)
+    title_font = _font(_DISPLAY, 52)
+    desc_font = _font(_BODY, 34)
+
+    for i, item in enumerate(items):
+        num_str = str(item.get("num", f"{i+1:02d}"))
+        title = str(item.get("title", ""))
+        desc = str(item.get("desc", ""))
+
+        row_top = body_top + i * row_h
+        num_x = margin
+        # Number in accent
+        draw.text((num_x, row_top + 8), num_str, font=num_font, fill=acc)
+        num_w = draw.textlength(num_str, font=num_font)
+        text_x = num_x + int(num_w) + 32
+
+        # Title bold-white
+        draw.text((text_x, row_top + 12), title, font=title_font, fill=(255, 255, 255))
+
+        # Description muted
+        if desc:
+            desc_lines = _wrap(desc, desc_font, inner_w - int(num_w) - 32, draw)
+            desc_y = row_top + 12 + 60
+            for line in desc_lines[:2]:  # cap at 2 lines to fit
+                draw.text((text_x, desc_y), line, font=desc_font, fill=(200, 200, 200))
+                desc_y += 40
+
+        # Row divider (not on last row)
+        if i < len(items) - 1:
+            div_y = row_top + row_h - 4
+            draw.rectangle([(margin, div_y), (_W - margin, div_y + 2)],
+                           fill=(255, 255, 255, 30))
+
+    # Left accent bar + footer
+    draw.rectangle([(0, header_h), (7, _H - footer_h)], fill=acc)
+    draw.rectangle([(0, _H - footer_h), (_W, _H)], fill=(*grad, 255))
+    handle_font = _font(_BODY, 26)
+    hw = draw.textlength(handle, font=handle_font)
+    draw.text(((_W - hw) // 2, _H - footer_h + 38), handle,
+              font=handle_font, fill=(200, 200, 200))
+    if slide_num < total - 1:
+        hint_font = _font(_BODY, 22)
+        hint = "swipe →"
+        hiw = draw.textlength(hint, font=hint_font)
+        draw.text((_W - margin - int(hiw), _H - footer_h + 40),
+                  hint, font=hint_font, fill=(*acc, 180))
+    return img
+
+
 def _slide_cta(bg: Image.Image, text: str, pillar: dict, num: int, total: int,
                handle: str) -> Image.Image:
     """Slide 7: accent top block + dark body with CTA."""
@@ -502,12 +750,19 @@ def compose_slide(bg_path: Path, slide_data: dict, slide_num: int, total_slides:
     bg = _bg(bg_path)
     text = slide_data.get("text", "")
 
+    layout = slide_data.get("layout")
     if slide_num == 1:
         img = _slide_hook(bg, text, pillar, slide_num, total_slides, handle)
     elif slide_num == total_slides:
         img = _slide_cta(bg, text, pillar, slide_num, total_slides, handle)
-    elif slide_data.get("layout") == "split":
+    elif layout == "split":
         img = _slide_split(bg, slide_data, slide_num, total_slides, pillar, handle)
+    elif layout == "step":
+        img = _slide_step_card(bg, slide_data, slide_num, total_slides, pillar, handle)
+    elif layout == "big_stat":
+        img = _slide_big_stat(bg, slide_data, slide_num, total_slides, pillar, handle)
+    elif layout == "numbered":
+        img = _slide_numbered_list(bg, slide_data, slide_num, total_slides, pillar, handle)
     else:
         img = _slide_content(bg, text, slide_num, total_slides, pillar, handle)
 

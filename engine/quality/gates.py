@@ -99,13 +99,37 @@ def run_gates(
         if hook_text.strip().endswith("?"):
             failures.append(f"Gate 6: Hook ends with '?' — must be a statement: '{hook_text}'")
 
-    # Gate 3: content slides must not be empty, and must not be walls of text
+    # Gate 3: content slides must not be empty, and must not be walls of text.
+    # Each layout defines what "empty" and "wall of text" mean for its schema.
     for slide in slides[1:6]:
         n = slide.get("slide", "?")
-        if slide.get("layout") == "split":
+        layout = slide.get("layout")
+        if layout == "split":
             text = (slide.get("left_text", "") + " " + slide.get("right_text", "")).strip()
             if not slide.get("left_label") or not slide.get("right_label"):
                 failures.append(f"Gate 3: Slide {n} split-layout missing left_label/right_label")
+        elif layout == "step":
+            if not slide.get("title") or not slide.get("body"):
+                failures.append(f"Gate 3: Slide {n} step-layout missing title/body")
+            text = f"{slide.get('title','')} {slide.get('body','')}"
+        elif layout == "big_stat":
+            if not slide.get("stat"):
+                failures.append(f"Gate 3: Slide {n} big_stat-layout missing stat")
+            # big_stat is intentionally sparse — one huge number + tiny caption
+            text = f"{slide.get('stat','')} {slide.get('unit','')} {slide.get('caption','')}"
+            # skip the min/max word check for big_stat
+            continue
+        elif layout == "numbered":
+            items = slide.get("items") or []
+            if not (3 <= len(items) <= 5):
+                failures.append(f"Gate 3: Slide {n} numbered-layout needs 3-5 items, got {len(items)}")
+            for i, it in enumerate(items, 1):
+                if not (it.get("title") and it.get("desc")):
+                    failures.append(f"Gate 3: Slide {n} numbered item {i} missing title/desc")
+                    break
+            # concatenate for filler / jargon downstream but skip length check
+            text = " ".join(f"{it.get('title','')} {it.get('desc','')}" for it in items)
+            continue
         else:
             text = slide.get("text", "")
         wc = _word_count(text)
@@ -128,9 +152,17 @@ def run_gates(
 
     # Gate 5: filler phrases
     def _slide_all_text(s: dict) -> str:
-        if s.get("layout") == "split":
+        layout = s.get("layout")
+        if layout == "split":
             return " ".join([s.get("left_label", ""), s.get("left_text", ""),
                              s.get("right_label", ""), s.get("right_text", "")])
+        if layout == "step":
+            return f"{s.get('title','')} {s.get('body','')}"
+        if layout == "big_stat":
+            return f"{s.get('stat','')} {s.get('unit','')} {s.get('caption','')}"
+        if layout == "numbered":
+            items = s.get("items") or []
+            return " ".join(f"{it.get('title','')} {it.get('desc','')}" for it in items)
         return s.get("text", "")
     all_text = " ".join(_slide_all_text(s) for s in slides)
     if _has_filler(all_text):
@@ -163,11 +195,16 @@ def run_gates(
         failures.append(f"Gate 9: banned jargon detected: {bad_words}")
     for s in slides:
         n = s.get("slide", "?")
-        # Split slides have two natural sentence buckets (left_text / right_text);
-        # concatenating them into one string turns a valid pair of short lines
-        # into a false 20+-word "sentence". Check each side separately.
-        if s.get("layout") == "split":
+        layout = s.get("layout")
+        # Each layout has its own natural sentence boundaries. Big_stat and
+        # numbered are intentionally fragment-style — skip the length gate
+        # for them. Split checks each side. Step checks title + body.
+        if layout == "big_stat" or layout == "numbered":
+            continue
+        elif layout == "split":
             texts = [s.get("left_text", ""), s.get("right_text", "")]
+        elif layout == "step":
+            texts = [s.get("title", ""), s.get("body", "")]
         else:
             texts = [s.get("text", "")]
         offending = None

@@ -123,18 +123,52 @@ def write_carousel(topic_data: dict, pillar: dict) -> list[dict]:
     if pillar.get("id") in _SPLIT_ELIGIBLE_PILLARS:
         split_block = """
 
-OPTIONAL SPLIT-SCREEN LAYOUT (only for slides 2-6, and ONLY if the point is a
-natural side-by-side comparison — Free vs Paid, Myth vs Reality, Old vs New,
-Wrong vs Right, Beginner vs Pro). Use it for AT MOST 2 of the 5 content slides.
-Do NOT force it; if the point isn't a comparison, use the normal single-text slide.
+OPTIONAL LAYOUTS for slides 2-6 (pick per slide based on what the content
+NATURALLY is — never force). At most 3 of the 5 inside slides may use a
+special layout; the rest stay plain text.
 
-When you use it, that slide's JSON object uses this shape instead:
+──────────────────────────────────────────────────────────────
+LAYOUT: split — for comparisons (Free vs Paid, Myth vs Reality,
+Old vs New, Wrong vs Right, Beginner vs Pro).
   {"slide": N, "layout": "split", "emoji": "...",
-   "left_label": "1-3 UPPERCASE words (e.g. FREE, MYTH, OLD WAY)",
+   "left_label": "1-3 UPPERCASE words",
    "left_text":  "12-28 words — concrete, specific, one fact",
-   "right_label": "1-3 UPPERCASE words (e.g. PAID, REALITY, NEW WAY)",
-   "right_text": "12-28 words — concrete, specific, one fact"}
-Left and right must contrast on the SAME dimension. No "text" field on split slides.
+   "right_label": "1-3 UPPERCASE words",
+   "right_text": "12-28 words"}
+Left and right must contrast on the SAME dimension.
+
+──────────────────────────────────────────────────────────────
+LAYOUT: step — for how-to slides (Step 1, Step 2, ...). Use for slides
+that are ONE clear action the reader takes next.
+  {"slide": N, "layout": "step", "emoji": "...",
+   "step_num": "2",
+   "title": "Install Pinokio",                    (3-6 words, no period)
+   "body":  "Pinokio is a one-click AI installer. Handles the complicated stuff. Go to pinokio.computer."  (20-40 words)}
+
+──────────────────────────────────────────────────────────────
+LAYOUT: big_stat — for the PROOF slide (usually slide 4). ONE eye-catching
+number that would stop a thumb mid-scroll.
+  {"slide": N, "layout": "big_stat", "emoji": "...",
+   "stat":    "$500",              (1-6 chars — the huge number itself)
+   "unit":    "/ month",           (optional, 1-4 words — "/ month", "/day", "hours saved")
+   "caption": "what people are quietly making with this stack"  (6-14 words, insider voice)}
+
+──────────────────────────────────────────────────────────────
+LAYOUT: numbered — for listicle slides ("5 tools", "3 tricks"). Delivers the
+full list on ONE slide so hook promises like "5 tools" pay off immediately.
+  {"slide": N, "layout": "numbered", "emoji": "...",
+   "items": [
+     {"num": "01", "title": "Perplexity",   "desc": "Best for research. Free 500/day."},
+     {"num": "02", "title": "Claude Haiku", "desc": "Fastest AI. 200K free context."},
+     {"num": "03", "title": "Cursor",       "desc": "AI code editor. $20/mo pro."},
+     {"num": "04", "title": "Pinokio",      "desc": "One-click AI installer."},
+     {"num": "05", "title": "Fal.ai",       "desc": "Fast image models. $10 free."}
+   ]}
+3-5 items only. Each title ≤3 words. Each desc ≤10 words.
+
+──────────────────────────────────────────────────────────────
+DEFAULT (if none of the above naturally fit):
+  {"slide": N, "text": "20-50 word insider paragraph", "emoji": "..."}
 """
 
     user = f"""Topic: {topic_data['topic']}
@@ -180,9 +214,18 @@ NO markdown. NO bullet points. Plain text only.
 
     # Strip any markdown the model adds despite instructions
     import re
+    _FLAT_STR_KEYS = ("text", "left_label", "left_text", "right_label",
+                      "right_text", "title", "body", "stat", "unit", "caption")
     for s in result:
-        for key in ("text", "left_label", "left_text", "right_label", "right_text"):
+        for key in _FLAT_STR_KEYS:
             if key in s and isinstance(s[key], str):
                 s[key] = re.sub(r'\*+', '', s[key]).strip()
+        # numbered layout: strip markdown from each item's title/desc too
+        if isinstance(s.get("items"), list):
+            for item in s["items"]:
+                if isinstance(item, dict):
+                    for k in ("title", "desc", "num"):
+                        if k in item and isinstance(item[k], str):
+                            item[k] = re.sub(r'\*+', '', item[k]).strip()
 
     return result
