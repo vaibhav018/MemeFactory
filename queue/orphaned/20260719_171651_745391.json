@@ -1,0 +1,57 @@
+{
+  "id": "20260719_171651_745391",
+  "pillar_id": "mind_psychology",
+  "pillar_name": "Mind & Psychology",
+  "topic": "Memory Reconstruction",
+  "angle": "Our brains don't replay memories, they reconstruct them, often inaccurately, due to the influence of emotions and external suggestions",
+  "hook": "Memories are not what they seem",
+  "caption": "Have you ever recalled a childhood memory, only to find out it was false? Our brains have a remarkable ability to create and recreate memories, but this process can be flawed. This reconstruction can be influenced by our emotions, suggestions from others, and even our own biases. What's the most significant memory you're not sure is entirely true? \n   #MemoryDistortion #FalseMemories #PsychologyOfMemory #Neuroplasticity #BrainFunction #MindBlown #MemoryKeepers #CognitiveBiases",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "Memories are not what they seem",
+      "emoji": "⚡"
+    },
+    {
+      "slide": 2,
+      "text": "Elizabeth Loftus found 25% of memories are false",
+      "emoji": "🔍"
+    },
+    {
+      "slide": 3,
+      "text": "Emotions alter memories, 70% of which are distorted",
+      "emoji": "💔"
+    },
+    {
+      "slide": 4,
+      "text": "Suggestions from others change 40% of our memories",
+      "emoji": "👥"
+    },
+    {
+      "slide": 5,
+      "text": "Brain scans show memory reconstruction, not replay",
+      "emoji": "🧠"
+    },
+    {
+      "slide": 6,
+      "text": "90% of people have memories from before age 3, which is unlikely",
+      "emoji": "👶"
+    },
+    {
+      "slide": 7,
+      "text": "Save this to test your own memory accuracy later",
+      "emoji": "📝"
+    }
+  ],
+  "slide_repo_paths": [
+    "Generated_Memes/20260719_171651_745391/20260719_171651_745391_slide_01.jpg",
+    "Generated_Memes/20260719_171651_745391/20260719_171651_745391_slide_02.jpg",
+    "Generated_Memes/20260719_171651_745391/20260719_171651_745391_slide_03.jpg",
+    "Generated_Memes/20260719_171651_745391/20260719_171651_745391_slide_04.jpg",
+    "Generated_Memes/20260719_171651_745391/20260719_171651_745391_slide_05.jpg",
+    "Generated_Memes/20260719_171651_745391/20260719_171651_745391_slide_06.jpg",
+    "Generated_Memes/20260719_171651_745391/20260719_171651_745391_slide_07.jpg"
+  ],
+  "dall_e_prompt": "A person standing in a foggy, dimly lit room with fragmented mirrors reflecting distorted images of the past",
+  "created_at": "2026-07-19T17:16:51.932055+00:00"
+}

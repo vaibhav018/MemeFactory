@@ -1,0 +1,57 @@
+{
+  "id": "20260720_083003_795e26",
+  "pillar_id": "technology_future",
+  "pillar_name": "Technology & Future",
+  "topic": "AI Learning Secrets",
+  "angle": "AI learning is surprisingly simple, yet often misunderstood, because it relies on human-like intuition",
+  "hook": "Machines Learn Like Humans Forget",
+  "caption": "What if machines could learn from their mistakes like we do? AI is getting closer to replicating human intuition, but at what cost? As AI systems improve, they're becoming increasingly reliant on human-like patterns of thought, but can we trust them to make decisions for us? What's the most significant risk or benefit you see in AI development? \n   #AIethics #MachineLearning #FutureOfWork #TechForGood #InnovationNation #ArtificialIntelligence #HumanComputerInteraction #FutureOfTech",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "Machines Learn Like Humans Forget",
+      "emoji": "⚡"
+    },
+    {
+      "slide": 2,
+      "text": "AI pioneer Andrew Ng says learning is 80% human intuition",
+      "emoji": "🤖"
+    },
+    {
+      "slide": 3,
+      "text": "Google's AlphaGo beats humans with 4 simple algorithms and practice",
+      "emoji": "📊"
+    },
+    {
+      "slide": 4,
+      "text": "IBM Watson learns from 2.5 million medical cases and 100k doctors",
+      "emoji": "💊"
+    },
+    {
+      "slide": 5,
+      "text": "AI systems like Alexa and Siri use 10,000 hours of human voice data",
+      "emoji": "🗣️"
+    },
+    {
+      "slide": 6,
+      "text": "Stanford University AI Lab creates AI that learns like a 4-year-old child",
+      "emoji": "📚"
+    },
+    {
+      "slide": 7,
+      "text": "Share this with someone who thinks AI is too complex to understand",
+      "emoji": "📌"
+    }
+  ],
+  "slide_repo_paths": [
+    "Generated_Memes/20260720_083003_795e26/20260720_083003_795e26_slide_01.jpg",
+    "Generated_Memes/20260720_083003_795e26/20260720_083003_795e26_slide_02.jpg",
+    "Generated_Memes/20260720_083003_795e26/20260720_083003_795e26_slide_03.jpg",
+    "Generated_Memes/20260720_083003_795e26/20260720_083003_795e26_slide_04.jpg",
+    "Generated_Memes/20260720_083003_795e26/20260720_083003_795e26_slide_05.jpg",
+    "Generated_Memes/20260720_083003_795e26/20260720_083003_795e26_slide_06.jpg",
+    "Generated_Memes/20260720_083003_795e26/20260720_083003_795e26_slide_07.jpg"
+  ],
+  "dall_e_prompt": "A futuristic cityscape at dusk with robots and humans interacting in the foreground, dramatic lighting, neon colors",
+  "created_at": "2026-07-20T08:30:07.672270+00:00"
+}

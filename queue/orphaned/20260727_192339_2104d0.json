@@ -1,0 +1,57 @@
+{
+  "id": "20260727_192339_2104d0",
+  "pillar_id": "science_nature",
+  "pillar_name": "Science & Nature",
+  "topic": "Trees Communicate Underground",
+  "angle": "Trees are connected in a secret network that defies individuality",
+  "hook": "Trees Warn Each Other Of Danger",
+  "caption": "Did you know that trees can communicate with each other through an underground network of fungi? This network allows them to share nutrients and warning signals, effectively creating a forest-wide internet. But how does this network impact the way we think about individuality in nature? What do you think is the most surprising implication of this discovery? \n   #TreeCommunication #ForestEcology #FungiNetwork #NatureSecrets #WildlifeConnected #EcologicalBalance #TreeLove #UndergroundIntelligence",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "Trees Warn Each Other Of Danger",
+      "emoji": "⚡"
+    },
+    {
+      "slide": 2,
+      "text": "Mycoremediation expert Paul Stamets found 800 species of fungi",
+      "emoji": "🌳"
+    },
+    {
+      "slide": 3,
+      "text": "Fungi help 90% of plant species communicate and share resources",
+      "emoji": "🧬"
+    },
+    {
+      "slide": 4,
+      "text": "Suzanne Simard discovered mother trees nurture younger ones through networks",
+      "emoji": "🌲"
+    },
+    {
+      "slide": 5,
+      "text": "Trees transfer 20% of their carbon to neighboring trees",
+      "emoji": "📊"
+    },
+    {
+      "slide": 6,
+      "text": "Forest floors have 37 miles of fungal hyphae per acre",
+      "emoji": "🌿"
+    },
+    {
+      "slide": 7,
+      "text": "Share this with someone who loves nature and wants to learn more",
+      "emoji": "📌"
+    }
+  ],
+  "slide_repo_paths": [
+    "Generated_Memes/20260727_192339_2104d0/20260727_192339_2104d0_slide_01.jpg",
+    "Generated_Memes/20260727_192339_2104d0/20260727_192339_2104d0_slide_02.jpg",
+    "Generated_Memes/20260727_192339_2104d0/20260727_192339_2104d0_slide_03.jpg",
+    "Generated_Memes/20260727_192339_2104d0/20260727_192339_2104d0_slide_04.jpg",
+    "Generated_Memes/20260727_192339_2104d0/20260727_192339_2104d0_slide_05.jpg",
+    "Generated_Memes/20260727_192339_2104d0/20260727_192339_2104d0_slide_06.jpg",
+    "Generated_Memes/20260727_192339_2104d0/20260727_192339_2104d0_slide_07.jpg"
+  ],
+  "dall_e_prompt": "A dramatic underground network of glowing tree roots in a dark forest",
+  "created_at": "2026-07-27T19:23:45.097157+00:00"
+}
