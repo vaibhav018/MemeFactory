@@ -179,20 +179,21 @@ def publish_approved_post(post: dict, dry_run: bool = False) -> str:
 
 def _publish_post(conn, post: dict) -> None:
     media_id = publish_approved_post(post)
-    # Move the pending JSON to posted/ IMMEDIATELY after IG succeeds — before
-    # any bookkeeping that might throw. Otherwise a schema mismatch in
-    # record_post or a shell timeout leaves an orphaned pending file even
-    # though the post is already live on Instagram.
+    # Move pending -> posted IMMEDIATELY after IG succeeds, using os.rename
+    # (atomic, no buffering) and flushing stdout so a SIGTERM from an outer
+    # shell timeout can't strand an orphan. Bookkeeping happens AFTER the
+    # move so a SQLite hiccup can't rewind reality.
     pending = _QUEUE_PENDING / f"{post['id']}.json"
     posted_dir = _BASE / "queue" / "posted"
     posted_dir.mkdir(parents=True, exist_ok=True)
     posted = posted_dir / f"{post['id']}.json"
     if pending.exists():
         try:
-            shutil.move(str(pending), str(posted))
+            os.replace(str(pending), str(posted))  # atomic on POSIX
         except Exception as e:
-            print(f"  [WARN] failed to move pending -> posted: {type(e).__name__}: {e}")
-    print(f"\nPublished: {media_id}")
+            print(f"  [WARN] failed to move pending -> posted: {type(e).__name__}: {e}",
+                  flush=True)
+    print(f"\nPublished: {media_id}", flush=True)
     try:
         record_post(conn, post_id=post["id"], topic=post["topic"], pillar_id=post["pillar_id"],
                     hook=post["hook"], caption=post["caption"],
@@ -200,7 +201,7 @@ def _publish_post(conn, post: dict) -> None:
         update_pillar_weights(conn)
     except Exception as e:
         print(f"  [WARN] analytics bookkeeping failed (post already published): "
-              f"{type(e).__name__}: {e}")
+              f"{type(e).__name__}: {e}", flush=True)
 
 
 def main() -> None:
