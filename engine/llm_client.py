@@ -54,6 +54,14 @@ def _pick_provider(cfg: dict) -> str:
 
 
 def _groq(system: str, user: str, model: str, json_mode: bool) -> str:
+    """Groq call with exponential backoff on 429s.
+
+    Free tier hits daily/minute limits when many runs cluster (e.g. manual
+    testing). Waits 5s, 15s, 45s across 3 retries — enough to absorb a normal
+    minute-limit reset without blocking cron indefinitely. Non-429 errors
+    still raise immediately.
+    """
+    import time
     key = os.getenv("GROQ_API_KEY")
     if not key:
         sys.exit("GROQ_API_KEY not set")
@@ -68,13 +76,21 @@ def _groq(system: str, user: str, model: str, json_mode: bool) -> str:
     }
     if json_mode:
         payload["response_format"] = {"type": "json_object"}
-    resp = requests.post(
-        "https://api.groq.com/openai/v1/chat/completions",
-        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-        json=payload,
-        timeout=_TIMEOUT,
-    )
-    resp.raise_for_status()
+    backoffs = [5, 15, 45]
+    for attempt, wait in enumerate([0] + backoffs):
+        if wait:
+            print(f"  [llm] Groq 429 — waiting {wait}s before retry {attempt}/{len(backoffs)}")
+            time.sleep(wait)
+        resp = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+            json=payload,
+            timeout=_TIMEOUT,
+        )
+        if resp.status_code != 429:
+            resp.raise_for_status()
+            return resp.json()["choices"][0]["message"]["content"]
+    resp.raise_for_status()  # last resort: raise the final 429
     return resp.json()["choices"][0]["message"]["content"]
 
 
