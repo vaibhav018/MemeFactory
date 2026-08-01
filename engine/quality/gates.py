@@ -46,9 +46,10 @@ _BANNED_JARGON = {
 _JARGON_RE = re.compile(r"\b(" + "|".join(re.escape(w) for w in _BANNED_JARGON) + r")\b",
                         flags=re.IGNORECASE)
 
-# Sentences over this many words break the school-kid readability target.
-# Enforced only softly (warn if just over, hard-fail at 20+).
-_SENTENCE_HARD_WORD_LIMIT = 20
+# Sentence-length hard cap. Writer prompt aims for 6-15 words with headroom
+# to 18; this gate only fires when a sentence blows well past that (a real
+# run-on). Set to 22 so genuinely-informative sentences aren't rejected.
+_SENTENCE_HARD_WORD_LIMIT = 22
 _SENTENCE_RE = re.compile(r"[.!?]+\s+|[.!?]+$")
 
 _CTA_WORDS = ["save", "share", "send", "bookmark", "follow", "tag"]

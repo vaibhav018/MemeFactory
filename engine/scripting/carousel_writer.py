@@ -27,6 +27,20 @@ GOOD (insider voice):
   "Claude does prompt caching fastest. Enable it in 2 minutes. No code."
 
 ═══════════════════════════════════════════════════════════════
+LANGUAGE — easy to read, still meaningful
+═══════════════════════════════════════════════════════════════
+- Use PLAIN, everyday words. If a smart 15-year-old wouldn't recognize
+  the word, replace it with something they would. That's the whole rule.
+- If a technical term is unavoidable (API, prompt, workflow, cache),
+  use it — but explain it in plain words right after in parentheses.
+  Good: "prompt caching (reusing old answers to save money)"
+- Sentences can be 6-15 words. Longer if the meaning genuinely needs it,
+  but never past 18 words in one sentence.
+- One idea per sentence. Two ideas → two sentences.
+- No hedging: NEVER "may", "might", "could", "sometimes", "generally".
+- Prefer concrete numbers and named tools over abstract categories.
+
+═══════════════════════════════════════════════════════════════
 SLIDE 1 — THE HOOK. Pick ONE of these 4 curiosity patterns.
 ═══════════════════════════════════════════════════════════════
 
@@ -113,15 +127,12 @@ no explanation, no wrapper object.
 """
 
 
-_SPLIT_ELIGIBLE_PILLARS = {"ai_tools_workflows", "wealth_hustles"}
-
-
 def write_carousel(topic_data: dict, pillar: dict) -> list[dict]:
     """Return list of 7 slide dicts."""
 
-    split_block = ""
-    if pillar.get("id") in _SPLIT_ELIGIBLE_PILLARS:
-        split_block = """
+    # All layouts are always available now (Profit Prompts runs only AI +
+    # wealth pillars; both qualify for the full layout catalog).
+    split_block = """
 
 OPTIONAL LAYOUTS for slides 2-6 (pick per slide based on what the content
 NATURALLY is — never force). At most 3 of the 5 inside slides may use a
@@ -186,9 +197,9 @@ Write exactly 7 slides as a JSON array, following the arc:
   6: insider twist — the "1% know this" moment or payoff calc
   7: save/share CTA + one line of why-it's-worth-it
 
-Word budgets: hook 8-14, inside slides 20-50 each, CTA 15-30.
+Word budgets: hook 8-14, inside slides 30-55 each, CTA 15-30.
 Every inside slide must include ONE real tool name, specific number, or URL.
-Every sentence ≤10 words.
+Sentence length: aim 6-15 words; up to 18 if the meaning needs it.
 
 NO markdown. NO bullet points. Plain text only.
 {split_block}

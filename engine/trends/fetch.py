@@ -163,15 +163,13 @@ _SOURCES = {
 }
 
 # Which sources feed which pillars. Order = preference; aggregator interleaves.
-# Pillars not in this dict get no trend injection -- Google Trends is too
-# noisy for evergreen topics (finance/politics/news dominate) and Claude wastes
-# tokens filtering them. Only wire pillars where the signal is actually helpful.
+# Profit Prompts runs only two pillars (AI + Wealth); evergreen pillars were
+# retired 2026-08-01 to keep the account tight-focus on brand tagline
+# "AI Tools • Earning Strategies".
 _PILLAR_SOURCES: dict[str, list[str]] = {
     "ai_tools_workflows": ["hackernews", "google_trends_us", "google_trends_in"],
     "wealth_hustles":     ["reddit_entrepreneur", "google_trends_in",
                            "google_trends_us"],
-    "technology_future":  ["hackernews"],
-    "science_nature":     ["hackernews"],
 }
 
 

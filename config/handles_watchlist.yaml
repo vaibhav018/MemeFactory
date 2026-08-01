@@ -78,7 +78,7 @@ handles:
     platform: instagram
     added_on: 2026-07-31
     last_reviewed_at: 2026-07-31
-    pillar_affinity: [technology_future, ai_tools_workflows]
+    pillar_affinity: [ai_tools_workflows]
     why: |
       Tech-news aggregator format. Multi-panel breakdowns of AI/tech
       breakthroughs. Good template inspiration for "what's coming"
@@ -95,7 +95,7 @@ handles:
     platform: instagram
     added_on: 2026-07-31
     last_reviewed_at: 2026-07-31
-    pillar_affinity: [ai_tools_workflows, technology_future]
+    pillar_affinity: [ai_tools_workflows]
     why: |
       Drama-driven AI tech commentary. Frames model launches and AI
       controversies (detection, book scanning, Yahoo/Anthropic feud)
@@ -112,7 +112,7 @@ handles:
     platform: instagram
     added_on: 2026-07-31
     last_reviewed_at: 2026-07-31
-    pillar_affinity: [ai_tools_workflows, technology_future]
+    pillar_affinity: [ai_tools_workflows]
     why: |
       AI image/video enhancement demos — "cinematic edit" prompts for
       real photos. Bridges practical AI usage with visual results the
@@ -129,7 +129,7 @@ handles:
     platform: instagram
     added_on: 2026-07-31
     last_reviewed_at: 2026-07-31
-    pillar_affinity: [ai_tools_workflows, technology_future]
+    pillar_affinity: [ai_tools_workflows]
     why: |
       iPhone / Apple optimization tricks + AI workflow tips. Utility
       framing ("this one setting saves 4h of battery") that lands high
