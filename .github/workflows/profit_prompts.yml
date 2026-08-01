@@ -1,0 +1,78 @@
+name: profit-prompts
+
+# Scheduled Instagram carousel publisher for @profit_prompts_.
+# Runs pipeline.py --publish on GitHub-hosted runners so the phone/laptop
+# can be off entirely. All secrets live under repo Settings → Secrets.
+#
+# Required repo secrets:
+#   IG_ACCESS_TOKEN   - long-lived Instagram Graph API token
+#   IG_USER_ID        - numeric IG user id (28084089337890165)
+#   GROQ_API_KEY      - Groq free-tier LLM key
+#   CF_ACCOUNT_ID     - Cloudflare account id (for Workers AI FLUX)
+#   CF_API_TOKEN      - Cloudflare API token (scope: Workers AI)
+#
+# GITHUB_TOKEN is auto-provided; used by pipeline.py to push carousel
+# JPGs back to the repo so IG can fetch them via raw.githubusercontent.com.
+
+on:
+  schedule:
+    # 7:30 PM IST weekdays = 14:00 UTC Mon-Fri
+    - cron: "0 14 * * 1-5"
+    # 11:00 AM IST weekends = 05:30 UTC Sat-Sun
+    - cron: "30 5 * * 0,6"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (no image gen, no IG publish, no commits)"
+        type: boolean
+        default: false
+
+# Never let two runs step on each other's git push.
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # pipeline.py commits slide JPGs to Generated_Memes/
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Deep enough for pipeline.py's `git pull --rebase origin main`
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Configure git
+        run: |
+          git config user.email "profit-prompts-bot@users.noreply.github.com"
+          git config user.name "profit-prompts-bot"
+
+      - name: Run pipeline
+        env:
+          IG_USER_ID:      ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          GROQ_API_KEY:    ${{ secrets.GROQ_API_KEY }}
+          CF_ACCOUNT_ID:   ${{ secrets.CF_ACCOUNT_ID }}
+          CF_API_TOKEN:    ${{ secrets.CF_API_TOKEN }}
+          # GITHUB_REPOSITORY is auto-injected by Actions -- used by
+          # engine.publish.instagram_client to build raw.githubusercontent URLs.
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            python pipeline.py --dry-run
+          else
+            python pipeline.py --publish
+          fi
