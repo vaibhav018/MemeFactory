@@ -74,6 +74,13 @@ jobs:
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             python pipeline.py --dry-run
+          # Prefer hand-curated posts (Claude Sunday-batch) over live LLM
+          # generation. If queue/curated/ has posts, publish the oldest.
+          # Otherwise fall back to live-generation --publish.
+          elif ls queue/curated/*.json >/dev/null 2>&1; then
+            echo "queue/curated has posts — publishing next curated"
+            python pipeline.py --publish-curated
           else
+            echo "queue/curated empty — falling back to live-generation --publish"
             python pipeline.py --publish
           fi

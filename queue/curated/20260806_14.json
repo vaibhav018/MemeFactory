@@ -1,0 +1,61 @@
+{
+  "id": "20260806_14",
+  "pillar_id": "ai_tools_workflows",
+  "pillar_name": "AI Tools & Workflows",
+  "topic": "Build a personal AI assistant in 30 minutes for free",
+  "angle": "Claude Projects + Perplexity + one custom prompt = 90% of what people pay $30/month for.",
+  "hook": "How I built my own AI assistant in 30 minutes without spending a rupee",
+  "caption": "Everyone wants a personal AI assistant like Jarvis. Almost everyone thinks it requires a paid subscription. It does not. Claude Projects gives you memory. Perplexity gives you search. One custom prompt ties them together. Total build time: 30 minutes. Total cost: zero. What would you have your AI assistant do first?\n\n#ProfitPrompts #AITools #ClaudeAI #ChatGPT #AIWorkflow #Productivity #AIhacks #TechTips",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "How I built my own AI assistant in 30 minutes without spending a rupee",
+      "emoji": "🤖"
+    },
+    {
+      "slide": 2,
+      "text": "You need a free Claude account. Nothing else. No subscription. No coding.",
+      "emoji": "🧰"
+    },
+    {
+      "slide": 3,
+      "layout": "step",
+      "step_num": "1",
+      "emoji": "🧠",
+      "title": "Create a Claude Project",
+      "body": "In Claude.ai, click Projects → New. Name it. Upload your notes, resume, or key documents. Claude will remember them across every chat."
+    },
+    {
+      "slide": 4,
+      "layout": "step",
+      "step_num": "2",
+      "emoji": "📝",
+      "title": "Add a custom instructions block",
+      "body": "In Project settings, paste your personal context. Your goals. Your writing style. Your calendar. Claude uses it every time."
+    },
+    {
+      "slide": 5,
+      "layout": "big_stat",
+      "emoji": "⏱️",
+      "stat": "30",
+      "unit": "minutes",
+      "caption": "setup time from zero to a working personal AI assistant"
+    },
+    {
+      "slide": 6,
+      "text": "1% of Claude users touch Projects. Everyone else uses the default chat and wonders why paid AI feels smarter.",
+      "emoji": "🤫"
+    },
+    {
+      "slide": 7,
+      "text": "Save this. Set up your Project tonight and reply with what you named yours.",
+      "emoji": "📌"
+    }
+  ],
+  "image_prompts": [
+    "minimalist editorial illustration of personal AI assistant workflow claude projects, dark navy background, cyan and green accents, glowing circuit patterns, no text, professional",
+    "abstract data visualization related to personal AI assistant workflow claude projects, dark navy background, upward-trending chart, cyan and green accents, no text, editorial",
+    "cinematic photo of a focused young person at a laptop with glowing screen light, dark navy background, green ambient glow, no text"
+  ],
+  "authored_by": "claude_opus_4_7"
+}

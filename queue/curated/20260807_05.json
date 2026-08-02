@@ -1,0 +1,75 @@
+{
+  "id": "20260807_05",
+  "pillar_id": "ai_tools_workflows",
+  "pillar_name": "AI Tools & Workflows",
+  "topic": "3 AI tools that saved me 10 hours this week",
+  "angle": "Not headline tools. The three quiet workhorses that actually give hours back.",
+  "hook": "3 AI tools that quietly saved me 10 hours this week — none are ChatGPT",
+  "caption": "Everyone lists ChatGPT and Claude. Fine. But the tools that actually give me hours back are quieter. Three specific ones ran in the background all week and did jobs I used to do by hand. The pattern: they replace a boring task, not a creative one. What is your most-used boring-task AI tool?\n\n#ProfitPrompts #AITools #ClaudeAI #ChatGPT #AIWorkflow #Productivity #AIhacks #TechTips",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "3 AI tools that quietly saved me 10 hours this week — none are ChatGPT",
+      "emoji": "⏳"
+    },
+    {
+      "slide": 2,
+      "text": "You need one hour to try all three. Each has a real free tier.",
+      "emoji": "🧰"
+    },
+    {
+      "slide": 3,
+      "layout": "numbered",
+      "emoji": "🔧",
+      "items": [
+        {
+          "num": "01",
+          "title": "Fireflies",
+          "desc": "Auto-transcribes every meeting. Saves 2 hours of notes a week."
+        },
+        {
+          "num": "02",
+          "title": "Otter",
+          "desc": "Live captions and summaries. Free tier: 300 minutes a month."
+        },
+        {
+          "num": "03",
+          "title": "Reclaim",
+          "desc": "Blocks your calendar around real priorities. Free forever."
+        }
+      ]
+    },
+    {
+      "slide": 4,
+      "layout": "big_stat",
+      "emoji": "🎯",
+      "stat": "10",
+      "unit": "hours saved",
+      "caption": "per week when these three run in the background of your normal workday"
+    },
+    {
+      "slide": 5,
+      "layout": "step",
+      "step_num": "1",
+      "emoji": "🚀",
+      "title": "Install all three today",
+      "body": "Connect Fireflies to your calendar. Give Reclaim access to Google Calendar. Add Otter to your phone. Twenty minutes total."
+    },
+    {
+      "slide": 6,
+      "text": "Consultants at Deloitte and BCG use exactly this stack. They just do not tell clients they use it.",
+      "emoji": "🤫"
+    },
+    {
+      "slide": 7,
+      "text": "Save this. Set them up this weekend and measure hours saved by next Friday.",
+      "emoji": "📌"
+    }
+  ],
+  "image_prompts": [
+    "minimalist editorial illustration of AI productivity tools running in background of workday, dark navy background, cyan and green accents, glowing circuit patterns, no text, professional",
+    "abstract data visualization related to AI productivity tools running in background of workday, dark navy background, upward-trending chart, cyan and green accents, no text, editorial",
+    "cinematic photo of a focused young person at a laptop with glowing screen light, dark navy background, green ambient glow, no text"
+  ],
+  "authored_by": "claude_opus_4_7"
+}

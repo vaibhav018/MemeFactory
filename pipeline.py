@@ -46,7 +46,9 @@ _BASE = Path(__file__).parent
 _DB_PATH = _BASE / "data" / "post_history.db"
 _QUEUE_PENDING = _BASE / "queue" / "pending"
 _QUEUE_APPROVED = _BASE / "queue" / "approved"
+_QUEUE_CURATED = _BASE / "queue" / "curated"
 _GENERATED = _BASE / "Generated_Memes"
+_PILLARS_DIR = _BASE / "config" / "pillars"
 
 
 def _post_id() -> str:
@@ -204,10 +206,116 @@ def _publish_post(conn, post: dict) -> None:
               f"{type(e).__name__}: {e}", flush=True)
 
 
+def _load_pillar(pillar_id: str) -> dict:
+    """Load a pillar YAML by id."""
+    import yaml
+    for path in _PILLARS_DIR.glob("*.yaml"):
+        p = yaml.safe_load(path.read_text(encoding="utf-8"))
+        if p.get("id") == pillar_id:
+            return p
+    raise ValueError(f"Pillar not found: {pillar_id}")
+
+
+def publish_next_curated(conn) -> int:
+    """Pick the OLDEST post in queue/curated/, compose slides, publish.
+
+    Curated posts skip topic-generation and slide-writing entirely — the
+    content is already authored by hand (typically by Claude in a Sunday
+    curation session). Only image gen + compositing + IG publish remain.
+
+    Returns exit code (0 = success or empty-queue no-op, 1 = failure).
+    """
+    curated_files = sorted(_QUEUE_CURATED.glob("*.json"))
+    if not curated_files:
+        print("No curated posts in queue/curated/. Nothing to publish this slot.",
+              flush=True)
+        return 0
+
+    src = curated_files[0]
+    curated = json.loads(src.read_text(encoding="utf-8"))
+    print(f"Publishing curated post: {curated.get('topic', '?')}  ({src.name})")
+
+    pillar = _load_pillar(curated["pillar_id"])
+
+    # Assemble a runtime post_id + directory
+    post_id = _post_id()
+    bg_dir = _GENERATED / post_id
+    bg_dir.mkdir(parents=True, exist_ok=True)
+
+    # Resolve images: prefer user-provided image_paths (Gemini etc.), else
+    # generate on the fly via CF from image_prompts.
+    bg_paths: list[Path] = []
+    user_paths = curated.get("image_paths") or []
+    if user_paths:
+        for p in user_paths:
+            src_img = Path(p) if Path(p).is_absolute() else _BASE / p
+            if not src_img.exists():
+                print(f"  [WARN] curated image_path missing: {src_img}", flush=True)
+                continue
+            dst = bg_dir / f"background_{len(bg_paths)+1:02d}.jpg"
+            shutil.copy(str(src_img), str(dst))
+            bg_paths.append(dst)
+        if bg_paths:
+            print(f"  Using {len(bg_paths)} user-provided image(s) from image_paths")
+
+    if not bg_paths:
+        prompts = curated.get("image_prompts") or [
+            f"editorial illustration for {curated.get('topic', 'a post')}, "
+            f"dark navy background, cyan and green accents, no text"
+        ]
+        print(f"  Generating {len(prompts)} image(s) via Cloudflare FLUX...")
+        for idx, prompt in enumerate(prompts):
+            bg = bg_dir / f"background_{idx+1:02d}.jpg"
+            generate_background(prompt, pillar, bg)
+            bg_paths.append(bg)
+
+    # Compose slides
+    print("Composing slides...")
+    slide_paths = compose_carousel(bg_paths, curated["slides"], pillar, bg_dir, post_id)
+    repo_rel_paths = [str(p.relative_to(_BASE)) for p in slide_paths]
+
+    post = {
+        "id": post_id,
+        "pillar_id": curated["pillar_id"],
+        "pillar_name": curated.get("pillar_name", pillar["name"]),
+        "topic": curated["topic"],
+        "angle": curated.get("angle", ""),
+        "hook": curated.get("hook") or curated["slides"][0].get("text", ""),
+        "caption": curated["caption"],
+        "slides": curated["slides"],
+        "slide_repo_paths": repo_rel_paths,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "source": "curated",
+        "curated_file": src.name,
+    }
+
+    # Write to queue/pending so the standard publish path can pick it up
+    _QUEUE_PENDING.mkdir(parents=True, exist_ok=True)
+    pending_file = _QUEUE_PENDING / f"{post_id}.json"
+    pending_file.write_text(json.dumps(post, indent=2, ensure_ascii=False),
+                            encoding="utf-8")
+
+    # Publish
+    print("Auto-publishing curated post...", flush=True)
+    _publish_post(conn, post)
+
+    # On success, remove the curated source file (post moved to posted/ by
+    # _publish_post already).
+    try:
+        src.unlink()
+        print(f"  Consumed curated source: {src.name}")
+    except Exception as e:
+        print(f"  [WARN] failed to remove curated source {src.name}: {e}")
+
+    return 0
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Profit Prompts content pipeline")
     parser.add_argument("--dry-run", action="store_true", help="No API calls, no queue writes")
-    parser.add_argument("--publish", action="store_true", help="Auto-approve and publish (CI mode)")
+    parser.add_argument("--publish", action="store_true", help="Auto-generate + publish (CI mode)")
+    parser.add_argument("--publish-curated", action="store_true",
+                        help="Publish oldest post from queue/curated/ (skips LLM ideation + writing)")
     parser.add_argument("--retry-pending", action="store_true", help="Publish oldest pending post (no regeneration)")
     parser.add_argument("--retries", type=int, default=2, help="Quality gate retry limit")
     args = parser.parse_args()
@@ -224,6 +332,11 @@ def main() -> None:
         print(f"Retrying pending post: {post['topic']}")
         _publish_post(conn, post)
         conn.close(); return
+
+    if args.publish_curated:
+        rc = publish_next_curated(conn)
+        conn.close()
+        sys.exit(rc)
 
     post = generate_post(conn, retries=args.retries, dry_run=args.dry_run)
     if post is None:

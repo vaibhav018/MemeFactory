@@ -1,0 +1,85 @@
+{
+  "id": "20260808_14",
+  "pillar_id": "ai_tools_workflows",
+  "pillar_name": "AI Tools & Workflows",
+  "topic": "5 ChatGPT settings 99% of users never touch",
+  "angle": "Five toggles inside ChatGPT settings that change output quality overnight.",
+  "hook": "5 ChatGPT settings 99% of users never touch — and each one upgrades your output",
+  "caption": "Most users treat ChatGPT like a magic box. Type. Get answer. Repeat. Five specific settings buried in the menus change output quality overnight. None of them require ChatGPT Pro. All are one click away. Which of these five did you already know about?\n\n#ProfitPrompts #AITools #ClaudeAI #ChatGPT #AIWorkflow #Productivity #AIhacks #TechTips",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "5 ChatGPT settings 99% of users never touch — and each one upgrades your output",
+      "emoji": "⚙️"
+    },
+    {
+      "slide": 2,
+      "text": "You need the free ChatGPT account. All five settings are free to flip.",
+      "emoji": "🔓"
+    },
+    {
+      "slide": 3,
+      "layout": "numbered",
+      "emoji": "🔧",
+      "items": [
+        {
+          "num": "01",
+          "title": "Custom Instructions",
+          "desc": "Set your role + writing style once. Applies to every chat."
+        },
+        {
+          "num": "02",
+          "title": "Memory ON",
+          "desc": "ChatGPT remembers you across chats. Free tier."
+        },
+        {
+          "num": "03",
+          "title": "Personality: Robot",
+          "desc": "Cuts fluff by 40%. Delivers direct answers only."
+        },
+        {
+          "num": "04",
+          "title": "Voice + Advanced",
+          "desc": "Real conversations. Great for learning + brainstorming."
+        },
+        {
+          "num": "05",
+          "title": "Data Controls off",
+          "desc": "Stop training on your prompts. Privacy in 2 clicks."
+        }
+      ]
+    },
+    {
+      "slide": 4,
+      "layout": "big_stat",
+      "emoji": "🎯",
+      "stat": "5",
+      "unit": "settings",
+      "caption": "that turn free ChatGPT into a genuinely different tool"
+    },
+    {
+      "slide": 5,
+      "layout": "step",
+      "step_num": "1",
+      "emoji": "🎛️",
+      "title": "Flip all 5 in 10 minutes",
+      "body": "Open ChatGPT settings. Turn on each one. Test with your usual prompts. The difference is immediately visible."
+    },
+    {
+      "slide": 6,
+      "text": "Power users flip these on day one. Casual users never open the settings menu. Same tool. Different worlds.",
+      "emoji": "🤫"
+    },
+    {
+      "slide": 7,
+      "text": "Save this. Flip all 5 tonight and screenshot your favorite change.",
+      "emoji": "📌"
+    }
+  ],
+  "image_prompts": [
+    "minimalist editorial illustration of ChatGPT settings menu configuration screen, dark navy background, cyan and green accents, glowing circuit patterns, no text, professional",
+    "abstract data visualization related to ChatGPT settings menu configuration screen, dark navy background, upward-trending chart, cyan and green accents, no text, editorial",
+    "cinematic photo of a focused young person at a laptop with glowing screen light, dark navy background, green ambient glow, no text"
+  ],
+  "authored_by": "claude_opus_4_7"
+}

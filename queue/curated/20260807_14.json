@@ -1,0 +1,75 @@
+{
+  "id": "20260807_14",
+  "pillar_id": "wealth_hustles",
+  "pillar_name": "Wealth & Hustles",
+  "topic": "The $10K/month freelance stack you can start this weekend",
+  "angle": "Not a course. Three specific skills bundled in a way clients actually pay for.",
+  "hook": "The freelance stack quietly hitting $10K/month — and you can start it this weekend",
+  "caption": "Standalone freelance skills are commoditized. Copywriter or designer alone cannot easily hit $10K/month in 2026. Bundled skills are different. Three specific skills packaged together create an offer clients pay 4x for. The stack is simple. The delivery is not. Which of these three do you already have?\n\n#ProfitPrompts #EarningStrategies #SideHustle #Freelance #PassiveIncome #MakeMoneyOnline #AIhustle #IndiaFreelancer",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "The freelance stack quietly hitting $10K/month — and you can start it this weekend",
+      "emoji": "💼"
+    },
+    {
+      "slide": 2,
+      "text": "You need a laptop and one solid before/after case study. That is the whole ask.",
+      "emoji": "🧰"
+    },
+    {
+      "slide": 3,
+      "layout": "numbered",
+      "emoji": "🎯",
+      "items": [
+        {
+          "num": "01",
+          "title": "Landing page copy",
+          "desc": "Convert website visitors to leads. Rs 30K per page."
+        },
+        {
+          "num": "02",
+          "title": "Simple Webflow build",
+          "desc": "No coding. Rs 40K per site. Templates cut time in half."
+        },
+        {
+          "num": "03",
+          "title": "Email onboarding",
+          "desc": "5-email welcome series. Rs 25K per sequence."
+        }
+      ]
+    },
+    {
+      "slide": 4,
+      "layout": "big_stat",
+      "emoji": "💰",
+      "stat": "$10K",
+      "unit": "/ month",
+      "caption": "what 5-6 packaged clients a month generates once the stack is dialed in"
+    },
+    {
+      "slide": 5,
+      "layout": "step",
+      "step_num": "1",
+      "emoji": "📦",
+      "title": "Package the three as one offer",
+      "body": "Do not sell copy alone. Sell 'landing page + email onboarding + Webflow build' as one $2K package. Clients pick the bundle every time."
+    },
+    {
+      "slide": 6,
+      "text": "Agencies charge $10K for this exact deliverable. Solo freelancers charge $2K and win the client every time.",
+      "emoji": "🤫"
+    },
+    {
+      "slide": 7,
+      "text": "Save this. Package your first bundle this weekend and DM one prospect on Monday.",
+      "emoji": "📌"
+    }
+  ],
+  "image_prompts": [
+    "editorial illustration of freelance business stack laptop desk workflow, dark navy background, money-green accents, subtle gold highlights, no text, magazine style",
+    "abstract data visualization of income growth related to freelance business stack laptop desk workflow, dark navy background, ascending bar chart in green, no text",
+    "cinematic photo of a young Indian entrepreneur at a laptop counting success, dark navy background, warm green glow, no text"
+  ],
+  "authored_by": "claude_opus_4_7"
+}

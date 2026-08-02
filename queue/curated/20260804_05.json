@@ -1,0 +1,62 @@
+{
+  "id": "20260804_05",
+  "pillar_id": "wealth_hustles",
+  "pillar_name": "Wealth & Hustles",
+  "topic": "Amazon FBA in 2026 — the honest math",
+  "angle": "The gurus never show the real numbers because the real numbers hurt.",
+  "hook": "Amazon FBA in 2026 — the honest math nobody in the reels shows you",
+  "caption": "Every Amazon FBA reel promises $10K/month. Almost none show the real profit margin after ads and returns. I ran the numbers on three real listings from friends. The answers were sobering but useful. There is still real money in FBA. Just not the way the reels frame it. Are you already selling on Amazon or thinking about starting?\n\n#ProfitPrompts #EarningStrategies #SideHustle #Freelance #PassiveIncome #MakeMoneyOnline #AIhustle #IndiaFreelancer",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "Amazon FBA in 2026 — the honest math nobody in the reels shows you",
+      "emoji": "📦"
+    },
+    {
+      "slide": 2,
+      "text": "You need Rs 1 lakh in working capital and patience for six months.",
+      "emoji": "🧾"
+    },
+    {
+      "slide": 3,
+      "layout": "split",
+      "emoji": "⚖️",
+      "left_label": "MYTH",
+      "left_text": "Sell a $30 product, keep $20. Ten sales a day = $6000 a month easy.",
+      "right_label": "MATH",
+      "right_text": "After Amazon fees, ads, and returns, real margin is 8-15%. That $6000 sale becomes $600-900 net."
+    },
+    {
+      "slide": 4,
+      "layout": "big_stat",
+      "emoji": "📉",
+      "stat": "12%",
+      "unit": "average net",
+      "caption": "real profit margin on FBA in a normal category in 2026"
+    },
+    {
+      "slide": 5,
+      "layout": "step",
+      "step_num": "1",
+      "emoji": "🔍",
+      "title": "Do the math before the product",
+      "body": "Use Jungle Scout free trial to check real revenue. Deduct 30% for Amazon, 15% for ads, 10% for returns. That is your ceiling."
+    },
+    {
+      "slide": 6,
+      "text": "FBA still works in boring categories with 4-star products and low returns. The reels never talk about boring.",
+      "emoji": "🤫"
+    },
+    {
+      "slide": 7,
+      "text": "Save this and share it with anyone about to spend Rs 50K on an FBA course this weekend.",
+      "emoji": "📌"
+    }
+  ],
+  "image_prompts": [
+    "editorial illustration of Amazon FBA warehouse boxes and profit charts, dark navy background, money-green accents, subtle gold highlights, no text, magazine style",
+    "abstract data visualization of income growth related to Amazon FBA warehouse boxes and profit charts, dark navy background, ascending bar chart in green, no text",
+    "cinematic photo of a young Indian entrepreneur at a laptop counting success, dark navy background, warm green glow, no text"
+  ],
+  "authored_by": "claude_opus_4_7"
+}

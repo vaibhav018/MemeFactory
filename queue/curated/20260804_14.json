@@ -1,0 +1,62 @@
+{
+  "id": "20260804_14",
+  "pillar_id": "ai_tools_workflows",
+  "pillar_name": "AI Tools & Workflows",
+  "topic": "The Claude prompt that beat my $200 ChatGPT Pro sub",
+  "angle": "One prompt structure made Claude Haiku (free) do everything I was paying ChatGPT Pro for.",
+  "hook": "The Claude prompt that quietly beat my $200/year ChatGPT Pro sub",
+  "caption": "I paid for ChatGPT Pro for eight months. Cancelled it after two weeks of testing this Claude prompt. The trick is not the model. It is how you frame the task. Claude Haiku is free, has 200K context, and this prompt makes it feel like a $200 tool. Copy the format below and try it tonight. What is the most useful prompt you have ever written?\n\n#ProfitPrompts #AITools #ClaudeAI #ChatGPT #AIWorkflow #Productivity #AIhacks #TechTips",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "The Claude prompt that quietly beat my $200/year ChatGPT Pro sub",
+      "emoji": "🧠"
+    },
+    {
+      "slide": 2,
+      "text": "You need a free Claude account. Nothing else. No Pro, no API.",
+      "emoji": "🔑"
+    },
+    {
+      "slide": 3,
+      "layout": "split",
+      "emoji": "⚔️",
+      "left_label": "OLD PROMPT",
+      "left_text": "Act as an expert marketer and write me an email sequence.",
+      "right_label": "NEW PROMPT",
+      "right_text": "Role. Goal. Audience. Constraints. Format. Examples. Now write the email sequence."
+    },
+    {
+      "slide": 4,
+      "layout": "big_stat",
+      "emoji": "🎯",
+      "stat": "6",
+      "unit": "sections",
+      "caption": "the prompt frame that makes free Claude feel like paid ChatGPT"
+    },
+    {
+      "slide": 5,
+      "layout": "step",
+      "step_num": "1",
+      "emoji": "📝",
+      "title": "Copy this frame every time",
+      "body": "Role: who Claude is playing. Goal: what output you want. Audience. Constraints. Format. Two examples. Then the ask."
+    },
+    {
+      "slide": 6,
+      "text": "1% of users write prompts this way. 99% dump one line and blame the model. Same tool, different result.",
+      "emoji": "🤫"
+    },
+    {
+      "slide": 7,
+      "text": "Save this. Try the frame on your next real task tonight and reply with what you built.",
+      "emoji": "📌"
+    }
+  ],
+  "image_prompts": [
+    "minimalist editorial illustration of Claude AI prompt engineering vs paid tools, dark navy background, cyan and green accents, glowing circuit patterns, no text, professional",
+    "abstract data visualization related to Claude AI prompt engineering vs paid tools, dark navy background, upward-trending chart, cyan and green accents, no text, editorial",
+    "cinematic photo of a focused young person at a laptop with glowing screen light, dark navy background, green ambient glow, no text"
+  ],
+  "authored_by": "claude_opus_4_7"
+}

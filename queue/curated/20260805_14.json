@@ -1,0 +1,85 @@
+{
+  "id": "20260805_14",
+  "pillar_id": "wealth_hustles",
+  "pillar_name": "Wealth & Hustles",
+  "topic": "5 side hustles a college student can start with just a laptop",
+  "angle": "Not dropshipping. Not day trading. Real skills that pay while you study.",
+  "hook": "5 side hustles a college student can start this weekend with just a laptop",
+  "caption": "Every college student wants a side hustle. Most reels push dropshipping or crypto. Both are bad ideas at 20. These five build real skills, pay real money, and look great on a resume when you graduate. Pick one and go deep for three months. Which one would you try first?\n\n#ProfitPrompts #EarningStrategies #SideHustle #Freelance #PassiveIncome #MakeMoneyOnline #AIhustle #IndiaFreelancer",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "5 side hustles a college student can start this weekend with just a laptop",
+      "emoji": "🎓"
+    },
+    {
+      "slide": 2,
+      "text": "You need a laptop and two hours a day. That is the entry cost.",
+      "emoji": "💻"
+    },
+    {
+      "slide": 3,
+      "layout": "numbered",
+      "emoji": "🚀",
+      "items": [
+        {
+          "num": "01",
+          "title": "Notion templates",
+          "desc": "Build once. Sell forever on Gumroad. Rs 500-2000 each."
+        },
+        {
+          "num": "02",
+          "title": "Freelance writing",
+          "desc": "Fiverr + Upwork. Rs 3000 per article by month three."
+        },
+        {
+          "num": "03",
+          "title": "AI prompt packs",
+          "desc": "Curate 50 prompts for a niche. Sell for Rs 300."
+        },
+        {
+          "num": "04",
+          "title": "YouTube tutorials",
+          "desc": "Screen-record what you already learned in class."
+        },
+        {
+          "num": "05",
+          "title": "Local social media",
+          "desc": "One local business, Rs 15K/month, one client to start."
+        }
+      ]
+    },
+    {
+      "slide": 4,
+      "layout": "big_stat",
+      "emoji": "📈",
+      "stat": "Rs 25K",
+      "unit": "/ month",
+      "caption": "what an average college student can hit by month 3 on any one of these"
+    },
+    {
+      "slide": 5,
+      "layout": "step",
+      "step_num": "1",
+      "emoji": "🎯",
+      "title": "Pick ONE and give it 90 days",
+      "body": "The problem is not the hustle. It is switching between hustles every two weeks. Pick one. Ship weekly. Reassess in 90 days."
+    },
+    {
+      "slide": 6,
+      "text": "The compounding is real. Skills stack. A student writing on Fiverr today is a copywriter earning Rs 1L/month at 25.",
+      "emoji": "🤫"
+    },
+    {
+      "slide": 7,
+      "text": "Save this. Pick your one this weekend and reply with which one you picked.",
+      "emoji": "📌"
+    }
+  ],
+  "image_prompts": [
+    "editorial illustration of college student side hustle with laptop, dark navy background, money-green accents, subtle gold highlights, no text, magazine style",
+    "abstract data visualization of income growth related to college student side hustle with laptop, dark navy background, ascending bar chart in green, no text",
+    "cinematic photo of a young Indian entrepreneur at a laptop counting success, dark navy background, warm green glow, no text"
+  ],
+  "authored_by": "claude_opus_4_7"
+}

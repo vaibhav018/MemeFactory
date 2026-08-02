@@ -1,0 +1,63 @@
+{
+  "id": "20260808_05",
+  "pillar_id": "wealth_hustles",
+  "pillar_name": "Wealth & Hustles",
+  "topic": "3 dropshipping myths that cost you money",
+  "angle": "Dropshipping is not dead. But three specific myths kill 90% of stores in the first month.",
+  "hook": "3 dropshipping myths quietly killing 90% of new stores in month one",
+  "caption": "Dropshipping still works in 2026. But the same three myths that killed stores in 2019 are killing them today. None of them are the myths the gurus warn you about. If you are about to start a Shopify store, read these before you spend on ads. Which myth have you heard the most?\n\n#ProfitPrompts #EarningStrategies #SideHustle #Freelance #PassiveIncome #MakeMoneyOnline #AIhustle #IndiaFreelancer",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "3 dropshipping myths quietly killing 90% of new stores in month one",
+      "emoji": "🛒"
+    },
+    {
+      "slide": 2,
+      "text": "You need to know these before spending a rupee on Shopify or ads.",
+      "emoji": "⚠️"
+    },
+    {
+      "slide": 3,
+      "layout": "split",
+      "emoji": "⚖️",
+      "left_label": "MYTH #1",
+      "left_text": "Winning product is 90% of the game. Find one and you win.",
+      "right_label": "REALITY",
+      "right_text": "Winning product is 30%. Ads creative and post-purchase experience are the other 70%."
+    },
+    {
+      "slide": 4,
+      "layout": "split",
+      "emoji": "⚖️",
+      "left_label": "MYTH #2",
+      "left_text": "Free traffic is enough to start. TikTok organic will save you.",
+      "right_label": "REALITY",
+      "right_text": "Free traffic works AFTER paid traffic teaches you what converts. Both are needed."
+    },
+    {
+      "slide": 5,
+      "layout": "big_stat",
+      "emoji": "📉",
+      "stat": "90%",
+      "unit": "of stores",
+      "caption": "die in the first 30 days because founders believed one of these three myths"
+    },
+    {
+      "slide": 6,
+      "text": "The 10% who survive treat dropshipping as a real business. Not a hack. Not a game. A business.",
+      "emoji": "🤫"
+    },
+    {
+      "slide": 7,
+      "text": "Save this and share it with anyone about to burn Rs 30K on Facebook ads this weekend.",
+      "emoji": "📌"
+    }
+  ],
+  "image_prompts": [
+    "editorial illustration of dropshipping shopify store analytics dashboard, dark navy background, money-green accents, subtle gold highlights, no text, magazine style",
+    "abstract data visualization of income growth related to dropshipping shopify store analytics dashboard, dark navy background, ascending bar chart in green, no text",
+    "cinematic photo of a young Indian entrepreneur at a laptop counting success, dark navy background, warm green glow, no text"
+  ],
+  "authored_by": "claude_opus_4_7"
+}

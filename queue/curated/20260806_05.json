@@ -1,0 +1,75 @@
+{
+  "id": "20260806_05",
+  "pillar_id": "wealth_hustles",
+  "pillar_name": "Wealth & Hustles",
+  "topic": "Print-on-demand niches that are not oversaturated yet",
+  "angle": "Everyone sells cat mugs. The money is in the three niches almost nobody covers.",
+  "hook": "3 print-on-demand niches almost nobody is selling in — and where the money still hides",
+  "caption": "Print on demand is not dead. Selling generic cat mugs on Etsy is dead. Three specific niches still have almost no serious sellers and huge search volume. This is not financial advice. It is where I would start if I were beginning today. Which niche surprises you the most?\n\n#ProfitPrompts #EarningStrategies #SideHustle #Freelance #PassiveIncome #MakeMoneyOnline #AIhustle #IndiaFreelancer",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "3 print-on-demand niches almost nobody is selling in — and where the money still hides",
+      "emoji": "🖨️"
+    },
+    {
+      "slide": 2,
+      "text": "You need a Printful account and Canva. Both are free to start.",
+      "emoji": "🎨"
+    },
+    {
+      "slide": 3,
+      "layout": "numbered",
+      "emoji": "🎯",
+      "items": [
+        {
+          "num": "01",
+          "title": "Niche hobbies",
+          "desc": "Bouldering. Aquascaping. Restoration. Fanbases exist. Sellers do not."
+        },
+        {
+          "num": "02",
+          "title": "Professional jokes",
+          "desc": "Anesthesiology memes. Devops in-jokes. Small audience, high margin."
+        },
+        {
+          "num": "03",
+          "title": "Regional Indian humor",
+          "desc": "Tamil, Malayalam, Marathi jokes on shirts. Nobody serves this market."
+        }
+      ]
+    },
+    {
+      "slide": 4,
+      "layout": "big_stat",
+      "emoji": "🎯",
+      "stat": "Rs 800",
+      "unit": "/ shirt",
+      "caption": "typical margin on a niche design vs Rs 100 on a generic cat mug"
+    },
+    {
+      "slide": 5,
+      "layout": "step",
+      "step_num": "1",
+      "emoji": "🔍",
+      "title": "Find your niche with EtsyRank",
+      "body": "Use EtsyRank free tier. Filter for search volume above 500 and less than 200 competing listings. Three niches will jump out immediately."
+    },
+    {
+      "slide": 6,
+      "text": "The Bouldering Grandma tote hit Rs 3L in profit in a year. Seller was one person in Pune. Nobody talks about it.",
+      "emoji": "🤫"
+    },
+    {
+      "slide": 7,
+      "text": "Save this. Pick a niche you actually understand and mock up 3 designs this week.",
+      "emoji": "📌"
+    }
+  ],
+  "image_prompts": [
+    "editorial illustration of print on demand shirts and mugs niche marketplace, dark navy background, money-green accents, subtle gold highlights, no text, magazine style",
+    "abstract data visualization of income growth related to print on demand shirts and mugs niche marketplace, dark navy background, ascending bar chart in green, no text",
+    "cinematic photo of a young Indian entrepreneur at a laptop counting success, dark navy background, warm green glow, no text"
+  ],
+  "authored_by": "claude_opus_4_7"
+}
