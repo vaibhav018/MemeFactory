@@ -33,15 +33,17 @@ _FILLER = [
 ]
 
 # Corporate-speak buzzwords that break the "12-year-old can read it" rule.
-# Kept short — false positives are annoying. Match whole words only.
+# Kept short and truly-buzzy — false positives block real posts (learned the
+# hard way when "optimize" killed 3 retries on a wealth-hustles topic that
+# was literally about optimizing API bills). Words like "optimize" and
+# "streamline" made the list originally but they're everyday English now.
 _BANNED_JARGON = {
     "utilize", "leverage", "leverages", "leveraging", "paradigm", "synergy",
     "robust", "seamless", "seamlessly", "holistic", "disrupt", "disruptive",
-    "empower", "empowers", "unlock", "unleash", "unleashes", "revolutionize",
-    "revolutionary", "streamline", "streamlines", "optimize", "optimizes",
-    "methodology", "transformative", "cutting-edge", "next-level",
-    "game-changer", "game-changing", "best-in-class", "world-class",
-    "mission-critical", "thought-leader",
+    "empower", "empowers", "unleash", "unleashes", "revolutionize",
+    "revolutionary", "methodology", "transformative", "cutting-edge",
+    "next-level", "game-changer", "game-changing", "best-in-class",
+    "world-class", "mission-critical", "thought-leader",
 }
 _JARGON_RE = re.compile(r"\b(" + "|".join(re.escape(w) for w in _BANNED_JARGON) + r")\b",
                         flags=re.IGNORECASE)

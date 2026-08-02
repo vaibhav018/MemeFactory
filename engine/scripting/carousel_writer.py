@@ -114,10 +114,11 @@ SLIDE 7 — THE CTA
 BANNED WORDS — auto-rejected. Do not use.
 ═══════════════════════════════════════════════════════════════
 utilize, leverage, paradigm, synergy, robust, seamless, holistic,
-disrupt, empower, unlock, unleash, revolutionize, streamline,
-optimize, methodology, transformative, cutting-edge, next-level,
-game-changer, best-in-class, world-class, mission-critical,
-thought-leader, discover, explore (as verb).
+disrupt, empower, unleash, revolutionize, methodology,
+transformative, cutting-edge, next-level, game-changer,
+best-in-class, world-class, mission-critical, thought-leader,
+discover (as verb — "discover how" is banned; "I discovered X" is fine),
+explore (as verb — same rule).
 
 ═══════════════════════════════════════════════════════════════
 OUTPUT
