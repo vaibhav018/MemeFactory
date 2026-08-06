@@ -242,10 +242,23 @@ def publish_next_curated(conn) -> int:
     bg_dir = _GENERATED / post_id
     bg_dir.mkdir(parents=True, exist_ok=True)
 
-    # Resolve images: prefer user-provided image_paths (Gemini etc.), else
-    # generate on the fly via CF from image_prompts.
+    # Resolve images. Three sources, in this priority:
+    #  1. curated.image_paths      — full set from the JSON (explicit override)
+    #  2. assets/curated/<id>/cover.{jpg,png} — user-generated cover for slide 1
+    #     (drop your Gemini image here and the pipeline uses it as slide 1);
+    #     the rest still come from CF FLUX
+    #  3. curated.image_prompts    — CF FLUX generates all N
     bg_paths: list[Path] = []
     user_paths = curated.get("image_paths") or []
+    curated_id = curated.get("id") or src.stem
+    cover_dir = _BASE / "assets" / "curated" / curated_id
+    cover_path: Path | None = None
+    for ext in ("cover.jpg", "cover.jpeg", "cover.png"):
+        candidate = cover_dir / ext
+        if candidate.exists():
+            cover_path = candidate
+            break
+
     if user_paths:
         for p in user_paths:
             src_img = Path(p) if Path(p).is_absolute() else _BASE / p
@@ -263,11 +276,24 @@ def publish_next_curated(conn) -> int:
             f"editorial illustration for {curated.get('topic', 'a post')}, "
             f"dark navy background, cyan and green accents, no text"
         ]
-        print(f"  Generating {len(prompts)} image(s) via Cloudflare FLUX...")
-        for idx, prompt in enumerate(prompts):
-            bg = bg_dir / f"background_{idx+1:02d}.jpg"
-            generate_background(prompt, pillar, bg)
-            bg_paths.append(bg)
+        # If a user cover.{jpg,png} exists, drop it in as slide 1's bg and
+        # skip generating the first prompt. Slide 1 gets your image, slides
+        # 2-7 keep the CF-generated backgrounds from the rest of the prompts.
+        start_idx = 0
+        if cover_path is not None:
+            dst = bg_dir / "background_01.jpg"
+            shutil.copy(str(cover_path), str(dst))
+            bg_paths.append(dst)
+            start_idx = 1
+            print(f"  Using user-provided cover: {cover_path.relative_to(_BASE)}")
+
+        remaining = prompts[start_idx:] if start_idx else prompts
+        if remaining:
+            print(f"  Generating {len(remaining)} image(s) via Cloudflare FLUX...")
+            for prompt in remaining:
+                bg = bg_dir / f"background_{len(bg_paths)+1:02d}.jpg"
+                generate_background(prompt, pillar, bg)
+                bg_paths.append(bg)
 
     # Compose slides
     print("Composing slides...")
@@ -299,13 +325,38 @@ def publish_next_curated(conn) -> int:
     print("Auto-publishing curated post...", flush=True)
     _publish_post(conn, post)
 
-    # On success, remove the curated source file (post moved to posted/ by
-    # _publish_post already).
+    # On success: delete the curated source file AND git-commit + push that
+    # deletion. Without the commit, next scheduled run checks out a fresh
+    # repo, still sees the file, and re-publishes it (real bug hit in
+    # production for 3 days — same "5 free AI tools" post published 5+
+    # times because the runner's file delete was ephemeral).
+    import subprocess
     try:
-        src.unlink()
-        print(f"  Consumed curated source: {src.name}")
-    except Exception as e:
-        print(f"  [WARN] failed to remove curated source {src.name}: {e}")
+        subprocess.run(["git", "-C", str(_BASE), "rm", "-f", str(src.relative_to(_BASE))],
+                       check=True, capture_output=True)
+        subprocess.run(["git", "-C", str(_BASE), "commit", "-m",
+                        f"queue: consume curated {src.name}"],
+                       check=True, capture_output=True)
+        # Pull-rebase before push in case another commit landed while we
+        # were publishing to IG (slide-JPG commit from _publish_post).
+        subprocess.run(["git", "-C", str(_BASE), "pull", "--rebase", "origin", "main"],
+                       check=True, capture_output=True)
+        subprocess.run(["git", "-C", str(_BASE), "push", "origin", "main"],
+                       check=True, capture_output=True)
+        print(f"  Consumed curated source: {src.name} (pushed to origin)",
+              flush=True)
+    except subprocess.CalledProcessError as e:
+        # Fall back to plain unlink so at least the runner's own state is
+        # correct; next run will still re-publish, but that's a warn not a
+        # crash. IG post itself is already live.
+        try:
+            if src.exists():
+                src.unlink()
+        except Exception:
+            pass
+        stderr = (e.stderr or b"").decode(errors="replace")[:300]
+        print(f"  [WARN] failed to git-commit curated deletion: {stderr}",
+              flush=True)
 
     return 0
 
