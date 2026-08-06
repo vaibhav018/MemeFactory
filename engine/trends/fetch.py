@@ -170,6 +170,7 @@ _PILLAR_SOURCES: dict[str, list[str]] = {
     "ai_tools_workflows": ["hackernews", "google_trends_us", "google_trends_in"],
     "wealth_hustles":     ["reddit_entrepreneur", "google_trends_in",
                            "google_trends_us"],
+    "tech_science":       ["hackernews", "google_trends_us"],
 }
 
 

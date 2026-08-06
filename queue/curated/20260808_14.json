@@ -1,85 +1,31 @@
 {
   "id": "20260808_14",
-  "pillar_id": "ai_tools_workflows",
-  "pillar_name": "AI Tools & Workflows",
-  "topic": "5 ChatGPT settings 99% of users never touch",
-  "angle": "Five toggles inside ChatGPT settings that change output quality overnight.",
-  "hook": "5 ChatGPT settings 99% of users never touch — and each one upgrades your output",
-  "caption": "Most users treat ChatGPT like a magic box. Type. Get answer. Repeat. Five specific settings buried in the menus change output quality overnight. None of them require ChatGPT Pro. All are one click away. Which of these five did you already know about?\n\n#ProfitPrompts #AITools #ClaudeAI #ChatGPT #AIWorkflow #Productivity #AIhacks #TechTips",
+  "pillar_id": "tech_science",
+  "pillar_name": "Tech & Science",
+  "topic": "3 companies every AI tool depends on",
+  "angle": "Your AI bill is set by three companies almost no consumer has heard of.",
+  "hook": "3 companies quietly running the AI economy — and why they set your ChatGPT bill",
+  "caption": "Every AI tool you use runs on a chip stack owned by a handful of companies. When one of them raises prices, your ChatGPT bill goes up two months later. Understanding this shortens the surprise. This is not a stock tip — it is context that makes tech news readable. Which of these three did you already know?\n\n#ProfitPrompts #TechExplained #NVIDIA #TSMC #AITools #TechNews #SemiConductors #ChipShortage",
+  "authored_by": "claude_opus_4_7",
   "slides": [
-    {
-      "slide": 1,
-      "text": "5 ChatGPT settings 99% of users never touch — and each one upgrades your output",
-      "emoji": "⚙️"
-    },
-    {
-      "slide": 2,
-      "text": "You need the free ChatGPT account. All five settings are free to flip.",
-      "emoji": "🔓"
-    },
-    {
-      "slide": 3,
-      "layout": "numbered",
-      "emoji": "🔧",
-      "items": [
-        {
-          "num": "01",
-          "title": "Custom Instructions",
-          "desc": "Set your role + writing style once. Applies to every chat."
-        },
-        {
-          "num": "02",
-          "title": "Memory ON",
-          "desc": "ChatGPT remembers you across chats. Free tier."
-        },
-        {
-          "num": "03",
-          "title": "Personality: Robot",
-          "desc": "Cuts fluff by 40%. Delivers direct answers only."
-        },
-        {
-          "num": "04",
-          "title": "Voice + Advanced",
-          "desc": "Real conversations. Great for learning + brainstorming."
-        },
-        {
-          "num": "05",
-          "title": "Data Controls off",
-          "desc": "Stop training on your prompts. Privacy in 2 clicks."
-        }
-      ]
-    },
-    {
-      "slide": 4,
-      "layout": "big_stat",
-      "emoji": "🎯",
-      "stat": "5",
-      "unit": "settings",
-      "caption": "that turn free ChatGPT into a genuinely different tool"
-    },
-    {
-      "slide": 5,
-      "layout": "step",
-      "step_num": "1",
-      "emoji": "🎛️",
-      "title": "Flip all 5 in 10 minutes",
-      "body": "Open ChatGPT settings. Turn on each one. Test with your usual prompts. The difference is immediately visible."
-    },
-    {
-      "slide": 6,
-      "text": "Power users flip these on day one. Casual users never open the settings menu. Same tool. Different worlds.",
-      "emoji": "🤫"
-    },
-    {
-      "slide": 7,
-      "text": "Save this. Flip all 5 tonight and screenshot your favorite change.",
-      "emoji": "📌"
-    }
+    {"slide": 1, "text": "3 companies quietly running the AI economy — and why they set your ChatGPT bill", "emoji": "🏭"},
+    {"slide": 2, "text": "You do not need to be technical. This is context, not code.", "emoji": "🧭"},
+    {"slide": 3, "layout": "numbered", "emoji": "🔗", "items": [
+      {"num": "01", "title": "TSMC", "desc": "Makes ~90% of advanced AI chips. Taiwan. Bottleneck for everyone."},
+      {"num": "02", "title": "ASML", "desc": "Makes the machines TSMC uses. One company. Dutch. Zero competitors."},
+      {"num": "03", "title": "NVIDIA", "desc": "Designs the chips TSMC makes. Sets the price the AI world pays."}
+    ]},
+    {"slide": 4, "layout": "big_stat", "emoji": "🎯", "stat": "90%", "unit": "of AI chips",
+     "caption": "made in one factory in Taiwan — the entire AI economy passes through it"},
+    {"slide": 5, "layout": "step", "step_num": "1", "emoji": "📈",
+     "title": "Watch NVIDIA earnings",
+     "body": "Every 90 days NVIDIA reports. That number tells you if your AI bills go up or down over the next two quarters. Free signal, if you know to look."},
+    {"slide": 6, "text": "OpenAI, Anthropic, Google — all three depend on TSMC. When Taiwan sneezes, every AI tool catches a cold two quarters later.", "emoji": "🤫"},
+    {"slide": 7, "text": "Save this. Next time an AI tool raises prices, you will know why 2 months before the reels do.", "emoji": "📌"}
   ],
   "image_prompts": [
-    "minimalist editorial illustration of ChatGPT settings menu configuration screen, dark navy background, cyan and green accents, glowing circuit patterns, no text, professional",
-    "abstract data visualization related to ChatGPT settings menu configuration screen, dark navy background, upward-trending chart, cyan and green accents, no text, editorial",
-    "cinematic photo of a focused young person at a laptop with glowing screen light, dark navy background, green ambient glow, no text"
-  ],
-  "authored_by": "claude_opus_4_7"
+    "editorial illustration of a semiconductor chip glowing with circuit patterns radiating outward to smaller devices, dark navy background, electric cyan accents, no text, magazine style",
+    "abstract data visualization of a supply chain — three central nodes branching to many smaller ones, dark navy background, cyan blue accents, no text, editorial",
+    "cinematic photo of a modern chip fabrication cleanroom with blue LED lighting, dark navy background, ambient cyan glow, no text"
+  ]
 }

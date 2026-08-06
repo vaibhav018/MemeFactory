@@ -1,0 +1,33 @@
+id: tech_science
+name: "Tech & Science"
+emoji: "🧬"
+weight: 1.0
+
+description: >
+  Practical tech and applied science for AI-curious 18-35 year-olds:
+  new model releases explained in human terms, utility hacks (iPhone,
+  Android, browser), the invisible companies your AI bill depends on
+  (TSMC, ASML, NVIDIA), AI safety / detection, and short "what happened
+  this week" digests of tech news that actually matters. Not academic
+  papers — always framed around what the reader can DO with the info.
+
+topic_seeds:
+  - the AI model that just launched and whether you should switch
+  - the iPhone setting Apple hides that saves 4 hours of battery
+  - what NVIDIA earnings signal about next quarter's AI bills
+  - 3 companies every AI tool secretly depends on
+  - the AI detector trap — 5 tools that catch AI writing (and how)
+  - what really happened at OpenAI / Anthropic / Google this week
+  - why GPUs cost what they cost — the honest supply chain
+  - the browser extensions AI power users install day one
+  - prompt injection attacks — the security hole nobody talks about
+  - the fastest open-source model this month and its real limits
+
+visual_palette:
+  primary: "#001528"        # deep tech-navy (matches Profit Prompts logo)
+  accent: "#20A0FF"         # electric cyan-blue
+  text: "#FFFFFF"
+  gradient_to: "#002B4F"
+
+hook_style: "insider-tech-news"
+cta_style: "save-and-try-the-hack"
