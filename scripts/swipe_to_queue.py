@@ -31,15 +31,22 @@ import yaml
 BASE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(BASE))
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv(dotenv_path=BASE / ".env")
+except ImportError:
+    pass
+
 from engine import llm_client  # noqa: E402
 from engine.scripting.carousel_writer import write_carousel  # noqa: E402
 
 
-SWIPE_DIR = BASE / "swipe"
 PILLARS_DIR = BASE / "config" / "pillars"
 CURATED_DIR = BASE / "queue" / "curated"
 DRAFT_DIR = BASE / "queue" / "curated_draft"
 POSTED_DIR = BASE / "queue" / "posted"
+DRAFT_ASSETS_DIR = BASE / "assets" / "curated_draft"
+SWIPE_DIR = BASE / "swipe"
 
 # How similar (0..1) a competitor topic must be to something we already have
 # in the queue or posted history before we skip it. Uses trigram overlap.
@@ -272,7 +279,25 @@ def main() -> int:
         curated = build_curated_post(topic_data, slides, pillar, post)
         out_path = DRAFT_DIR / f"{curated['id']}.json"
         out_path.write_text(json.dumps(curated, indent=2, ensure_ascii=False))
-        print(f"   ✓ {out_path.relative_to(BASE)}  ({topic_data['topic'][:60]})")
+
+        # Copy source cover image into the draft's assets slot so it lands as
+        # slide 1 background when the draft is promoted to queue/curated/.
+        src_rel = post.get("image_path")  # relative path recorded by swipe.py
+        if src_rel:
+            src = BASE / src_rel
+            if src.exists():
+                dst_dir = DRAFT_ASSETS_DIR / curated["id"]
+                dst_dir.mkdir(parents=True, exist_ok=True)
+                dst = dst_dir / "cover.jpg"
+                dst.write_bytes(src.read_bytes())
+                curated["source"]["local_cover_path"] = str(dst.relative_to(BASE))
+                # Persist the updated JSON so the local_cover_path is recorded.
+                out_path.write_text(json.dumps(curated, indent=2, ensure_ascii=False))
+                print(f"   ✓ {out_path.relative_to(BASE)}  + cover ({dst.stat().st_size // 1024}KB)")
+            else:
+                print(f"   ✓ {out_path.relative_to(BASE)}  (no cover — {src_rel} missing)")
+        else:
+            print(f"   ✓ {out_path.relative_to(BASE)}  (no cover in swipe data)")
         drafts_made += 1
         seen_this_run.append(topic_data["topic"])
 

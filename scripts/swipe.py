@@ -103,12 +103,25 @@ def load_handles(only: str | None = None) -> list[dict]:
     return entries
 
 
+def _download_image(url: str, dest: Path) -> bool:
+    """Fetch an IG CDN image URL to dest. Returns True on success."""
+    try:
+        r = requests.get(url, timeout=30, headers={"User-Agent": "Mozilla/5.0"})
+        r.raise_for_status()
+    except requests.RequestException as e:
+        print(f"    [warn] image download failed: {e}")
+        return False
+    dest.write_bytes(r.content)
+    return True
+
+
 def scrape_handle_apify(
     token: str,
     handle: str,
     top_n: int,
     days: int,
     fetch_multiplier: int = 3,
+    image_dir: Path | None = None,
 ) -> dict | None:
     """Hit Apify's instagram-scraper actor synchronously. Returns None on error.
 
@@ -151,7 +164,8 @@ def scrape_handle_apify(
     posts = []
     for it in items:
         # Apify shape: shortCode, url, caption, likesCount, commentsCount,
-        # timestamp (ISO), type ("Image"/"Video"/"Sidecar"), hashtags[].
+        # timestamp (ISO), type ("Image"/"Video"/"Sidecar"), hashtags[],
+        # displayUrl (cover image URL).
         ts = it.get("timestamp")
         try:
             dt = datetime.fromisoformat(ts.replace("Z", "+00:00")) if ts else None
@@ -170,10 +184,28 @@ def scrape_handle_apify(
             "typename": it.get("type") or "",
             "caption": (it.get("caption") or "").strip(),
             "hashtags": it.get("hashtags") or [],
+            "display_url": it.get("displayUrl") or "",
         })
 
     posts.sort(key=lambda p: p["engagement"], reverse=True)
     top = posts[:top_n]
+
+    # Download cover images for the top posts only — cheaper and enough for
+    # slide-1 covers. Multi-image carousels: we take the first image (cover).
+    if image_dir is not None:
+        image_dir.mkdir(parents=True, exist_ok=True)
+        for p in top:
+            url = p.get("display_url")
+            if not url or not p["shortcode"]:
+                continue
+            dest = image_dir / f"{p['shortcode']}.jpg"
+            if dest.exists() and dest.stat().st_size > 0:
+                p["image_path"] = str(dest.relative_to(BASE))
+                continue
+            if _download_image(url, dest):
+                p["image_path"] = str(dest.relative_to(BASE))
+                print(f"    ↓ cover: {dest.name} ({dest.stat().st_size // 1024}KB)")
+
     return {
         "handle": handle,
         "backend": "apify",
@@ -286,6 +318,8 @@ def main() -> int:
                     help="Seconds between handles (instaloader only; default 8)")
     ap.add_argument("--backend", choices=["apify", "instaloader"],
                     help="Override auto-detect (apify if APIFY_TOKEN set, else instaloader)")
+    ap.add_argument("--no-images", dest="download_images", action="store_false",
+                    default=True, help="Skip cover-image download (apify backend only)")
     args = ap.parse_args()
 
     handles = load_handles(only=args.handle)
@@ -312,16 +346,19 @@ def main() -> int:
     for i, entry in enumerate(handles):
         h = entry["handle"]
         print(f"→ @{h}  ({', '.join(entry.get('pillar_affinity') or []) or 'no-pillar'})")
+        out_dir = SWIPE_DIR / h
+        out_dir.mkdir(parents=True, exist_ok=True)
         if backend == "apify":
-            result = scrape_handle_apify(apify_token, h, args.top, args.days)
+            result = scrape_handle_apify(
+                apify_token, h, args.top, args.days,
+                image_dir=out_dir if args.download_images else None,
+            )
         else:
             result = scrape_handle(loader, h, args.top, args.days)
         if result is None:
             continue
         result["pillar_affinity"] = entry.get("pillar_affinity") or []
         result["why"] = (entry.get("why") or "").strip()
-        out_dir = SWIPE_DIR / h
-        out_dir.mkdir(parents=True, exist_ok=True)
         (out_dir / "latest.json").write_text(json.dumps(result, indent=2, ensure_ascii=False))
         print(f"   kept {len(result['top'])} of {result['posts_seen']} seen")
         ok += 1
