@@ -1,0 +1,69 @@
+{
+  "id": "20260813_14",
+  "pillar_id": "ai_tools_workflows",
+  "pillar_name": "AI Tools & Workflows",
+  "topic": "Realistic expectations for AI tool expertise",
+  "angle": "The gap between actual AI tool development time and expected user experience is huge",
+  "hook": "One year old AI tools require ten years experience",
+  "caption": "You see job listings demanding a decade of experience with AI tools that barely exist. What's driving this disconnect? I use AI tools daily and I'm calling out the unrealistic expectations. What's the most unrealistic job requirement you've seen recently?",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "1 year old AI tools need 10 years experience",
+      "emoji": "⚡"
+    },
+    {
+      "slide": 2,
+      "text": "You need patience and the right tools to bridge the gap",
+      "emoji": "📈"
+    },
+    {
+      "slide": 3,
+      "text": "Start with Claude for prompt caching and save $180/month",
+      "emoji": "💸"
+    },
+    {
+      "slide": 4,
+      "layout": "big_stat",
+      "emoji": "🚀",
+      "stat": "$180",
+      "unit": "/month",
+      "caption": "savings from caching with Claude"
+    },
+    {
+      "slide": 5,
+      "layout": "step",
+      "emoji": "💻",
+      "step_num": "2",
+      "title": "Optimize with Pinokio",
+      "body": "Pinokio simplifies AI setup. Visit pinokio.computer to get started"
+    },
+    {
+      "slide": 6,
+      "text": "Only 1% know how to use Claude and Pinokio together for max savings",
+      "emoji": "🤫"
+    },
+    {
+      "slide": 7,
+      "text": "Save this and try Claude tonight to cut your AI bills",
+      "emoji": "📌"
+    }
+  ],
+  "image_prompts": [
+    "Dark navy background editorial illustration of a software developer at a desk with a calendar in the background, highlighting the time discrepancy",
+    "Abstract background with a timeline of AI tool releases overlaid with job listing requirements",
+    "Cinematic image of a person trying to catch up with a speeding train, symbolizing the rush to meet unrealistic AI tool expertise demands"
+  ],
+  "authored_by": "swipe_adapter",
+  "source": {
+    "handle": "evolving.ai",
+    "shortcode": "DbXrZ1dgLfR",
+    "url": "https://www.instagram.com/p/DbXrZ1dgLfR/",
+    "likes": 105780,
+    "comments": 1652,
+    "scraped_from_caption_snippet": "A Yahoo listing for a Senior Software Developer (Claude Code Expert) asked for 10+ years of experience with Claude Code, a tool that entered public preview in February 2025, so it has been barely a ye",
+    "local_cover_path": "assets/curated_draft/swipe_evolving.ai_785cf5/cover.jpg",
+    "promoted_from_draft": "swipe_evolving.ai_785cf5",
+    "promoted_at": "2026-08-07T12:51:31.223714Z"
+  }
+}
