@@ -141,3 +141,99 @@ handles:
     style_notes: |
       Phone screenshot mockups with red circles/arrows over the exact
       setting. Numbered walkthroughs. Utility over drama.
+
+  - handle: vaibhavsisinty
+    platform: instagram
+    added_on: 2026-08-07
+    last_reviewed_at: 2026-08-07
+    pillar_affinity: [wealth_hustles, ai_tools_workflows]
+    why: |
+      Growthschool founder — startup, upskilling, and AI-career
+      content. High save rate on "career shift" and "AI job" frames.
+      Broad audience overlap with our 18-35 hustle segment.
+    sample_topics:
+      - "AI careers with the highest India salaries in 2026"
+      - "the upskilling stack that beats an MBA"
+      - "how to build an audience while you're still at your job"
+    style_notes: |
+      Face-on-camera + text overlay. Direct address. Punchy hooks.
+
+  - handle: evolvingscience.ai
+    platform: instagram
+    added_on: 2026-08-07
+    last_reviewed_at: 2026-08-07
+    pillar_affinity: [tech_science]
+    why: |
+      Adjacent to evolving.ai but skews harder into pure-science
+      breakthroughs (fusion, quantum, biotech). Inspiration for
+      tech_science pillar's "big-idea" posts.
+    sample_topics:
+      - "the quantum breakthrough Google buried in a paper"
+      - "what CRISPR 2.0 actually changes"
+      - "3 physics results from 2026 nobody outside academia noticed"
+    style_notes: |
+      Diagram-forward, muted palette, technical vocabulary with
+      one-line explanations. Long carousels (7-10 panels).
+
+  - handle: innovation
+    platform: instagram
+    added_on: 2026-08-07
+    last_reviewed_at: 2026-08-07
+    pillar_affinity: [tech_science, ai_tools_workflows]
+    why: |
+      User-added — flag: single-word handle "innovation" may be
+      unavailable/private/renamed. Scraper logs a warning and
+      skips gracefully if the profile fetch fails.
+    sample_topics: []
+    style_notes: |
+      Unverified — awaiting first scrape.
+
+  - handle: stics.ai
+    platform: instagram
+    added_on: 2026-08-07
+    last_reviewed_at: 2026-08-07
+    pillar_affinity: [ai_tools_workflows]
+    why: |
+      AI-tool discovery + micro-tutorial format. "You didn't know
+      this tool existed" framing. Good hook-pattern reference.
+    sample_topics:
+      - "5 AI tools launched this week you'll actually use"
+      - "the free ChatGPT alternative that runs on your laptop"
+      - "one prompt that turns Claude into a research assistant"
+    style_notes: |
+      Tool logos + short demo clips. Cyan/blue palette. Numbered
+      lists. Under-14-word hooks.
+
+  - handle: thewizeai
+    platform: instagram
+    added_on: 2026-08-07
+    last_reviewed_at: 2026-08-07
+    pillar_affinity: [ai_tools_workflows, wealth_hustles]
+    why: |
+      AI + monetization crossover. "Earn with AI" framing —
+      services, digital products, freelance offers. Overlaps with
+      both AI and Wealth pillars.
+    sample_topics:
+      - "the AI service offer that converts at 30% cold"
+      - "$5K/month selling AI-generated Notion templates"
+      - "6 Fiverr gigs using AI you can start today"
+    style_notes: |
+      Money-green + gold palette. Number-heavy hooks. Screenshots
+      of earnings/dashboards as proof slides.
+
+  - handle: askgpts
+    platform: instagram
+    added_on: 2026-08-07
+    last_reviewed_at: 2026-08-07
+    pillar_affinity: [ai_tools_workflows]
+    why: |
+      Prompt-library aggregator. "Steal my prompts" framing with
+      copy-paste-ready blocks. Very high save rate — worth mining
+      for prompt-focused content ideas.
+    sample_topics:
+      - "the ChatGPT prompt that writes a 10-page report in 3 minutes"
+      - "5 prompts I use every single day"
+      - "the prompt structure that beats 'act as a...'"
+    style_notes: |
+      Prompt text in monospaced code blocks over dark backgrounds.
+      Minimal decoration — the prompt IS the visual.
