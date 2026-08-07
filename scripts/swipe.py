@@ -10,15 +10,23 @@ Usage:
   python scripts/swipe.py                       # scrape all handles
   python scripts/swipe.py --handle wealthpill_  # scrape one handle
   python scripts/swipe.py --top 15 --days 45    # custom ranking window
+  python scripts/swipe.py --backend apify       # force Apify backend
 
 Then feed the results into scripts/swipe_to_queue.py.
 
-Rate-limiting: uses Instaloader's default request throttle (~1 request /
-~1.5 sec) which is safe for public data on a residential IP. Do NOT run
-this from the GitHub Actions runner — datacenter IPs get 429'd quickly.
-Run it from Termux on your phone (residential IP) instead.
+Two backends, selected by --backend or SWIPE_BACKEND env var:
 
-Login mode (STRONGLY recommended in 2026 — anonymous access gets 429'd
+  apify (recommended, ~$0.0015/post) — hits Apify's managed IG scraper
+    actor. Zero rate-limit babysitting; they maintain endpoint changes.
+    Set APIFY_TOKEN in .env. Free tier ships with $5 credit (~3300 posts).
+
+  instaloader (free but fragile) — direct scraping via a cached burner
+    IG session. See "Login mode" below. Anonymous access 429s instantly
+    in 2026, so login is required for this backend.
+
+The default is apify if APIFY_TOKEN is set, otherwise instaloader.
+
+Login mode (Instaloader backend only — anonymous access gets 429'd
 almost immediately):
 
   1. Create a burner Instagram account via the actual IG app on your
@@ -67,15 +75,17 @@ except ImportError:
 try:
     import instaloader
 except ImportError:
-    sys.stderr.write(
-        "instaloader not installed. Run: pip install -r requirements.txt\n"
-    )
-    sys.exit(1)
+    instaloader = None  # only needed if backend=instaloader
+
+import requests
 
 
 BASE = Path(__file__).resolve().parents[1]
 WATCHLIST_PATH = BASE / "config" / "handles_watchlist.yaml"
 SWIPE_DIR = BASE / "swipe"
+
+APIFY_ACTOR = "apify~instagram-scraper"
+APIFY_RUN_SYNC_URL = f"https://api.apify.com/v2/acts/{APIFY_ACTOR}/run-sync-get-dataset-items"
 
 
 def load_handles(only: str | None = None) -> list[dict]:
@@ -93,8 +103,89 @@ def load_handles(only: str | None = None) -> list[dict]:
     return entries
 
 
+def scrape_handle_apify(
+    token: str,
+    handle: str,
+    top_n: int,
+    days: int,
+    fetch_multiplier: int = 3,
+) -> dict | None:
+    """Hit Apify's instagram-scraper actor synchronously. Returns None on error.
+
+    Apify returns newest-first; we fetch top_n * fetch_multiplier so we have
+    enough posts to filter to the last `days` window before ranking.
+    """
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+    payload = {
+        "directUrls": [f"https://www.instagram.com/{handle}/"],
+        "resultsType": "posts",
+        "resultsLimit": max(top_n * fetch_multiplier, 12),
+        "searchType": "user",
+        "addParentData": False,
+    }
+    try:
+        r = requests.post(
+            APIFY_RUN_SYNC_URL,
+            params={"token": token},
+            json=payload,
+            timeout=180,
+        )
+    except requests.RequestException as e:
+        print(f"  [skip] @{handle} — request failed: {e}")
+        return None
+    if r.status_code == 404:
+        print(f"  [skip] @{handle} — actor returned 404 (handle may not exist)")
+        return None
+    if r.status_code >= 400:
+        print(f"  [skip] @{handle} — apify HTTP {r.status_code}: {r.text[:200]}")
+        return None
+    try:
+        items = r.json()
+    except Exception as e:
+        print(f"  [skip] @{handle} — bad JSON: {e}")
+        return None
+    if not items:
+        print(f"  [skip] @{handle} — 0 posts returned (private / non-existent / blocked)")
+        return None
+
+    posts = []
+    for it in items:
+        # Apify shape: shortCode, url, caption, likesCount, commentsCount,
+        # timestamp (ISO), type ("Image"/"Video"/"Sidecar"), hashtags[].
+        ts = it.get("timestamp")
+        try:
+            dt = datetime.fromisoformat(ts.replace("Z", "+00:00")) if ts else None
+        except Exception:
+            dt = None
+        if dt and dt < cutoff:
+            continue
+        posts.append({
+            "shortcode": it.get("shortCode") or it.get("id") or "",
+            "url": it.get("url") or f"https://www.instagram.com/p/{it.get('shortCode','')}/",
+            "date_utc": (dt or datetime.now(timezone.utc)).isoformat(),
+            "likes": it.get("likesCount") or 0,
+            "comments": it.get("commentsCount") or 0,
+            "engagement": (it.get("likesCount") or 0) + (it.get("commentsCount") or 0),
+            "is_video": (it.get("type") == "Video"),
+            "typename": it.get("type") or "",
+            "caption": (it.get("caption") or "").strip(),
+            "hashtags": it.get("hashtags") or [],
+        })
+
+    posts.sort(key=lambda p: p["engagement"], reverse=True)
+    top = posts[:top_n]
+    return {
+        "handle": handle,
+        "backend": "apify",
+        "scraped_at": datetime.now(timezone.utc).isoformat(),
+        "window_days": days,
+        "posts_seen": len(posts),
+        "top": top,
+    }
+
+
 def scrape_handle(
-    loader: instaloader.Instaloader,
+    loader: "instaloader.Instaloader",
     handle: str,
     top_n: int,
     days: int,
@@ -176,26 +267,55 @@ def build_loader() -> instaloader.Instaloader:
     return loader
 
 
+def _pick_backend(cli_choice: str | None) -> str:
+    if cli_choice:
+        return cli_choice
+    env = os.getenv("SWIPE_BACKEND", "").strip().lower()
+    if env in ("apify", "instaloader"):
+        return env
+    # Auto: Apify if token exists, else fall back to instaloader.
+    return "apify" if os.getenv("APIFY_TOKEN") else "instaloader"
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--handle", help="Scrape only this handle")
     ap.add_argument("--top", type=int, default=10, help="Top N per handle (default 10)")
     ap.add_argument("--days", type=int, default=30, help="Lookback window (default 30)")
     ap.add_argument("--sleep", type=float, default=8.0,
-                    help="Seconds between handles to stay under IG's radar (default 8)")
+                    help="Seconds between handles (instaloader only; default 8)")
+    ap.add_argument("--backend", choices=["apify", "instaloader"],
+                    help="Override auto-detect (apify if APIFY_TOKEN set, else instaloader)")
     args = ap.parse_args()
 
     handles = load_handles(only=args.handle)
     SWIPE_DIR.mkdir(exist_ok=True)
 
-    loader = build_loader()
+    backend = _pick_backend(args.backend)
+    print(f"→ backend: {backend}")
+
+    loader = None
+    apify_token = ""
+    if backend == "apify":
+        apify_token = os.getenv("APIFY_TOKEN", "").strip()
+        if not apify_token:
+            sys.stderr.write("APIFY_TOKEN not set in .env. Aborting.\n")
+            return 2
+    else:
+        if instaloader is None:
+            sys.stderr.write("instaloader not installed. `pip install instaloader`.\n")
+            return 2
+        loader = build_loader()
 
     print(f"Scraping {len(handles)} handle(s) — top {args.top}, last {args.days}d")
     ok = 0
     for i, entry in enumerate(handles):
         h = entry["handle"]
         print(f"→ @{h}  ({', '.join(entry.get('pillar_affinity') or []) or 'no-pillar'})")
-        result = scrape_handle(loader, h, args.top, args.days)
+        if backend == "apify":
+            result = scrape_handle_apify(apify_token, h, args.top, args.days)
+        else:
+            result = scrape_handle(loader, h, args.top, args.days)
         if result is None:
             continue
         result["pillar_affinity"] = entry.get("pillar_affinity") or []
@@ -205,7 +325,8 @@ def main() -> int:
         (out_dir / "latest.json").write_text(json.dumps(result, indent=2, ensure_ascii=False))
         print(f"   kept {len(result['top'])} of {result['posts_seen']} seen")
         ok += 1
-        if i < len(handles) - 1 and args.sleep > 0:
+        # Only sleep between calls on instaloader — Apify handles its own throttling.
+        if backend == "instaloader" and i < len(handles) - 1 and args.sleep > 0:
             time.sleep(args.sleep)
 
     print(f"\nDone. {ok}/{len(handles)} handles scraped.")
