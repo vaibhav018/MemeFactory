@@ -22,6 +22,11 @@ queue/posted/*.json
 !queue/pending/.gitkeep
 !queue/approved/.gitkeep
 !queue/posted/.gitkeep
+
+# Swipe scraper output — local-only. User reviews drafts before promoting
+# approved ones to queue/curated/<YYYYMMDD_HH>.json (which IS tracked).
+swipe/
+queue/curated_draft/
 # Generated_Memes IS committed — Actions needs public raw URLs for Instagram
 assets/Downloaded/
 logs/
