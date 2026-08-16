@@ -5,319 +5,280 @@
 <title>slide</title>
 <style>
   /* ══════════════════════════════════════════════════════════════════
-     @profit_prompts_ — carousel slide design system
-     Rendered at 1080x1080 by engine/visual/html_renderer.py (Playwright).
-     Preview: open this file in a browser; it falls back to DEMO data.
+     @profit_prompts_ — carousel slide design system  ·  1080 x 1350 (4:5)
+     Rendered by engine/visual/html_renderer.py (Playwright/Chromium).
+
+     Format derived from a 133-cover scrape of the niche (16 Aug 2026):
+     zero competitors post square; the winning cover is photo-top /
+     black-bar-bottom with a hairline seam, a small centred badge, heavy
+     condensed caps, and colour-highlighted keywords.
+     Preview: open in a browser — falls back to DEMO data.
      ══════════════════════════════════════════════════════════════════ */
 
-  @font-face {
-    font-family: "Anton";
-    src: url("../assets/fonts/Anton-Regular.ttf") format("truetype");
-    font-weight: 400; font-display: block;
-  }
-  @font-face {
-    font-family: "InterVar";
-    src: url("../assets/fonts/Inter-Variable.ttf") format("truetype");
-    font-weight: 100 900; font-display: block;
-  }
-  @font-face {
-    font-family: "MonoVar";
-    src: url("../assets/fonts/JetBrainsMono-Variable.ttf") format("truetype");
-    font-weight: 100 800; font-display: block;
-  }
+  @font-face { font-family:"Anton";   src:url("../assets/fonts/Anton-Regular.ttf") format("truetype");        font-weight:400;     font-display:block; }
+  @font-face { font-family:"InterVar";src:url("../assets/fonts/Inter-Variable.ttf") format("truetype");        font-weight:100 900; font-display:block; }
+  @font-face { font-family:"MonoVar"; src:url("../assets/fonts/JetBrainsMono-Variable.ttf") format("truetype");font-weight:100 800; font-display:block; }
 
   :root {
-    --ink:      #0B0B0C;   /* ground */
-    --ink-2:    #141417;   /* raised panel */
-    --paper:    #FFFFFF;
-    --accent:   #FFDE00;   /* brand yellow */
-    --accent-d: #C7A800;
-    --muted:    #8A8A93;
-    --rule:     #2A2A30;
-
-    --pad:      88px;      /* uniform safe margin */
-    --stage:    1080px;
+    --ink:#0B0B0C; --ink-2:#141417; --paper:#FFFFFF;
+    --accent:#FFDE00; --muted:#8A8A93; --rule:#2A2A30;
+    --pad:80px;
+    --W:1080px; --H:1350px;
+    --photo-h:62%;          /* photo panel height on cover slides */
   }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: var(--ink); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { background:var(--ink); }
 
   #slide {
-    width: var(--stage);
-    height: var(--stage);
-    position: relative;
-    overflow: hidden;
-    background: var(--ink);
-    color: var(--paper);
-    font-family: "InterVar", sans-serif;
-    font-feature-settings: "ss01", "cv05";
-    display: flex;
-    flex-direction: column;
+    width:var(--W); height:var(--H); position:relative; overflow:hidden;
+    background:var(--ink); color:var(--paper);
+    font-family:"InterVar",sans-serif; font-feature-settings:"ss01","cv05";
+    display:flex; flex-direction:column;
   }
 
-  /* ── optional texture layer: only used when a bg image is supplied ── */
-  #tex {
-    position: absolute; inset: 0;
-    background-size: cover; background-position: center;
-    opacity: 0; z-index: 0;
+  /* ═════ COVER / CTA (bookend): photo panel over black headline bar ═════ */
+  #photo {
+    height:var(--photo-h); position:relative; flex:none; overflow:hidden;
+    background:#101014;
   }
-  #slide.has-tex #tex { opacity: .30; }
-  #slide.has-tex::after {
-    content: ""; position: absolute; inset: 0; z-index: 1;
-    background: linear-gradient(180deg, rgba(11,11,12,.62) 0%, rgba(11,11,12,.90) 62%, #0B0B0C 100%);
+  #photo .img { position:absolute; inset:0; background-size:cover; background-position:center; }
+  /* Graphic fallback when no cover image exists: halftone poster field, the
+     look @alamin.8020ai uses behind cut-out subjects. Never a blank box. */
+  #photo .fallback {
+    position:absolute; inset:0;
+    background:
+      radial-gradient(circle at 1.5px 1.5px, rgba(255,222,0,.30) 1.1px, transparent 1.2px) 0 0/9px 9px,
+      radial-gradient(circle at 72% 26%, rgba(255,222,0,.20), transparent 58%),
+      linear-gradient(155deg,#15151B 0%,#0B0B0C 62%);
   }
-  /* Grain: pure CSS, keeps flat colour from banding on IG's re-compression */
+  #photo .fallback::after {
+    content:""; position:absolute; inset:0;
+    background:
+      linear-gradient(72deg, transparent 47%, rgba(255,255,255,.07) 47.4%, transparent 48%),
+      linear-gradient(-58deg, transparent 63%, rgba(255,255,255,.05) 63.3%, transparent 64%);
+  }
+  /* Bottom fade so the seam reads as one object, not two stacked boxes. */
+  #photo::after {
+    content:""; position:absolute; left:0; right:0; bottom:0; height:26%;
+    background:linear-gradient(180deg, transparent, rgba(11,11,12,.92));
+  }
+
+  /* seam: hairline rules flanking a small centred badge */
+  .seam {
+    position:absolute; left:var(--pad); right:var(--pad); bottom:-1px; z-index:3;
+    display:flex; align-items:center; gap:20px;
+  }
+  .seam .line { flex:1; height:2px; background:rgba(255,255,255,.85); }
+  .seam .badge {
+    font-family:"MonoVar",monospace; font-size:23px; font-weight:800;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--paper);
+    white-space:nowrap;
+  }
+  .seam .badge b { background:var(--accent); color:var(--ink); padding:1px 7px; font-weight:800; }
+
+  /* headline bar */
+  #bar {
+    flex:1; background:var(--ink); padding:34px var(--pad) 96px;  /* bottom pad reserves the swipe strip */
+    display:flex; flex-direction:column; justify-content:flex-start; position:relative;
+  }
+  .headline {
+    font-family:"Anton",sans-serif; font-size:97px; line-height:.99;
+    text-transform:uppercase; letter-spacing:-.004em; text-wrap:balance;
+  }
+  .headline .hl { color:var(--accent); }
+  .subline {
+    font-family:"InterVar",sans-serif; font-weight:750; font-size:31px;
+    line-height:1.24; text-transform:uppercase; letter-spacing:.005em;
+    color:#C9C9D2; margin-top:22px; text-wrap:balance;
+  }
+  .swipe {
+    position:absolute; left:0; right:0; bottom:34px; text-align:center;
+    font-family:"InterVar",sans-serif; font-weight:800; font-size:26px;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--paper);
+  }
+
+  /* ═════ INTERIOR SLIDES ═════ */
   #grain {
-    position: absolute; inset: 0; z-index: 2; opacity: .045;
+    position:absolute; inset:0; z-index:2; opacity:.05; pointer-events:none;
     background-image:
-      repeating-linear-gradient(0deg,   #fff 0 1px, transparent 1px 3px),
-      repeating-linear-gradient(90deg,  #fff 0 1px, transparent 1px 3px);
-    mix-blend-mode: overlay;
+      repeating-linear-gradient(0deg,#fff 0 1px,transparent 1px 3px),
+      repeating-linear-gradient(90deg,#fff 0 1px,transparent 1px 3px);
+    mix-blend-mode:overlay;
   }
+  #rail { position:absolute; left:0; top:0; bottom:0; width:14px; z-index:4; background:var(--accent); }
+  .topbar, .footer {
+    position:absolute; left:var(--pad); right:var(--pad); z-index:4;
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:"MonoVar",monospace; letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
+  }
+  .topbar { top:46px; font-size:22px; font-weight:600; }
+  .footer { bottom:42px; font-size:22px; font-weight:500; }
+  .topbar .idx { color:var(--accent); font-variant-numeric:tabular-nums; }
 
-  /* ── chrome: rail, index, handle ── */
-  .stage { position: relative; z-index: 3; flex: 1; display: flex; flex-direction: column;
-           padding: var(--pad); }
+  .stage { position:relative; z-index:3; flex:1; display:flex; flex-direction:column; padding:var(--pad); }
+  .body  { flex:1; display:flex; flex-direction:column; justify-content:center; margin:40px 0; }
 
-  #rail { position: absolute; left: 0; top: 0; bottom: 0; width: 14px; z-index: 4;
-          background: var(--accent); }
-  #slide.is-bookend #rail { width: 22px; }
+  .kicker { font-family:"MonoVar",monospace; font-size:26px; font-weight:700; letter-spacing:.16em;
+            text-transform:uppercase; color:var(--accent); margin-bottom:26px; }
+  .h-lead { font-size:64px; line-height:1.15; font-weight:700; letter-spacing:-.02em; text-wrap:balance; }
+  .h-lead .hl { color:var(--accent); }
+  .p-body { font-size:46px; line-height:1.34; color:#E4E4E8; letter-spacing:-.01em; }
 
-  .topbar {
-    position: absolute; top: 44px; left: var(--pad); right: var(--pad);
-    display: flex; justify-content: space-between; align-items: center;
-    z-index: 4;
-    font-family: "MonoVar", monospace; font-size: 22px; font-weight: 600;
-    letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
-  }
-  .topbar .idx { color: var(--accent); font-variant-numeric: tabular-nums; }
+  .step-head { display:flex; align-items:center; gap:26px; margin-bottom:30px; }
+  .step-num  { font-family:"Anton",sans-serif; font-size:76px; line-height:1; color:var(--ink);
+               background:var(--accent); width:110px; height:110px; flex:none;
+               display:flex; align-items:center; justify-content:center; }
+  .step-title{ font-family:"Anton",sans-serif; font-size:78px; line-height:1.02; text-transform:uppercase; }
 
-  .footer {
-    position: absolute; bottom: 40px; left: var(--pad); right: var(--pad);
-    display: flex; justify-content: space-between; align-items: center;
-    z-index: 4;
-    font-family: "MonoVar", monospace; font-size: 22px; font-weight: 500;
-    letter-spacing: .1em; color: var(--muted);
-  }
+  .stat-wrap { display:flex; flex-direction:column; align-items:flex-start; }
+  .stat-line { display:flex; align-items:baseline; gap:10px; }
+  .stat      { font-family:"Anton",sans-serif; font-size:320px; line-height:.84; color:var(--accent);
+               letter-spacing:-.03em; font-variant-numeric:tabular-nums; }
+  .stat-unit { font-family:"Anton",sans-serif; font-size:100px; color:var(--accent); text-transform:uppercase; white-space:nowrap; }
+  .stat-cap  { font-size:46px; line-height:1.3; color:#E4E4E8; margin-top:36px; max-width:90%; }
 
-  .body { flex: 1; display: flex; flex-direction: column; justify-content: center;
-          margin-top: 34px; margin-bottom: 34px; }
+  .split { display:flex; flex-direction:column; gap:32px; }
+  .split-col { border:3px solid var(--rule); padding:36px 38px; }
+  .split-col.right { border-color:var(--accent); }
+  .split-label { font-family:"MonoVar",monospace; font-size:26px; font-weight:700; letter-spacing:.16em;
+                 text-transform:uppercase; color:var(--muted); margin-bottom:16px; }
+  .split-col.right .split-label { color:var(--accent); }
+  .split-text { font-size:42px; line-height:1.3; }
 
-  /* ── type scale ── */
-  .kicker {
-    font-family: "MonoVar", monospace; font-size: 26px; font-weight: 700;
-    letter-spacing: .16em; text-transform: uppercase; color: var(--accent);
-    margin-bottom: 26px;
-  }
-  .hook {
-    font-family: "Anton", sans-serif;
-    font-size: 128px; line-height: .96; letter-spacing: -.005em;
-    text-transform: uppercase; text-wrap: balance;
-  }
-  .hook .hl { color: var(--accent); }
-  .h-lead {
-    font-size: 62px; line-height: 1.16; font-weight: 700; letter-spacing: -.02em;
-    text-wrap: balance;
-  }
-  .p-body {
-    font-size: 44px; line-height: 1.36; font-weight: 400; color: #E4E4E8;
-    letter-spacing: -.01em;
-  }
-
-  /* ── layout: step ── */
-  .step-head { display: flex; align-items: center; gap: 26px; margin-bottom: 30px; }
-  .step-num {
-    font-family: "Anton", sans-serif; font-size: 74px; line-height: 1;
-    color: var(--ink); background: var(--accent);
-    width: 108px; height: 108px; display: flex; align-items: center; justify-content: center;
-    flex: none;
-  }
-  .step-title {
-    font-family: "Anton", sans-serif; font-size: 76px; line-height: 1.02;
-    text-transform: uppercase; letter-spacing: -.005em;
-  }
-
-  /* ── layout: big_stat ── */
-  .stat-wrap { display: flex; flex-direction: column; align-items: flex-start; }
-  /* stat and its unit sit on one baseline — "83%" reads as a single number,
-     not a number stacked above a symbol. */
-  .stat-line { display: flex; align-items: baseline; gap: 10px; flex-wrap: nowrap; }
-  .stat {
-    font-family: "Anton", sans-serif; font-size: 300px; line-height: .84;
-    color: var(--accent); letter-spacing: -.03em; font-variant-numeric: tabular-nums;
-  }
-  .stat-unit {
-    font-family: "Anton", sans-serif; font-size: 96px; color: var(--accent);
-    text-transform: uppercase; letter-spacing: .01em; white-space: nowrap;
-  }
-  .stat-cap { font-size: 44px; line-height: 1.3; color: #E4E4E8; margin-top: 34px; max-width: 88%; }
-
-  /* ── layout: split ── */
-  .split { display: flex; flex-direction: column; gap: 30px; }
-  .split-col { border: 3px solid var(--rule); padding: 34px 36px; }
-  .split-col.right { border-color: var(--accent); }
-  .split-label {
-    font-family: "MonoVar", monospace; font-size: 26px; font-weight: 700;
-    letter-spacing: .16em; text-transform: uppercase; color: var(--muted);
-    margin-bottom: 16px;
-  }
-  .split-col.right .split-label { color: var(--accent); }
-  .split-text { font-size: 40px; line-height: 1.3; }
-
-  /* ── layout: numbered ── */
-  .list { display: flex; flex-direction: column; gap: 22px; }
-  .row { display: flex; gap: 24px; align-items: baseline;
-         border-bottom: 2px solid var(--rule); padding-bottom: 20px; }
-  .row:last-child { border-bottom: none; }
-  .row-num {
-    font-family: "MonoVar", monospace; font-size: 34px; font-weight: 700;
-    color: var(--accent); flex: none; width: 62px; font-variant-numeric: tabular-nums;
-  }
-  .row-title { font-size: 42px; font-weight: 700; letter-spacing: -.01em; }
-  .row-desc  { font-size: 32px; color: var(--muted); line-height: 1.28; margin-top: 4px; }
-
-  /* ── CTA (bookend: mirrors the hook slide exactly) ── */
-  .cta-note {
-    font-family: "MonoVar", monospace; font-size: 28px; font-weight: 600;
-    letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
-    margin-top: 34px;
-  }
+  .list { display:flex; flex-direction:column; gap:24px; }
+  .row  { display:flex; gap:26px; align-items:baseline; border-bottom:2px solid var(--rule); padding-bottom:22px; }
+  .row:last-child { border-bottom:none; }
+  .row-num  { font-family:"MonoVar",monospace; font-size:36px; font-weight:700; color:var(--accent);
+              flex:none; width:66px; font-variant-numeric:tabular-nums; }
+  .row-title{ font-size:44px; font-weight:700; letter-spacing:-.01em; }
+  .row-desc { font-size:34px; color:var(--muted); line-height:1.28; margin-top:5px; }
 </style>
 </head>
 <body>
 <div id="slide">
-  <div id="tex"></div>
-  <div id="grain"></div>
-  <div id="rail"></div>
-  <div class="topbar">
-    <span class="brand"></span>
-    <span class="idx"></span>
+  <!-- bookend structure (cover + CTA) -->
+  <div id="photo"><div class="img"></div><div class="fallback"></div>
+    <div class="seam"><span class="line"></span><span class="badge"></span><span class="line"></span></div>
   </div>
+  <div id="bar"><div class="headline"></div><div class="subline"></div><div class="swipe"></div></div>
+
+  <!-- interior structure -->
+  <div id="grain"></div><div id="rail"></div>
+  <div class="topbar"><span class="brand"></span><span class="idx"></span></div>
   <div class="stage"><div class="body" id="body"></div></div>
-  <div class="footer">
-    <span class="handle"></span>
-    <span class="hint"></span>
-  </div>
+  <div class="footer"><span class="handle"></span><span></span></div>
 </div>
 
 <script>
-/* Data is injected by html_renderer.py as window.SLIDE. Opening this file
-   directly in a browser falls back to DEMO so the template can be designed
-   without running Python. */
 const DEMO = {
-  slide: 3, total: 7, handle: "@profit_prompts_",
-  data: { layout: "step", step_num: "2", title: "Force sentence variance",
-          body: "Every model writes in one rhythm: 15 to 20 words, every line. Real writing does not. Tell it to vary sentence length." },
-  bg: null
+  slide:1, total:7, handle:"@profit_prompts_",
+  data:{ text:"5 prompts that make any AI *stop writing* like a robot",
+         subline:"Every model ships with the same five tells" },
+  bg:null
 };
 const S = window.SLIDE || DEMO;
+const d = S.data || {};
+const isHook = S.slide === 1, isCTA = S.slide === S.total;
+const bookend = isHook || isCTA;
 
-const esc = t => String(t == null ? "" : t)
-  .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const esc = t => String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 
-/* Emphasise the numeric/currency token in a hook so slide 1 has a focal point
-   without the writer needing to mark it up. */
-function emphasise(text) {
-  return esc(text).replace(
-    /(\$[\d,.]+[KMB]?|₹[\d,.]+[KMB]?|\b\d[\d,.]*\s?(?:%|x|×|hours?|mins?|days?|K\/mo)?\b)/i,
-    '<span class="hl">$1</span>'
-  );
+/* Keyword highlighting. The niche colours 1-3 keywords per headline rather
+   than the whole line. Writers mark them with *asterisks*; if none are
+   marked we fall back to the first number/currency token. */
+function hl(text) {
+  let s = esc(text);
+  if (/\*[^*]+\*/.test(s)) return s.replace(/\*([^*]+)\*/g, '<span class="hl">$1</span>');
+  return s.replace(/(\$[\d,.]+[KMB]?|₹[\d,.]+[KMB]?|\b\d[\d,.]*\s?%?)/i, '<span class="hl">$1</span>');
 }
 
-const el   = document.getElementById("slide");
-const body = document.getElementById("body");
-const d    = S.data || {};
-const isHook = S.slide === 1;
-const isCTA  = S.slide === S.total;
+const el = document.getElementById("slide");
+const photo = document.getElementById("photo");
+const bar = document.getElementById("bar");
 
-/* Bookend: hook and CTA share the same visual treatment. Creator guidance is
-   explicit that a CTA which looks unlike the cover reads as an ad. */
-if (isHook || isCTA) el.classList.add("is-bookend");
+if (bookend) {
+  document.getElementById("grain").style.display = "none";
+  document.getElementById("rail").style.display  = "none";
+  document.querySelector(".topbar").style.display = "none";
+  document.querySelector(".footer").style.display = "none";
+  document.querySelector(".stage").style.display  = "none";
 
-if (S.bg) {
-  el.classList.add("has-tex");
-  document.getElementById("tex").style.backgroundImage = `url("${S.bg}")`;
-}
-
-document.querySelector(".brand").textContent  = (isHook || isCTA) ? "" : "Profit Prompts";
-document.querySelector(".idx").textContent    = (isHook || isCTA) ? "" : `${S.slide}/${S.total}`;
-document.querySelector(".handle").textContent = S.handle || "@profit_prompts_";
-document.querySelector(".hint").textContent   = isCTA ? "" : (isHook ? "SWIPE →" : "");
-
-function render() {
-  if (isHook) {
-    return `<div class="kicker">${esc(d.kicker || "AI TOOLS")}</div>
-            <div class="hook">${emphasise(d.text || "")}</div>`;
+  if (S.bg) {
+    photo.querySelector(".img").style.backgroundImage = `url("${S.bg}")`;
+    photo.querySelector(".fallback").style.display = "none";
   }
-  if (isCTA) {
-    return `<div class="kicker">SAVE + SEND</div>
-            <div class="hook">${emphasise(d.text || "")}</div>
-            <div class="cta-note">Send this to someone who needs it</div>`;
-  }
-  switch (d.layout) {
-    case "step":
-      return `<div class="step-head">
-                <div class="step-num">${esc(d.step_num || S.slide - 1)}</div>
-                <div class="step-title">${esc(d.title || "")}</div>
-              </div>
-              <div class="p-body">${esc(d.body || "")}</div>`;
+  document.querySelector(".seam .badge").innerHTML = 'PROFIT <b>PROMPTS</b>';
+  document.querySelector(".headline").innerHTML = hl(d.text || "");
+  const sub = d.subline || (isCTA ? "Send this to someone who needs it" : "");
+  const subEl = document.querySelector(".subline");
+  if (sub) subEl.textContent = sub; else subEl.style.display = "none";
+  document.querySelector(".swipe").textContent = isCTA ? S.handle : "Swipe for more";
+} else {
+  photo.style.display = "none";
+  bar.style.display = "none";
+  document.querySelector(".brand").textContent  = "Profit Prompts";
+  document.querySelector(".idx").textContent    = `${S.slide}/${S.total}`;
+  document.querySelector(".handle").textContent = S.handle || "@profit_prompts_";
 
-    case "big_stat":
-      return `<div class="stat-wrap">
-                <div class="stat-line">
-                  <span class="stat">${esc(d.stat || "")}</span>
-                  ${d.unit ? `<span class="stat-unit">${esc(String(d.unit).trim())}</span>` : ""}
-                </div>
-                <div class="stat-cap">${esc(d.caption || "")}</div>
-              </div>`;
-
-    case "split":
-      return `<div class="split">
-                <div class="split-col">
-                  <div class="split-label">${esc(d.left_label || "")}</div>
-                  <div class="split-text">${esc(d.left_text || "")}</div>
-                </div>
-                <div class="split-col right">
-                  <div class="split-label">${esc(d.right_label || "")}</div>
-                  <div class="split-text">${esc(d.right_text || "")}</div>
-                </div>
-              </div>`;
-
-    case "numbered": {
-      const rows = (d.items || []).map(it => `
-        <div class="row">
-          <div class="row-num">${esc(it.num || "")}</div>
-          <div>
-            <div class="row-title">${esc(it.title || "")}</div>
-            <div class="row-desc">${esc(it.desc || "")}</div>
-          </div>
-        </div>`).join("");
-      return `<div class="list">${rows}</div>`;
+  const body = document.getElementById("body");
+  body.innerHTML = (function () {
+    switch (d.layout) {
+      case "step":
+        return `<div class="step-head"><div class="step-num">${esc(d.step_num||S.slide-1)}</div>
+                <div class="step-title">${esc(d.title||"")}</div></div>
+                <div class="p-body">${esc(d.body||"")}</div>`;
+      case "big_stat":
+        return `<div class="stat-wrap"><div class="stat-line">
+                  <span class="stat">${esc(d.stat||"")}</span>
+                  ${d.unit?`<span class="stat-unit">${esc(String(d.unit).trim())}</span>`:""}
+                </div><div class="stat-cap">${esc(d.caption||"")}</div></div>`;
+      case "split":
+        return `<div class="split">
+                  <div class="split-col"><div class="split-label">${esc(d.left_label||"")}</div>
+                    <div class="split-text">${esc(d.left_text||"")}</div></div>
+                  <div class="split-col right"><div class="split-label">${esc(d.right_label||"")}</div>
+                    <div class="split-text">${esc(d.right_text||"")}</div></div>
+                </div>`;
+      case "numbered":
+        return `<div class="list">${(d.items||[]).map(it=>`
+                  <div class="row"><div class="row-num">${esc(it.num||"")}</div>
+                    <div><div class="row-title">${esc(it.title||"")}</div>
+                    <div class="row-desc">${esc(it.desc||"")}</div></div></div>`).join("")}</div>`;
+      default:
+        return `<div class="h-lead">${hl(d.text||"")}</div>`;
     }
-
-    default:
-      return `<div class="h-lead">${emphasise(d.text || "")}</div>`;
-  }
+  })();
 }
 
-body.innerHTML = render();
-
-/* ── autofit ────────────────────────────────────────────────────────────
-   Shrink the largest type until the content fits the safe area. Guarantees
-   no clipping regardless of how long the writer's copy runs. */
-(function fit() {
-  const targets = body.querySelectorAll(
-    ".hook, .step-title, .stat, .stat-unit, .h-lead, .p-body, .split-text, .row-title");
-  const avail = body.clientHeight;
+/* Autofit — shrink the largest type until content clears its container.
+   MUST run after the webfonts load: Anton is far more condensed than any
+   fallback, so measuring too early sees extra line wraps and shrinks the
+   headline to nothing. The renderer waits for data-ready before shooting. */
+function fit() {
+  const box = bookend ? bar : document.getElementById("body");
+  const sel = ".headline,.subline,.h-lead,.p-body,.step-title,.stat,.stat-unit,.split-text,.row-title";
+  const targets = box.querySelectorAll(sel);
+  // scrollHeight is never below clientHeight, so compare them directly and
+  // reserve fixed furniture (the swipe strip) with padding, not subtraction.
+  const avail = box.clientHeight;
   let guard = 0;
-  while (body.scrollHeight > avail && guard++ < 60) {
-    targets.forEach(t => {
-      const cur = parseFloat(getComputedStyle(t).fontSize);
-      t.style.fontSize = (cur * 0.96) + "px";
-    });
+  if (targets.length) {
+    while (box.scrollHeight > avail && guard++ < 70) {
+      targets.forEach(t => {
+        const cur = parseFloat(getComputedStyle(t).fontSize);
+        t.style.fontSize = (cur * 0.96) + "px";
+      });
+    }
   }
   document.documentElement.setAttribute("data-fit", guard);
-})();
+  document.documentElement.setAttribute("data-ready", "1");
+}
+
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => requestAnimationFrame(fit));
+} else {
+  window.addEventListener("load", fit);
+}
 </script>
 </body>
 </html>

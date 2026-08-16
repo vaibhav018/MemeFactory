@@ -8,7 +8,7 @@ land, so every background has to be busy-but-neutral, and Pillow gives us
 rectangles and a font file with no grid or real typography.
 
 This module renders `templates/slide.html` in headless Chromium and
-screenshots it at 1080x1080. Full CSS, real web typography, deterministic
+screenshots it at 1080x1350 (4:5). Full CSS, real web typography, deterministic
 output, no image API on the critical path. Backgrounds become an *optional*
 texture layer behind a controlled type layer.
 
@@ -24,7 +24,7 @@ from pathlib import Path
 
 _BASE = Path(__file__).resolve().parents[2]
 _TEMPLATE = _BASE / "templates" / "slide.html"
-_SIZE = 1080
+_W, _H = 1080, 1350          # Instagram 4:5 portrait
 
 
 class RendererUnavailable(RuntimeError):
@@ -73,7 +73,7 @@ def render_carousel(
     with sync_playwright() as p:
         browser = p.chromium.launch(args=["--font-render-hinting=none"])
         page = browser.new_page(
-            viewport={"width": _SIZE, "height": _SIZE},
+            viewport={"width": _W, "height": _H},
             device_scale_factor=1,
         )
         try:
@@ -94,8 +94,12 @@ def render_carousel(
                 page.add_init_script(f"window.SLIDE = {json.dumps(payload)};")
                 page.goto(_TEMPLATE.resolve().as_uri())
                 page.wait_for_load_state("networkidle")
-                # Webfonts are font-display:block; make sure they painted.
-                page.evaluate("document.fonts.ready")
+                # The template runs its autofit only after webfonts resolve,
+                # then stamps data-ready. Shooting earlier catches type that
+                # was measured against fallback metrics.
+                page.wait_for_function(
+                    "document.documentElement.dataset.ready === '1'", timeout=15000
+                )
 
                 out = output_dir / f"{post_id}_slide_{i:02d}.jpg"
                 page.locator("#slide").screenshot(
