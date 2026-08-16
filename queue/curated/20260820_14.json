@@ -1,0 +1,63 @@
+{
+  "id": "20260820_14",
+  "pillar_id": "tech_science",
+  "pillar_name": "Tech & Science",
+  "topic": "Your translated text now counts as AI-written",
+  "angle": "Detection policy expanded to cover things people never considered generation",
+  "hook": "Translating your own text now counts as AI-written",
+  "caption": "If you write something yourself and use AI only to translate it, a growing number of platforms and institutions now classify the result as AI-generated. Whatever you think of that, it is the rule people are being marked against — and most writers using AI as a language bridge have no idea it changed.\n\n💬 Comment \"POLICY\" and I'll send you the full list.\n🔖 Save this for the next time you need it.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#aiwriting #contentcreation #translation #policy #freelancing #writing",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "Translating your own text now counts as *AI-written*",
+      "subline": "Detection policy moved. Most people missed it"
+    },
+    {
+      "text": "You wrote every idea. AI only changed the language. That now counts as AI-generated in a lot of places.",
+      "slide": 2
+    },
+    {
+      "layout": "step",
+      "step_num": "1",
+      "title": "Who this actually hits",
+      "body": "Anyone writing in a second language. You do the thinking, the model does the phrasing, and the output gets flagged the same as something generated from a one-line prompt.",
+      "slide": 3
+    },
+    {
+      "layout": "split",
+      "left_label": "WHAT YOU DID",
+      "left_text": "Wrote the argument, the structure and every point yourself.",
+      "right_label": "HOW IT READS",
+      "right_text": "Machine-translated phrasing, which detectors and policies score as generated.",
+      "slide": 4
+    },
+    {
+      "layout": "step",
+      "step_num": "2",
+      "title": "Declare it and move on",
+      "body": "Where there is a disclosure box, use it. A stated translation is almost always fine. An undisclosed one that gets flagged later is the version that costs you the client or the grade.",
+      "slide": 5
+    },
+    {
+      "layout": "step",
+      "step_num": "3",
+      "title": "Translate, then rewrite one pass",
+      "body": "Take the translated draft and rewrite it once in your own voice. Vary the sentence lengths, cut the connectors. You keep the meaning and lose the machine cadence that triggers the flag.",
+      "slide": 6
+    },
+    {
+      "slide": 7,
+      "text": "Save this before you need it",
+      "subline": "Send it to someone still paying for this"
+    }
+  ],
+  "image_prompts": [
+    "Portrait photograph of a writer at night, face half in shadow, staring past the camera, laptop glow underlighting the jaw, cold blue as the only colour, tight crop chest-up, 35mm, no text"
+  ],
+  "authored_by": "claude_laptop_session",
+  "source": {
+    "note": "Week of 17-23 Aug 2026. Cover prompt follows the photoreal archetypes in queue/curated/COVER_PROMPTS.md, derived from a 133-cover competitor scrape on 16 Aug. Topics cross-referenced from X, Instagram and YouTube trend pulls the same day.",
+    "format_variant": "news_card_4x5",
+    "cover_prompt": "Portrait photograph of a writer at night, face half in shadow, staring past the camera, laptop glow underlighting the jaw, cold blue as the only colour, tight crop chest-up, 35mm, no text"
+  }
+}

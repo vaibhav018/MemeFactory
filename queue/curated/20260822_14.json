@@ -1,0 +1,63 @@
+{
+  "id": "20260822_14",
+  "pillar_id": "wealth_hustles",
+  "pillar_name": "Wealth & Hustles",
+  "topic": "AI skills clients are paying for now",
+  "angle": "Clients stopped paying for prompting and started paying for systems",
+  "hook": "Clients stopped paying for prompts. Here's what now",
+  "caption": "Two years ago you could charge for knowing how to prompt. That window shut — clients prompt fine themselves now. What they still cannot do is build the thing that runs without them. That is where the money moved, and the rate went up, not down.\n\n💬 Comment \"BILL\" and I'll send you the full list.\n🔖 Save this for the next time you need it.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#freelancing #aiskills #clientwork #consulting #sidehustle #career",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "Clients stopped paying for *prompts*. Here's what now",
+      "subline": "The work that still bills in 2026"
+    },
+    {
+      "text": "Nobody will pay you to write a prompt in 2026. They will pay well for the system around it.",
+      "slide": 2
+    },
+    {
+      "layout": "split",
+      "left_label": "NO LONGER PAYS",
+      "left_text": "Prompt writing, tool tours, generic content generated on request.",
+      "right_label": "PAYS WELL",
+      "right_text": "Pipelines that run unattended, data cleanup, and integration into their existing tools.",
+      "slide": 3
+    },
+    {
+      "layout": "step",
+      "step_num": "1",
+      "title": "Sell the outcome, not the tool",
+      "body": "Clients do not want an AI workflow. They want the report on Monday without anyone assembling it. Price the outcome and the tooling becomes your business, not theirs.",
+      "slide": 4
+    },
+    {
+      "layout": "big_stat",
+      "stat": "3",
+      "unit": "x",
+      "caption": "the rate difference between doing a task and automating it",
+      "slide": 5
+    },
+    {
+      "layout": "step",
+      "step_num": "2",
+      "title": "Charge for the boring half",
+      "body": "The model is the easy part. The billable work is their messy spreadsheet, the edge cases, and the thing that has to still run in March. Quote for that and the number stops being an argument.",
+      "slide": 6
+    },
+    {
+      "slide": 7,
+      "text": "Save this before you need it",
+      "subline": "Send it to someone still paying for this"
+    }
+  ],
+  "image_prompts": [
+    "Portrait photograph of a freelancer in a small home office, arms folded, looking directly at the lens, unglamorous room with a whiteboard behind, hard side light from a window, chest-up, no text"
+  ],
+  "authored_by": "claude_laptop_session",
+  "source": {
+    "note": "Week of 17-23 Aug 2026. Cover prompt follows the photoreal archetypes in queue/curated/COVER_PROMPTS.md, derived from a 133-cover competitor scrape on 16 Aug. Topics cross-referenced from X, Instagram and YouTube trend pulls the same day.",
+    "format_variant": "news_card_4x5",
+    "cover_prompt": "Portrait photograph of a freelancer in a small home office, arms folded, looking directly at the lens, unglamorous room with a whiteboard behind, hard side light from a window, chest-up, no text"
+  }
+}

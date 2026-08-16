@@ -1,0 +1,63 @@
+{
+  "id": "20260823_14",
+  "pillar_id": "tech_science",
+  "pillar_name": "Tech & Science",
+  "topic": "Why an AI watermark remover hit 11k stars",
+  "angle": "A tool this popular is a signal about what users think of the labels",
+  "hook": "An AI watermark remover just hit 11,000 stars",
+  "caption": "A tool whose entire purpose is stripping AI watermarks passed eleven thousand GitHub stars. Set aside whether that is good — as a signal it is unambiguous. The labelling approach the whole industry agreed on is being actively removed by the people it was applied to.\n\n💬 Comment \"MARK\" and I'll send you the full list.\n🔖 Save this for the next time you need it.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#ai #opensource #github #technews #aiethics #contentcreation",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "An AI watermark remover just hit *11,000* stars",
+      "subline": "That number is telling you something"
+    },
+    {
+      "text": "Eleven thousand people starred a tool that exists to delete the label the industry agreed to add.",
+      "slide": 2
+    },
+    {
+      "layout": "step",
+      "step_num": "1",
+      "title": "Why people want it gone",
+      "body": "The visible watermark marks the output as lesser regardless of how much work went into it. People who spent a day directing a result object to being flagged the same as a one-line prompt.",
+      "slide": 3
+    },
+    {
+      "layout": "big_stat",
+      "stat": "11K",
+      "unit": "stars",
+      "caption": "on a tool built purely to strip AI content labels",
+      "slide": 4
+    },
+    {
+      "layout": "split",
+      "left_label": "THE INTENT",
+      "left_text": "Label AI output so people can tell what they are looking at.",
+      "right_label": "THE RESULT",
+      "right_text": "A popular tool for removing the label, and invisible marking instead.",
+      "slide": 5
+    },
+    {
+      "layout": "step",
+      "step_num": "2",
+      "title": "What this means for you",
+      "body": "Visible watermarks are on the way out and invisible provenance is replacing them. If you publish AI-assisted work, assume it is detectable whether or not you can see a mark on it.",
+      "slide": 6
+    },
+    {
+      "slide": 7,
+      "text": "Save this before you need it",
+      "subline": "Send it to someone still paying for this"
+    }
+  ],
+  "image_prompts": [
+    "Close-up photograph of a printed photo on a desk with one corner physically torn away, tweezers resting beside it, hard raking light across the paper texture, desaturated except a single green object, no text"
+  ],
+  "authored_by": "claude_laptop_session",
+  "source": {
+    "note": "Week of 17-23 Aug 2026. Cover prompt follows the photoreal archetypes in queue/curated/COVER_PROMPTS.md, derived from a 133-cover competitor scrape on 16 Aug. Topics cross-referenced from X, Instagram and YouTube trend pulls the same day.",
+    "format_variant": "news_card_4x5",
+    "cover_prompt": "Close-up photograph of a printed photo on a desk with one corner physically torn away, tweezers resting beside it, hard raking light across the paper texture, desaturated except a single green object, no text"
+  }
+}

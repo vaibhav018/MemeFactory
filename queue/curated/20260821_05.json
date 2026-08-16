@@ -1,0 +1,86 @@
+{
+  "id": "20260821_05",
+  "pillar_id": "wealth_hustles",
+  "pillar_name": "Wealth & Hustles",
+  "topic": "11 free tools replacing paid subscriptions",
+  "angle": "An audit of what a solo operator actually needs to pay for",
+  "hook": "11 free tools that replace paid subscriptions",
+  "caption": "I went through every recurring charge on my card and asked one question of each: is there a free tool that does eighty percent of this. Eleven times the answer was yes. This is that list, with what you give up in each case — because there is always something.\n\n💬 Comment \"AUDIT\" and I'll send you the full list.\n🔖 Save this for the next time you need it.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#freetools #saas #solopreneur #productivity #sidehustle #business",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "11 free tools that replace *paid* subscriptions",
+      "subline": "A solo operator's stack, audited line by line"
+    },
+    {
+      "text": "Subscriptions do not feel expensive one at a time. Add the year up once and the number is genuinely upsetting.",
+      "slide": 2
+    },
+    {
+      "layout": "numbered",
+      "items": [
+        {
+          "num": "01",
+          "title": "Design",
+          "desc": "Penpot instead of a paid design seat"
+        },
+        {
+          "num": "02",
+          "title": "Storage",
+          "desc": "Self-hosted sync instead of cloud tiers"
+        },
+        {
+          "num": "03",
+          "title": "Email",
+          "desc": "Free sending tiers under 1,000 contacts"
+        },
+        {
+          "num": "04",
+          "title": "Scheduling",
+          "desc": "Open-source booking pages"
+        },
+        {
+          "num": "05",
+          "title": "Invoicing",
+          "desc": "Free tiers cover a solo caseload"
+        }
+      ],
+      "slide": 3
+    },
+    {
+      "layout": "big_stat",
+      "stat": "80",
+      "unit": "%",
+      "caption": "of a paid tool's value usually sits in its free tier",
+      "slide": 4
+    },
+    {
+      "layout": "step",
+      "step_num": "1",
+      "title": "Audit by the year, not the month",
+      "body": "Nine dollars a month reads as nothing. A hundred and eight a year reads as a decision. Multiply every subscription by twelve before you judge it.",
+      "slide": 5
+    },
+    {
+      "layout": "step",
+      "step_num": "2",
+      "title": "Keep what earns",
+      "body": "This is not about paying for nothing. If a tool directly makes you money, keep it and stop optimising. Cut the ones you kept because cancelling was mildly annoying.",
+      "slide": 6
+    },
+    {
+      "slide": 7,
+      "text": "Save this before you need it",
+      "subline": "Send it to someone still paying for this"
+    }
+  ],
+  "image_prompts": [
+    "Photograph of a stack of unopened subscription invoices on a desk with one torn in half on top, hard low-angle light casting long shadows, saturated yellow backdrop, upper two thirds, no text"
+  ],
+  "authored_by": "claude_laptop_session",
+  "source": {
+    "note": "Week of 17-23 Aug 2026. Cover prompt follows the photoreal archetypes in queue/curated/COVER_PROMPTS.md, derived from a 133-cover competitor scrape on 16 Aug. Topics cross-referenced from X, Instagram and YouTube trend pulls the same day.",
+    "format_variant": "news_card_4x5",
+    "cover_prompt": "Photograph of a stack of unopened subscription invoices on a desk with one torn in half on top, hard low-angle light casting long shadows, saturated yellow backdrop, upper two thirds, no text"
+  }
+}

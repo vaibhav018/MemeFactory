@@ -54,9 +54,13 @@ def render_carousel(
 ) -> list[Path]:
     """Render every slide to JPEG. Returns the list of written paths.
 
-    Mirrors compose_carousel(). `bg_paths` is accepted for signature
-    compatibility and only used when `use_texture` is True — the template is
-    designed to stand on typography alone, and a texture behind it is opt-in.
+    Mirrors compose_carousel().
+
+    bg_paths[0] is the COVER and always fills slide 1's photo panel — that is
+    the whole point of the assets/curated/<id>/cover.jpg convention. If a
+    second image is supplied it backs the closing CTA so the carousel
+    bookends. Interior slides are typographic and take an image only when
+    use_texture is True.
     """
     _check()
     from playwright.sync_api import sync_playwright
@@ -85,10 +89,16 @@ def render_carousel(
                     "data": slide,
                     "bg": None,
                 }
-                if use_texture and bg_paths:
-                    chosen = bg_paths[(i - 1) % len(bg_paths)]
-                    if chosen.exists():
-                        payload["bg"] = chosen.resolve().as_uri()
+                chosen = None
+                if bg_paths:
+                    if i == 1:
+                        chosen = bg_paths[0]                      # the cover
+                    elif i == total and len(bg_paths) > 1:
+                        chosen = bg_paths[1]                      # CTA bookend
+                    elif use_texture:
+                        chosen = bg_paths[(i - 1) % len(bg_paths)]
+                if chosen is not None and chosen.exists():
+                    payload["bg"] = chosen.resolve().as_uri()
 
                 # Inject before any of the template's own script runs.
                 page.add_init_script(f"window.SLIDE = {json.dumps(payload)};")

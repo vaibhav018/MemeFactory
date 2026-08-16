@@ -1,0 +1,63 @@
+{
+  "id": "20260819_14",
+  "pillar_id": "tech_science",
+  "pillar_name": "Tech & Science",
+  "topic": "Frontier-level AI running on a laptop, offline",
+  "angle": "The privacy and cost argument changed the moment this became possible",
+  "hook": "Frontier-class AI now runs on a laptop, offline",
+  "caption": "Running a serious model locally used to mean a server rack. It now means a well-specced laptop and an afternoon. That changes two arguments at once: what your AI costs, and where your data goes. For anyone handling client work under an NDA, the second one matters more than the first.\n\n💬 Comment \"LOCAL\" and I'll send you the full list.\n🔖 Save this for the next time you need it.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#localai #privacy #opensource #aitools #llm #technews",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "Frontier-class AI now runs on a *laptop*, offline",
+      "subline": "No API key, no usage cap, no data leaving the machine"
+    },
+    {
+      "text": "Unplug the internet and the model keeps working. That single fact rewrites the cost and privacy argument.",
+      "slide": 2
+    },
+    {
+      "layout": "step",
+      "step_num": "1",
+      "title": "Why it matters for work",
+      "body": "Client contracts increasingly forbid pasting their material into a hosted AI. A local model is the only version of this that survives an NDA, and that unlocks work you currently cannot take.",
+      "slide": 3
+    },
+    {
+      "layout": "big_stat",
+      "stat": "0",
+      "unit": "per call",
+      "caption": "what inference costs once the model lives on your own machine",
+      "slide": 4
+    },
+    {
+      "layout": "split",
+      "left_label": "HOSTED",
+      "left_text": "Per-token billing, a usage cap, and your prompts on someone else's server.",
+      "right_label": "LOCAL",
+      "right_text": "Electricity. That is the whole running cost, and nothing leaves the laptop.",
+      "slide": 5
+    },
+    {
+      "layout": "step",
+      "step_num": "2",
+      "title": "The honest catch",
+      "body": "Local still loses to the best hosted models on the hardest reasoning, and it will eat your battery. Use it for volume, privacy and drafting. Keep a hosted key for the genuinely hard problems.",
+      "slide": 6
+    },
+    {
+      "slide": 7,
+      "text": "Save this before you need it",
+      "subline": "Send it to someone still paying for this"
+    }
+  ],
+  "image_prompts": [
+    "Photograph of an open laptop on a wooden kitchen table with the wifi router unplugged and visible in the background, morning window light, cool neutral tones, cable coiled beside it, upper two thirds, no text"
+  ],
+  "authored_by": "claude_laptop_session",
+  "source": {
+    "note": "Week of 17-23 Aug 2026. Cover prompt follows the photoreal archetypes in queue/curated/COVER_PROMPTS.md, derived from a 133-cover competitor scrape on 16 Aug. Topics cross-referenced from X, Instagram and YouTube trend pulls the same day.",
+    "format_variant": "news_card_4x5",
+    "cover_prompt": "Photograph of an open laptop on a wooden kitchen table with the wifi router unplugged and visible in the background, morning window light, cool neutral tones, cable coiled beside it, upper two thirds, no text"
+  }
+}

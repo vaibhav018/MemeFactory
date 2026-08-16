@@ -1,0 +1,86 @@
+{
+  "id": "20260817_05",
+  "pillar_id": "ai_tools_workflows",
+  "pillar_name": "AI Tools & Workflows",
+  "topic": "5 free AI tools that replaced paid apps",
+  "angle": "Every one of these has a paid equivalent people are still paying for",
+  "hook": "5 free AI tools that replaced my paid apps",
+  "caption": "I cancelled four subscriptions this month. Not because money got tight — because the free version got better than what I was paying for. These five are the ones that actually stuck after a full month of daily use, not the ones that looked good in a demo.\n\n💬 Comment \"STACK\" and I'll send you the full list.\n🔖 Save this for the next time you need it.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#aitools #freetools #productivity #chatgpt #claudeai #techtips",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "5 free AI tools that replaced my *paid* apps",
+      "subline": "All five have a subscription equivalent"
+    },
+    {
+      "text": "Everyone keeps paying for tools that shipped a free tier six months ago. Nobody goes back to check.",
+      "slide": 2
+    },
+    {
+      "layout": "numbered",
+      "items": [
+        {
+          "num": "01",
+          "title": "Whisper",
+          "desc": "Transcription. Runs on your laptop, free"
+        },
+        {
+          "num": "02",
+          "title": "Perplexity",
+          "desc": "Research. 5 Pro searches a day, free"
+        },
+        {
+          "num": "03",
+          "title": "Claude",
+          "desc": "Long documents. Free tier reads whole PDFs"
+        },
+        {
+          "num": "04",
+          "title": "Pinokio",
+          "desc": "One-click installs for local AI models"
+        },
+        {
+          "num": "05",
+          "title": "Photopea",
+          "desc": "Photoshop in a browser tab, no account"
+        }
+      ],
+      "slide": 3
+    },
+    {
+      "layout": "step",
+      "step_num": "1",
+      "title": "Check before you renew",
+      "body": "Open every subscription you pay for and search the tool name plus free tier. Half of them shipped one this year to compete. You are paying for the version you signed up to, not the version that exists.",
+      "slide": 4
+    },
+    {
+      "layout": "big_stat",
+      "stat": "4",
+      "unit": "apps",
+      "caption": "cancelled in one month without losing a single workflow",
+      "slide": 5
+    },
+    {
+      "layout": "step",
+      "step_num": "2",
+      "title": "Replace one at a time",
+      "body": "Swapping your whole stack in one weekend fails. Pick the subscription you use least, replace it, wait a week. If nothing broke, cancel it and move to the next one.",
+      "slide": 6
+    },
+    {
+      "slide": 7,
+      "text": "Save this before you need it",
+      "subline": "Send it to someone still paying for this"
+    }
+  ],
+  "image_prompts": [
+    "Over-the-shoulder photograph of a person at a cluttered desk holding a phone showing a grid of app icons, warm desk lamp as the only light source, deep shadows, shot on 35mm, shallow depth of field, subject in upper two thirds, no text"
+  ],
+  "authored_by": "claude_laptop_session",
+  "source": {
+    "note": "Week of 17-23 Aug 2026. Cover prompt follows the photoreal archetypes in queue/curated/COVER_PROMPTS.md, derived from a 133-cover competitor scrape on 16 Aug. Topics cross-referenced from X, Instagram and YouTube trend pulls the same day.",
+    "format_variant": "news_card_4x5",
+    "cover_prompt": "Over-the-shoulder photograph of a person at a cluttered desk holding a phone showing a grid of app icons, warm desk lamp as the only light source, deep shadows, shot on 35mm, shallow depth of field, subject in upper two thirds, no text"
+  }
+}

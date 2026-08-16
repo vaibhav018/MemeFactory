@@ -1,0 +1,62 @@
+{
+  "id": "20260823_05",
+  "pillar_id": "ai_tools_workflows",
+  "pillar_name": "AI Tools & Workflows",
+  "topic": "Free AI courses worth finishing",
+  "angle": "Completion, not access, is the actual bottleneck",
+  "hook": "The free AI courses actually worth finishing",
+  "caption": "There are hundreds of free AI courses and almost nobody completes one. The problem was never finding material — it is that most of it is built to be started, not finished. These are the ones with an end, a project, and something to show at the bottom.\n\n💬 Comment \"COURSE\" and I'll send you the full list.\n🔖 Save this for the next time you need it.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#aicourses #learning #upskilling #freeeducation #careergrowth #aitools",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "The free AI courses actually worth *finishing*",
+      "subline": "Access was never the problem. Finishing is"
+    },
+    {
+      "text": "You do not have a course problem. You have thirty hours of half-watched lectures and nothing built.",
+      "slide": 2
+    },
+    {
+      "layout": "step",
+      "step_num": "1",
+      "title": "Pick one with a project",
+      "body": "A course that ends in something you built beats a course that ends in a video. If there is no artefact at the end, you will not remember any of it in a month.",
+      "slide": 3
+    },
+    {
+      "layout": "big_stat",
+      "stat": "4",
+      "unit": "%",
+      "caption": "the typical completion rate for a free online course",
+      "slide": 4
+    },
+    {
+      "layout": "step",
+      "step_num": "2",
+      "title": "Book it like a meeting",
+      "body": "Two fixed hours on the same two evenings each week, in the calendar, treated like something you cannot move. Motivation will not survive week three. A calendar entry will.",
+      "slide": 5
+    },
+    {
+      "layout": "step",
+      "step_num": "3",
+      "title": "Ship the project publicly",
+      "body": "Post whatever you built at the end, however rough. It is the only part that turns a finished course into work someone can actually hire you for.",
+      "slide": 6
+    },
+    {
+      "slide": 7,
+      "text": "Save this before you need it",
+      "subline": "Send it to someone still paying for this"
+    }
+  ],
+  "image_prompts": [
+    "Photograph of a laptop on a bed at night showing a paused video player, headphones tangled beside it, blanket creases lit by the screen, no other light, slight overhead angle, authentic snapshot, no text"
+  ],
+  "authored_by": "claude_laptop_session",
+  "source": {
+    "note": "Week of 17-23 Aug 2026. Cover prompt follows the photoreal archetypes in queue/curated/COVER_PROMPTS.md, derived from a 133-cover competitor scrape on 16 Aug. Topics cross-referenced from X, Instagram and YouTube trend pulls the same day.",
+    "format_variant": "news_card_4x5",
+    "cover_prompt": "Photograph of a laptop on a bed at night showing a paused video player, headphones tangled beside it, blanket creases lit by the screen, no other light, slight overhead angle, authentic snapshot, no text"
+  }
+}

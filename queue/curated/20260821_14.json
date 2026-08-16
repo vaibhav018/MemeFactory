@@ -1,0 +1,63 @@
+{
+  "id": "20260821_14",
+  "pillar_id": "tech_science",
+  "pillar_name": "Tech & Science",
+  "topic": "The AI wedding-video surprise",
+  "angle": "The use case that moved people had nothing to do with productivity",
+  "hook": "The best AI use case this year made people cry",
+  "caption": "Every AI post is about speed and output. Then someone used it to restore old footage of a grandparent for a wedding, played it in the room, and the whole thing landed differently. Worth remembering that the tools everyone is using to write faster emails can do this too.\n\n💬 Comment \"RESTORE\" and I'll send you the full list.\n🔖 Save this for the next time you need it.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#aivideo #family #memories #aitools #creativity #storytelling",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "The best AI use case this year made people *cry*",
+      "subline": "Nobody's productivity workflow did that"
+    },
+    {
+      "text": "We spend all day using these tools to save eleven minutes. Then someone does this with the same model.",
+      "slide": 2
+    },
+    {
+      "layout": "step",
+      "step_num": "1",
+      "title": "Start with what you have",
+      "body": "Old photographs, a shaky camcorder transfer, a voice note nobody deleted. The worse the source, the more obvious the restoration looks when you play it back.",
+      "slide": 3
+    },
+    {
+      "layout": "step",
+      "step_num": "2",
+      "title": "Upscale before anything else",
+      "body": "Run the footage through restoration first and judge it before you add music or cuts. Most of the emotional effect comes from simply seeing a face clearly again.",
+      "slide": 4
+    },
+    {
+      "layout": "split",
+      "left_label": "THE USUAL ASK",
+      "left_text": "Write this email faster. Summarise this document. Save me ten minutes.",
+      "right_label": "THIS ASK",
+      "right_text": "Make my grandmother's face clear again so the room can see her.",
+      "slide": 5
+    },
+    {
+      "layout": "step",
+      "step_num": "3",
+      "title": "Do it before you need it",
+      "body": "The families who have this are the ones who digitised the box of tapes on an ordinary weekend. Nobody ever regrets having done it early.",
+      "slide": 6
+    },
+    {
+      "slide": 7,
+      "text": "Save this before you need it",
+      "subline": "Send it to someone still paying for this"
+    }
+  ],
+  "image_prompts": [
+    "Documentary photograph of an older couple sitting on a sofa watching something off-frame, both faces lit by a warm screen glow, one hand covering the mouth in surprise, living-room clutter visible, natural imperfect framing, no text"
+  ],
+  "authored_by": "claude_laptop_session",
+  "source": {
+    "note": "Week of 17-23 Aug 2026. Cover prompt follows the photoreal archetypes in queue/curated/COVER_PROMPTS.md, derived from a 133-cover competitor scrape on 16 Aug. Topics cross-referenced from X, Instagram and YouTube trend pulls the same day.",
+    "format_variant": "news_card_4x5",
+    "cover_prompt": "Documentary photograph of an older couple sitting on a sofa watching something off-frame, both faces lit by a warm screen glow, one hand covering the mouth in surprise, living-room clutter visible, natural imperfect framing, no text"
+  }
+}

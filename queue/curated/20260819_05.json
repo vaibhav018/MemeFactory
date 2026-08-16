@@ -1,0 +1,63 @@
+{
+  "id": "20260819_05",
+  "pillar_id": "ai_tools_workflows",
+  "pillar_name": "AI Tools & Workflows",
+  "topic": "Google's free AI stack vs paid ChatGPT",
+  "angle": "A free stack that covers most of what people pay twenty dollars for",
+  "hook": "Google's free AI stack vs a paid ChatGPT plan",
+  "caption": "This is not a free-is-always-better post. Paid ChatGPT is better at some things and I will say which. But most people paying twenty dollars a month are using it for three tasks, and Google's free tier does all three. Worth ten minutes to check which group you are in.\n\n💬 Comment \"COMPARE\" and I'll send you the full list.\n🔖 Save this for the next time you need it.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#google #gemini #chatgpt #aitools #freetools #productivity",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "Google's *free* AI stack vs a paid ChatGPT plan",
+      "subline": "Where free wins and where it genuinely does not"
+    },
+    {
+      "text": "Most people paying monthly use their AI for three things. All three have a free equivalent.",
+      "slide": 2
+    },
+    {
+      "layout": "split",
+      "left_label": "FREE WINS",
+      "left_text": "Long documents, search with sources, image understanding, quick drafting.",
+      "right_label": "PAID WINS",
+      "right_text": "Hard reasoning, long agentic tasks, and the newest model on launch day.",
+      "slide": 3
+    },
+    {
+      "layout": "step",
+      "step_num": "1",
+      "title": "Audit your last week",
+      "body": "Open your chat history and read what you actually asked. Not what you imagined you would use it for. Most histories are drafting, summarising and searching.",
+      "slide": 4
+    },
+    {
+      "layout": "big_stat",
+      "stat": "3",
+      "unit": "tasks",
+      "caption": "cover almost every paid AI subscription in ordinary use",
+      "slide": 5
+    },
+    {
+      "layout": "step",
+      "step_num": "2",
+      "title": "Downgrade for one month",
+      "body": "Cancel and run free for thirty days. If you hit a wall you will know exactly which wall, and you can pay for that specific thing instead of paying by default.",
+      "slide": 6
+    },
+    {
+      "slide": 7,
+      "text": "Save this before you need it",
+      "subline": "Send it to someone still paying for this"
+    }
+  ],
+  "image_prompts": [
+    "Studio photograph of two identical cardboard boxes on a seamless backdrop, one plain and one wrapped in gold foil, hard directional light, heavy shadow, single saturated blue background, centred in upper two thirds, no text"
+  ],
+  "authored_by": "claude_laptop_session",
+  "source": {
+    "note": "Week of 17-23 Aug 2026. Cover prompt follows the photoreal archetypes in queue/curated/COVER_PROMPTS.md, derived from a 133-cover competitor scrape on 16 Aug. Topics cross-referenced from X, Instagram and YouTube trend pulls the same day.",
+    "format_variant": "news_card_4x5",
+    "cover_prompt": "Studio photograph of two identical cardboard boxes on a seamless backdrop, one plain and one wrapped in gold foil, hard directional light, heavy shadow, single saturated blue background, centred in upper two thirds, no text"
+  }
+}

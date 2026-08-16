@@ -1,0 +1,63 @@
+{
+  "id": "20260818_14",
+  "pillar_id": "wealth_hustles",
+  "pillar_name": "Wealth & Hustles",
+  "topic": "OpenAI charges $80 to reset a $200 plan",
+  "angle": "The subscription you pay for now has a second paywall inside it",
+  "hook": "OpenAI now charges $80 to reset a $200 plan",
+  "caption": "You pay $200 a month. You hit the usage cap. Resetting it costs another $80. This is the direction premium AI pricing is going, and it is worth understanding before you build a business that depends on one provider's cap. The fix is not outrage — it is not being locked to a single vendor.\n\n💬 Comment \"COSTS\" and I'll send you the full list.\n🔖 Save this for the next time you need it.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#openai #chatgpt #aitools #pricing #saas #freelancing",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "OpenAI now charges *$80* to reset a $200 plan",
+      "subline": "The subscription has a paywall inside it"
+    },
+    {
+      "text": "A subscription used to mean you were done paying. Now it means you are done paying until the cap.",
+      "slide": 2
+    },
+    {
+      "layout": "big_stat",
+      "stat": "$280",
+      "unit": "/mo",
+      "caption": "what a $200 plan actually costs the month you hit the ceiling",
+      "slide": 3
+    },
+    {
+      "layout": "step",
+      "step_num": "1",
+      "title": "Know your real ceiling",
+      "body": "Most people have no idea what their usage cap is until they hit it mid-task. Find the number before you build a workflow that depends on it being there.",
+      "slide": 4
+    },
+    {
+      "layout": "split",
+      "left_label": "ONE VENDOR",
+      "left_text": "Their cap is your cap. Their price change is your price change.",
+      "right_label": "TWO VENDORS",
+      "right_text": "A cap becomes an inconvenience instead of a stopped business.",
+      "slide": 5
+    },
+    {
+      "layout": "step",
+      "step_num": "2",
+      "title": "Keep a second key warm",
+      "body": "Have a working account with a second provider before you need it. Not as your main tool — as the thing you switch to on the day the cap lands mid-deadline.",
+      "slide": 6
+    },
+    {
+      "slide": 7,
+      "text": "Save this before you need it",
+      "subline": "Send it to someone still paying for this"
+    }
+  ],
+  "image_prompts": [
+    "Studio photograph of a single crumpled receipt held between two fingers against a flat saturated red backdrop, hard direct flash, sharp shadow behind, nothing else in frame, upper two thirds, no text"
+  ],
+  "authored_by": "claude_laptop_session",
+  "source": {
+    "note": "Week of 17-23 Aug 2026. Cover prompt follows the photoreal archetypes in queue/curated/COVER_PROMPTS.md, derived from a 133-cover competitor scrape on 16 Aug. Topics cross-referenced from X, Instagram and YouTube trend pulls the same day.",
+    "format_variant": "news_card_4x5",
+    "cover_prompt": "Studio photograph of a single crumpled receipt held between two fingers against a flat saturated red backdrop, hard direct flash, sharp shadow behind, nothing else in frame, upper two thirds, no text"
+  }
+}
