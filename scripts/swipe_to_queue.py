@@ -69,7 +69,7 @@ def load_swipes() -> list[dict]:
         return posts
     for latest in SWIPE_DIR.glob("*/latest.json"):
         try:
-            data = json.loads(latest.read_text())
+            data = json.loads(latest.read_text(encoding="utf-8"))
         except Exception as e:
             print(f"  [warn] could not read {latest.relative_to(BASE)}: {e}")
             continue
@@ -106,7 +106,7 @@ def load_known_topics() -> list[str]:
             continue
         for f in d.glob("*.json"):
             try:
-                data = json.loads(f.read_text())
+                data = json.loads(f.read_text(encoding="utf-8"))
             except Exception:
                 continue
             for key in ("topic", "hook", "title"):
@@ -278,7 +278,7 @@ def main() -> int:
 
         curated = build_curated_post(topic_data, slides, pillar, post)
         out_path = DRAFT_DIR / f"{curated['id']}.json"
-        out_path.write_text(json.dumps(curated, indent=2, ensure_ascii=False))
+        out_path.write_text(json.dumps(curated, indent=2, ensure_ascii=False), encoding="utf-8")
 
         # Copy source cover image into the draft's assets slot so it lands as
         # slide 1 background when the draft is promoted to queue/curated/.
@@ -292,7 +292,7 @@ def main() -> int:
                 dst.write_bytes(src.read_bytes())
                 curated["source"]["local_cover_path"] = str(dst.relative_to(BASE))
                 # Persist the updated JSON so the local_cover_path is recorded.
-                out_path.write_text(json.dumps(curated, indent=2, ensure_ascii=False))
+                out_path.write_text(json.dumps(curated, indent=2, ensure_ascii=False), encoding="utf-8")
                 print(f"   ✓ {out_path.relative_to(BASE)}  + cover ({dst.stat().st_size // 1024}KB)")
             else:
                 print(f"   ✓ {out_path.relative_to(BASE)}  (no cover — {src_rel} missing)")

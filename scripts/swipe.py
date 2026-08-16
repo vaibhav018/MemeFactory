@@ -89,7 +89,7 @@ APIFY_RUN_SYNC_URL = f"https://api.apify.com/v2/acts/{APIFY_ACTOR}/run-sync-get-
 
 
 def load_handles(only: str | None = None) -> list[dict]:
-    with WATCHLIST_PATH.open() as f:
+    with WATCHLIST_PATH.open(encoding="utf-8") as f:
         data = yaml.safe_load(f)
     entries = [
         h for h in data.get("handles", [])
@@ -359,7 +359,7 @@ def main() -> int:
             continue
         result["pillar_affinity"] = entry.get("pillar_affinity") or []
         result["why"] = (entry.get("why") or "").strip()
-        (out_dir / "latest.json").write_text(json.dumps(result, indent=2, ensure_ascii=False))
+        (out_dir / "latest.json").write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"   kept {len(result['top'])} of {result['posts_seen']} seen")
         ok += 1
         # Only sleep between calls on instaloader — Apify handles its own throttling.

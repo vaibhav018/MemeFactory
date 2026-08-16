@@ -50,7 +50,7 @@ def list_drafts() -> int:
     print(f"{len(drafts)} draft(s) in {DRAFT_DIR.relative_to(BASE)}/\n")
     for path in drafts:
         try:
-            data = json.loads(path.read_text())
+            data = json.loads(path.read_text(encoding="utf-8"))
         except Exception:
             print(f"  {path.stem}  [unreadable]")
             continue
@@ -84,13 +84,13 @@ def promote(draft_id: str, slot: str, commit: bool = False) -> int:
         sys.exit(f"Slot already filled: {dst_json.relative_to(BASE)} — pick another slot.")
 
     # Load + rewrite id, then write to destination.
-    data = json.loads(src_json.read_text())
+    data = json.loads(src_json.read_text(encoding="utf-8"))
     data["id"] = slot
     data.setdefault("source", {})["promoted_from_draft"] = draft_id
     data["source"]["promoted_at"] = datetime.utcnow().isoformat() + "Z"
 
     dst_json.parent.mkdir(parents=True, exist_ok=True)
-    dst_json.write_text(json.dumps(data, indent=2, ensure_ascii=False))
+    dst_json.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"  ✓ JSON  → {dst_json.relative_to(BASE)}")
 
     # Move cover image if present.
