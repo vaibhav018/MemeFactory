@@ -55,6 +55,31 @@ def _post_id() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S") + "_" + uuid.uuid4().hex[:6]
 
 
+def render_slides(bg_paths, slides, pillar, out_dir: Path, post_id: str):
+    """Render slides with the HTML/Chromium renderer, falling back to Pillow.
+
+    RENDERER=html (default) uses templates/slide.html — real typography, no
+    image model on the critical path. RENDERER=pil forces the legacy Pillow
+    compositor. Any failure in the HTML path falls back to Pillow rather than
+    taking down a scheduled run.
+    """
+    mode = os.getenv("RENDERER", "html").strip().lower()
+
+    if mode == "html":
+        try:
+            from engine.visual.html_renderer import render_carousel, RendererUnavailable
+            try:
+                return render_carousel(bg_paths, slides, pillar, out_dir, post_id)
+            except RendererUnavailable as e:
+                print(f"  [render] html unavailable ({e}) — falling back to Pillow")
+            except Exception as e:
+                print(f"  [render] html failed ({type(e).__name__}: {e}) — falling back to Pillow")
+        except ImportError as e:
+            print(f"  [render] html_renderer import failed ({e}) — falling back to Pillow")
+
+    return compose_carousel(bg_paths, slides, pillar, out_dir, post_id)
+
+
 def generate_post(
     conn,
     retries: int = 2,
@@ -122,7 +147,7 @@ def generate_post(
             bg_paths.append(bg_path)
 
         print("Composing slides...")
-        slide_paths = compose_carousel(bg_paths, slides, pillar, bg_dir, post_id)
+        slide_paths = render_slides(bg_paths, slides, pillar, bg_dir, post_id)
         print(f"  {len(slide_paths)} slides -> {bg_dir}")
 
         # Repo-relative paths for GitHub raw URLs
@@ -297,7 +322,7 @@ def publish_next_curated(conn) -> int:
 
     # Compose slides
     print("Composing slides...")
-    slide_paths = compose_carousel(bg_paths, curated["slides"], pillar, bg_dir, post_id)
+    slide_paths = render_slides(bg_paths, curated["slides"], pillar, bg_dir, post_id)
     repo_rel_paths = [str(p.relative_to(_BASE)) for p in slide_paths]
 
     post = {

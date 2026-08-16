@@ -5,3 +5,4 @@ python-dotenv>=1.0,<2
 fonttools>=4.47,<5
 tzdata; sys_platform == "win32"
 instaloader>=4.15,<5    # scripts/swipe.py — competitor-post scraping
+playwright>=1.47,<2     # engine/visual/html_renderer.py — HTML slide rendering

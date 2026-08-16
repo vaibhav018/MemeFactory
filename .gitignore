@@ -41,3 +41,6 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
+
+output/template_selftest/
+output/real_test/

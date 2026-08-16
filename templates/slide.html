@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>slide</title>
+<style>
+  /* ══════════════════════════════════════════════════════════════════
+     @profit_prompts_ — carousel slide design system
+     Rendered at 1080x1080 by engine/visual/html_renderer.py (Playwright).
+     Preview: open this file in a browser; it falls back to DEMO data.
+     ══════════════════════════════════════════════════════════════════ */
+
+  @font-face {
+    font-family: "Anton";
+    src: url("../assets/fonts/Anton-Regular.ttf") format("truetype");
+    font-weight: 400; font-display: block;
+  }
+  @font-face {
+    font-family: "InterVar";
+    src: url("../assets/fonts/Inter-Variable.ttf") format("truetype");
+    font-weight: 100 900; font-display: block;
+  }
+  @font-face {
+    font-family: "MonoVar";
+    src: url("../assets/fonts/JetBrainsMono-Variable.ttf") format("truetype");
+    font-weight: 100 800; font-display: block;
+  }
+
+  :root {
+    --ink:      #0B0B0C;   /* ground */
+    --ink-2:    #141417;   /* raised panel */
+    --paper:    #FFFFFF;
+    --accent:   #FFDE00;   /* brand yellow */
+    --accent-d: #C7A800;
+    --muted:    #8A8A93;
+    --rule:     #2A2A30;
+
+    --pad:      88px;      /* uniform safe margin */
+    --stage:    1080px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--ink); }
+
+  #slide {
+    width: var(--stage);
+    height: var(--stage);
+    position: relative;
+    overflow: hidden;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: "InterVar", sans-serif;
+    font-feature-settings: "ss01", "cv05";
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── optional texture layer: only used when a bg image is supplied ── */
+  #tex {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    opacity: 0; z-index: 0;
+  }
+  #slide.has-tex #tex { opacity: .30; }
+  #slide.has-tex::after {
+    content: ""; position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(180deg, rgba(11,11,12,.62) 0%, rgba(11,11,12,.90) 62%, #0B0B0C 100%);
+  }
+  /* Grain: pure CSS, keeps flat colour from banding on IG's re-compression */
+  #grain {
+    position: absolute; inset: 0; z-index: 2; opacity: .045;
+    background-image:
+      repeating-linear-gradient(0deg,   #fff 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(90deg,  #fff 0 1px, transparent 1px 3px);
+    mix-blend-mode: overlay;
+  }
+
+  /* ── chrome: rail, index, handle ── */
+  .stage { position: relative; z-index: 3; flex: 1; display: flex; flex-direction: column;
+           padding: var(--pad); }
+
+  #rail { position: absolute; left: 0; top: 0; bottom: 0; width: 14px; z-index: 4;
+          background: var(--accent); }
+  #slide.is-bookend #rail { width: 22px; }
+
+  .topbar {
+    position: absolute; top: 44px; left: var(--pad); right: var(--pad);
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 4;
+    font-family: "MonoVar", monospace; font-size: 22px; font-weight: 600;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+  }
+  .topbar .idx { color: var(--accent); font-variant-numeric: tabular-nums; }
+
+  .footer {
+    position: absolute; bottom: 40px; left: var(--pad); right: var(--pad);
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 4;
+    font-family: "MonoVar", monospace; font-size: 22px; font-weight: 500;
+    letter-spacing: .1em; color: var(--muted);
+  }
+
+  .body { flex: 1; display: flex; flex-direction: column; justify-content: center;
+          margin-top: 34px; margin-bottom: 34px; }
+
+  /* ── type scale ── */
+  .kicker {
+    font-family: "MonoVar", monospace; font-size: 26px; font-weight: 700;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--accent);
+    margin-bottom: 26px;
+  }
+  .hook {
+    font-family: "Anton", sans-serif;
+    font-size: 128px; line-height: .96; letter-spacing: -.005em;
+    text-transform: uppercase; text-wrap: balance;
+  }
+  .hook .hl { color: var(--accent); }
+  .h-lead {
+    font-size: 62px; line-height: 1.16; font-weight: 700; letter-spacing: -.02em;
+    text-wrap: balance;
+  }
+  .p-body {
+    font-size: 44px; line-height: 1.36; font-weight: 400; color: #E4E4E8;
+    letter-spacing: -.01em;
+  }
+
+  /* ── layout: step ── */
+  .step-head { display: flex; align-items: center; gap: 26px; margin-bottom: 30px; }
+  .step-num {
+    font-family: "Anton", sans-serif; font-size: 74px; line-height: 1;
+    color: var(--ink); background: var(--accent);
+    width: 108px; height: 108px; display: flex; align-items: center; justify-content: center;
+    flex: none;
+  }
+  .step-title {
+    font-family: "Anton", sans-serif; font-size: 76px; line-height: 1.02;
+    text-transform: uppercase; letter-spacing: -.005em;
+  }
+
+  /* ── layout: big_stat ── */
+  .stat-wrap { display: flex; flex-direction: column; align-items: flex-start; }
+  /* stat and its unit sit on one baseline — "83%" reads as a single number,
+     not a number stacked above a symbol. */
+  .stat-line { display: flex; align-items: baseline; gap: 10px; flex-wrap: nowrap; }
+  .stat {
+    font-family: "Anton", sans-serif; font-size: 300px; line-height: .84;
+    color: var(--accent); letter-spacing: -.03em; font-variant-numeric: tabular-nums;
+  }
+  .stat-unit {
+    font-family: "Anton", sans-serif; font-size: 96px; color: var(--accent);
+    text-transform: uppercase; letter-spacing: .01em; white-space: nowrap;
+  }
+  .stat-cap { font-size: 44px; line-height: 1.3; color: #E4E4E8; margin-top: 34px; max-width: 88%; }
+
+  /* ── layout: split ── */
+  .split { display: flex; flex-direction: column; gap: 30px; }
+  .split-col { border: 3px solid var(--rule); padding: 34px 36px; }
+  .split-col.right { border-color: var(--accent); }
+  .split-label {
+    font-family: "MonoVar", monospace; font-size: 26px; font-weight: 700;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .split-col.right .split-label { color: var(--accent); }
+  .split-text { font-size: 40px; line-height: 1.3; }
+
+  /* ── layout: numbered ── */
+  .list { display: flex; flex-direction: column; gap: 22px; }
+  .row { display: flex; gap: 24px; align-items: baseline;
+         border-bottom: 2px solid var(--rule); padding-bottom: 20px; }
+  .row:last-child { border-bottom: none; }
+  .row-num {
+    font-family: "MonoVar", monospace; font-size: 34px; font-weight: 700;
+    color: var(--accent); flex: none; width: 62px; font-variant-numeric: tabular-nums;
+  }
+  .row-title { font-size: 42px; font-weight: 700; letter-spacing: -.01em; }
+  .row-desc  { font-size: 32px; color: var(--muted); line-height: 1.28; margin-top: 4px; }
+
+  /* ── CTA (bookend: mirrors the hook slide exactly) ── */
+  .cta-note {
+    font-family: "MonoVar", monospace; font-size: 28px; font-weight: 600;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
+    margin-top: 34px;
+  }
+</style>
+</head>
+<body>
+<div id="slide">
+  <div id="tex"></div>
+  <div id="grain"></div>
+  <div id="rail"></div>
+  <div class="topbar">
+    <span class="brand"></span>
+    <span class="idx"></span>
+  </div>
+  <div class="stage"><div class="body" id="body"></div></div>
+  <div class="footer">
+    <span class="handle"></span>
+    <span class="hint"></span>
+  </div>
+</div>
+
+<script>
+/* Data is injected by html_renderer.py as window.SLIDE. Opening this file
+   directly in a browser falls back to DEMO so the template can be designed
+   without running Python. */
+const DEMO = {
+  slide: 3, total: 7, handle: "@profit_prompts_",
+  data: { layout: "step", step_num: "2", title: "Force sentence variance",
+          body: "Every model writes in one rhythm: 15 to 20 words, every line. Real writing does not. Tell it to vary sentence length." },
+  bg: null
+};
+const S = window.SLIDE || DEMO;
+
+const esc = t => String(t == null ? "" : t)
+  .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+/* Emphasise the numeric/currency token in a hook so slide 1 has a focal point
+   without the writer needing to mark it up. */
+function emphasise(text) {
+  return esc(text).replace(
+    /(\$[\d,.]+[KMB]?|₹[\d,.]+[KMB]?|\b\d[\d,.]*\s?(?:%|x|×|hours?|mins?|days?|K\/mo)?\b)/i,
+    '<span class="hl">$1</span>'
+  );
+}
+
+const el   = document.getElementById("slide");
+const body = document.getElementById("body");
+const d    = S.data || {};
+const isHook = S.slide === 1;
+const isCTA  = S.slide === S.total;
+
+/* Bookend: hook and CTA share the same visual treatment. Creator guidance is
+   explicit that a CTA which looks unlike the cover reads as an ad. */
+if (isHook || isCTA) el.classList.add("is-bookend");
+
+if (S.bg) {
+  el.classList.add("has-tex");
+  document.getElementById("tex").style.backgroundImage = `url("${S.bg}")`;
+}
+
+document.querySelector(".brand").textContent  = (isHook || isCTA) ? "" : "Profit Prompts";
+document.querySelector(".idx").textContent    = (isHook || isCTA) ? "" : `${S.slide}/${S.total}`;
+document.querySelector(".handle").textContent = S.handle || "@profit_prompts_";
+document.querySelector(".hint").textContent   = isCTA ? "" : (isHook ? "SWIPE →" : "");
+
+function render() {
+  if (isHook) {
+    return `<div class="kicker">${esc(d.kicker || "AI TOOLS")}</div>
+            <div class="hook">${emphasise(d.text || "")}</div>`;
+  }
+  if (isCTA) {
+    return `<div class="kicker">SAVE + SEND</div>
+            <div class="hook">${emphasise(d.text || "")}</div>
+            <div class="cta-note">Send this to someone who needs it</div>`;
+  }
+  switch (d.layout) {
+    case "step":
+      return `<div class="step-head">
+                <div class="step-num">${esc(d.step_num || S.slide - 1)}</div>
+                <div class="step-title">${esc(d.title || "")}</div>
+              </div>
+              <div class="p-body">${esc(d.body || "")}</div>`;
+
+    case "big_stat":
+      return `<div class="stat-wrap">
+                <div class="stat-line">
+                  <span class="stat">${esc(d.stat || "")}</span>
+                  ${d.unit ? `<span class="stat-unit">${esc(String(d.unit).trim())}</span>` : ""}
+                </div>
+                <div class="stat-cap">${esc(d.caption || "")}</div>
+              </div>`;
+
+    case "split":
+      return `<div class="split">
+                <div class="split-col">
+                  <div class="split-label">${esc(d.left_label || "")}</div>
+                  <div class="split-text">${esc(d.left_text || "")}</div>
+                </div>
+                <div class="split-col right">
+                  <div class="split-label">${esc(d.right_label || "")}</div>
+                  <div class="split-text">${esc(d.right_text || "")}</div>
+                </div>
+              </div>`;
+
+    case "numbered": {
+      const rows = (d.items || []).map(it => `
+        <div class="row">
+          <div class="row-num">${esc(it.num || "")}</div>
+          <div>
+            <div class="row-title">${esc(it.title || "")}</div>
+            <div class="row-desc">${esc(it.desc || "")}</div>
+          </div>
+        </div>`).join("");
+      return `<div class="list">${rows}</div>`;
+    }
+
+    default:
+      return `<div class="h-lead">${emphasise(d.text || "")}</div>`;
+  }
+}
+
+body.innerHTML = render();
+
+/* ── autofit ────────────────────────────────────────────────────────────
+   Shrink the largest type until the content fits the safe area. Guarantees
+   no clipping regardless of how long the writer's copy runs. */
+(function fit() {
+  const targets = body.querySelectorAll(
+    ".hook, .step-title, .stat, .stat-unit, .h-lead, .p-body, .split-text, .row-title");
+  const avail = body.clientHeight;
+  let guard = 0;
+  while (body.scrollHeight > avail && guard++ < 60) {
+    targets.forEach(t => {
+      const cur = parseFloat(getComputedStyle(t).fontSize);
+      t.style.fontSize = (cur * 0.96) + "px";
+    });
+  }
+  document.documentElement.setAttribute("data-fit", guard);
+})();
+</script>
+</body>
+</html>

@@ -57,6 +57,9 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Install Chromium for the HTML slide renderer
+        run: python -m playwright install --with-deps chromium
+
       - name: Configure git
         run: |
           git config user.email "profit-prompts-bot@users.noreply.github.com"
