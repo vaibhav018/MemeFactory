@@ -1,0 +1,64 @@
+{
+  "id": "20260829_05",
+  "pillar_id": "ai_tools_workflows",
+  "pillar_name": "AI Tools & Workflows",
+  "topic": "The free tier lie",
+  "angle": "Most tools advertised as free are demos with a credit card behind them",
+  "hook": "Most free AI tools are not free",
+  "caption": "Half the reels selling you free AI tools are describing trial credits. The tell is always the same and it takes ten seconds to check. This is the list of what is genuinely free versus what is a demo with a countdown attached.\n\n🔖 Save this — you'll want it when it's relevant.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#aitools #freetools #saas #productivity #ai",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "Most *free* AI tools are not free",
+      "subline": "Here is how to tell in ten seconds"
+    },
+    {
+      "text": "There is a difference between a free tier and a free trial. Almost every reel selling you tools blurs it.",
+      "slide": 2
+    },
+    {
+      "layout": "step",
+      "step_num": "1",
+      "title": "The ten-second test",
+      "body": "Try to reach the pricing page without signing up. If the free column has a number of credits rather than a rate limit, it is a trial and it ends.",
+      "slide": 3
+    },
+    {
+      "layout": "split",
+      "left_label": "FREE TIER",
+      "left_text": "Rate-limited forever. Resets daily or monthly. No card.",
+      "right_label": "FREE TRIAL",
+      "right_text": "A credit balance that runs out once and never refills.",
+      "slide": 4
+    },
+    {
+      "layout": "big_stat",
+      "stat": "0",
+      "unit": "cards",
+      "caption": "a genuine free tier never asks for one up front",
+      "slide": 5
+    },
+    {
+      "layout": "step",
+      "step_num": "2",
+      "title": "Why they do it",
+      "body": "Trial credits convert better than free tiers, and reels about free tools get reach. Both incentives point the same way, so the language stays deliberately fuzzy.",
+      "slide": 6
+    },
+    {
+      "slide": 7,
+      "text": "You won't see this anywhere else",
+      "subline": "Follow @profit_prompts_"
+    }
+  ],
+  "image_prompts": [
+    "Cinematic 3D rendered illustration, a giant glowing FREE sign made of neon hanging above a mousetrap holding a credit card as bait, dark warehouse setting, dramatic single-source lighting from the neon, hyper-saturated pink and cyan, deep shadows, glossy render, upper two thirds, no text"
+  ],
+  "authored_by": "claude_laptop_session",
+  "source": {
+    "note": "Week of 26 Aug - 1 Sep 2026, morning slot only. Covers are satirical cinematic 3D per the competitor teardown, not the photoreal documentary style that averaged 21 reach. No comment bait in captions.",
+    "format_variant": "satirical_4x5",
+    "cover_prompt": "Cinematic 3D rendered illustration, a giant glowing FREE sign made of neon hanging above a mousetrap holding a credit card as bait, dark warehouse setting, dramatic single-source lighting from the neon, hyper-saturated pink and cyan, deep shadows, glossy render, upper two thirds, no text",
+    "last_slide_prompt": "Cinematic 3D rendered illustration, a hand holding a magnifying glass over a contract covered in tiny illegible print, one clause glowing red through the lens, dark desk, dramatic side lighting, saturated red and black, glossy render, upper two thirds, no text"
+  }
+}

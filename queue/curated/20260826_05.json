@@ -1,0 +1,64 @@
+{
+  "id": "20260826_05",
+  "pillar_id": "tech_science",
+  "pillar_name": "Tech & Science",
+  "topic": "A humanoid robot ran the 400m in 45.66 seconds",
+  "angle": "The time is impressive; the running form is why everyone is watching",
+  "hook": "A robot just ran the 400m in 45.66 seconds",
+  "caption": "Tiangong Omni took the 400m at the World Humanoid Robot Games in Beijing. The time is genuinely quick. The running gait is something else entirely — engineers optimised for stability and speed, not for looking human, and it shows in every stride.\n\n🔖 Save this — you'll want it when it's relevant.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#robotics #ai #humanoidrobot #technews #engineering",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "A robot just ran the 400m in *45.66* seconds",
+      "subline": "The form is the part nobody expected"
+    },
+    {
+      "text": "Everyone is sharing the time. The interesting part is that nobody designed it to look right — only to be fast.",
+      "slide": 2
+    },
+    {
+      "layout": "big_stat",
+      "stat": "45.66",
+      "unit": "sec",
+      "caption": "the 400m, on two legs, with no human in the loop",
+      "slide": 3
+    },
+    {
+      "layout": "step",
+      "step_num": "1",
+      "title": "Why it looks wrong",
+      "body": "Human running form evolved for endurance and balance on uneven ground. A robot optimising purely for track speed converges on something that works and looks nothing like us.",
+      "slide": 4
+    },
+    {
+      "layout": "split",
+      "left_label": "HUMAN RECORD",
+      "left_text": "43.03 seconds, held by Wayde van Niekerk since 2016.",
+      "right_label": "THIS ROBOT",
+      "right_text": "45.66 seconds, on hardware you could buy a version of.",
+      "slide": 5
+    },
+    {
+      "layout": "step",
+      "step_num": "2",
+      "title": "What it signals",
+      "body": "Locomotion was the hard part of robotics for thirty years. It is now close to solved. The remaining problems are hands, judgement and cost.",
+      "slide": 6
+    },
+    {
+      "slide": 7,
+      "text": "You won't see this anywhere else",
+      "subline": "Follow @profit_prompts_"
+    }
+  ],
+  "image_prompts": [
+    "Cinematic 3D rendered illustration, a sleek white humanoid robot mid-sprint on a blue athletics track with an absurdly exaggerated running posture, motion blur streaking behind it, stadium floodlights, dramatic low angle, hyper-saturated blue and white palette, glossy render, subject in upper two thirds, no text"
+  ],
+  "authored_by": "claude_laptop_session",
+  "source": {
+    "note": "Week of 26 Aug - 1 Sep 2026, morning slot only. Covers are satirical cinematic 3D per the competitor teardown, not the photoreal documentary style that averaged 21 reach. No comment bait in captions.",
+    "format_variant": "satirical_4x5",
+    "cover_prompt": "Cinematic 3D rendered illustration, a sleek white humanoid robot mid-sprint on a blue athletics track with an absurdly exaggerated running posture, motion blur streaking behind it, stadium floodlights, dramatic low angle, hyper-saturated blue and white palette, glossy render, subject in upper two thirds, no text",
+    "last_slide_prompt": "Cinematic 3D rendered illustration, the same white humanoid robot standing on an Olympic podium wearing a gold medal, arms raised in an awkwardly stiff victory pose, confetti falling, dramatic rim lighting, dark background, glossy render, upper two thirds, no text"
+  }
+}

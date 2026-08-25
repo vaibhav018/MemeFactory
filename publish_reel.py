@@ -40,10 +40,15 @@ OUT_DIR = BASE / "Generated_Reels"
 TIMEOUT = 1500  # render ceiling, under the workflow's own limit
 
 
-# Fixtures that live in reels/data for local testing. They must never be
-# picked up as publishable work — demo.reel.json has no audio and would
-# otherwise be first in sort order every single day.
-FIXTURES = {"demo", "example", "sample", "test"}
+# Fixtures live in reels/data for local testing and must never be picked up as
+# publishable work. Matched as a prefix, not an exact id: an exact-match set
+# let "demo-curated" through, which would have published a test clip.
+# Real jobs are date-stamped (20260826_13), so this cannot swallow one.
+FIXTURE_PREFIXES = ("demo", "example", "sample", "test")
+
+
+def _is_fixture(job_id: str) -> bool:
+    return job_id.lower().startswith(FIXTURE_PREFIXES)
 
 
 def _tool(*names: str) -> str:
@@ -71,7 +76,7 @@ def pick_job(explicit: str = "") -> tuple[Path, str]:
     """Oldest unposted job by filename. Returns (path, composition id)."""
     candidates = sorted(
         p for suffix in FORMATS for p in DATA.glob(f"*{suffix}")
-        if p.is_file() and _job_id(p) not in FIXTURES
+        if p.is_file() and not _is_fixture(_job_id(p))
     )
     if explicit:
         candidates = [p for p in candidates if _job_id(p) == explicit]

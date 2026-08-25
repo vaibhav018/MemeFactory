@@ -16,11 +16,12 @@ name: profit-prompts
 
 on:
   schedule:
-    # Two posts/day, every day:
-    # 11:00 AM IST morning slot   = 05:30 UTC daily
+    # Carousel is the MORNING slot only, from 26 Aug 2026.
+    # 11:00 AM IST = 05:30 UTC daily
     - cron: "30 5 * * *"
-    # 7:30 PM IST evening slot    = 14:00 UTC daily
-    - cron: "0 14 * * *"
+    # The 14:00 UTC evening carousel is retired: the night slot is now a Reel,
+    # published by profit_prompts_reel.yml at 13:00 UTC. Leaving both enabled
+    # posted twice within an hour.
   workflow_dispatch:
     inputs:
       dry_run:

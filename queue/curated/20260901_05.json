@@ -1,0 +1,87 @@
+{
+  "id": "20260901_05",
+  "pillar_id": "ai_tools_workflows",
+  "pillar_name": "AI Tools & Workflows",
+  "topic": "What actually shipped in AI this week",
+  "angle": "Five releases, ranked by whether they change anything for you",
+  "hook": "Everything that shipped in AI this week, in 5 slides",
+  "caption": "Five things landed this week and roughly one of them changes what you can do. Ranked by that, not by how loud the launch thread was.\n\n🔖 Save this — you'll want it when it's relevant.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#ainews #technews #weeklyroundup #aitools",
+  "slides": [
+    {
+      "slide": 1,
+      "text": "Everything that shipped in AI this week, in *5* slides",
+      "subline": "Ranked by whether it changes your Monday"
+    },
+    {
+      "text": "Most AI news is a benchmark table that changes nothing about your week. Some of it is not.",
+      "slide": 2
+    },
+    {
+      "layout": "numbered",
+      "items": [
+        {
+          "num": "01",
+          "title": "Open video",
+          "desc": "Weights closing on the paid APIs"
+        },
+        {
+          "num": "02",
+          "title": "Robotics",
+          "desc": "Locomotion effectively solved"
+        },
+        {
+          "num": "03",
+          "title": "Voice",
+          "desc": "Clean-licence cloning arrived"
+        },
+        {
+          "num": "04",
+          "title": "Pricing",
+          "desc": "Usage caps spreading across plans"
+        },
+        {
+          "num": "05",
+          "title": "Local models",
+          "desc": "Frontier quality on one machine"
+        }
+      ],
+      "slide": 3
+    },
+    {
+      "layout": "step",
+      "step_num": "1",
+      "title": "The one that matters",
+      "body": "Clean-licence voice cloning is the release with consequences. Everything else is a number moving. This one changes what you are allowed to sell.",
+      "slide": 4
+    },
+    {
+      "layout": "big_stat",
+      "stat": "1",
+      "unit": "of 5",
+      "caption": "stories this week that change what you can actually do",
+      "slide": 5
+    },
+    {
+      "layout": "step",
+      "step_num": "2",
+      "title": "Ignore the rest until it ships",
+      "body": "An announced model is not a usable model. Wait for the version people are building on before rearranging your workflow around a launch post.",
+      "slide": 6
+    },
+    {
+      "slide": 7,
+      "text": "You won't see this anywhere else",
+      "subline": "Follow @profit_prompts_"
+    }
+  ],
+  "image_prompts": [
+    "Cinematic 3D rendered illustration, five glowing monoliths of different heights standing in a dark desert under a stormy sky, the tallest one blazing with light while the others are dim, dramatic backlighting, heavy atmospheric haze, saturated teal and orange, glossy render, upper two thirds, no text"
+  ],
+  "authored_by": "claude_laptop_session",
+  "source": {
+    "note": "Week of 26 Aug - 1 Sep 2026, morning slot only. Covers are satirical cinematic 3D per the competitor teardown, not the photoreal documentary style that averaged 21 reach. No comment bait in captions.",
+    "format_variant": "satirical_4x5",
+    "cover_prompt": "Cinematic 3D rendered illustration, five glowing monoliths of different heights standing in a dark desert under a stormy sky, the tallest one blazing with light while the others are dim, dramatic backlighting, heavy atmospheric haze, saturated teal and orange, glossy render, upper two thirds, no text",
+    "last_slide_prompt": "Cinematic 3D rendered illustration, a lone figure in silhouette walking toward the single brightest monolith across dark sand, the other four fading behind, dramatic backlighting, atmospheric haze, saturated teal, glossy render, upper two thirds, no text"
+  }
+}
