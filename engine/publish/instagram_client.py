@@ -85,6 +85,57 @@ def publish_single(image_repo_path: str, caption: str, dry_run: bool = False) ->
     return media_id
 
 
+def publish_reel(video_repo_path: str, caption: str, dry_run: bool = False,
+                 share_to_feed: bool = True, cover_repo_path: str = "") -> str:
+    """Publish a Reel. Returns media ID or '[dry-run]'.
+
+    Reels differ from images in two ways that matter operationally:
+
+    1. Instagram transcodes the video server-side, so the container takes far
+       longer to reach FINISHED than an image does — minutes, not seconds.
+       Hence the longer timeout rather than the default 120s.
+    2. The MP4 must be reachable at a public URL when Instagram fetches it,
+       which means the render has to be committed and pushed *before* this
+       runs. A container created against an unpushed path fails with a
+       generic ERROR that tells you nothing.
+    """
+    url = _raw_url(video_repo_path)
+    print(f"  video_url: {url}")
+    if dry_run:
+        print("  [dry-run] skipping publish")
+        return "[dry-run]"
+
+    token, uid = _token(), _user_id()
+    payload = {
+        "media_type": "REELS",
+        "video_url": url,
+        "caption": caption,
+        "share_to_feed": "true" if share_to_feed else "false",
+        "access_token": token,
+    }
+    if cover_repo_path:
+        # Without this Instagram picks its own frame, which is often a
+        # mid-transition one with half a caption on screen.
+        payload["thumb_offset"] = "0"
+        payload["cover_url"] = _raw_url(cover_repo_path)
+
+    r = requests.post(f"{GRAPH}/{uid}/media", data=payload, timeout=60)
+    if not r.ok:
+        raise RuntimeError(f"Reel container creation failed: {r.status_code} {r.text[:300]}")
+    cid = r.json()["id"]
+    print(f"  container {cid} created; waiting for transcode")
+
+    _wait_for_container(cid, timeout=600)
+
+    pub = requests.post(f"{GRAPH}/{uid}/media_publish",
+                        data={"creation_id": cid, "access_token": token},
+                        timeout=60)
+    pub.raise_for_status()
+    media_id = pub.json()["id"]
+    print(f"  Published reel: {media_id}")
+    return media_id
+
+
 def publish_carousel(image_repo_paths: list[str], caption: str, dry_run: bool = False) -> str:
     """Publish a carousel of images. Returns carousel media ID."""
     if len(image_repo_paths) < 2:

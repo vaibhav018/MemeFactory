@@ -1,0 +1,118 @@
+name: profit-prompts-reel
+
+# Daily Reel publisher for @profit_prompts_.
+#
+# Separate workflow from profit_prompts.yml on purpose: a failing Remotion
+# render must not be able to take the carousel slot down with it. The two
+# share only the publish helper and the repo secrets.
+#
+# Requires the same secrets as the carousel workflow. Audio and reel.json
+# come from the Sunday Colab batch, committed ahead of time — this job
+# renders and posts, it does not generate anything.
+
+on:
+  schedule:
+    # 6:30 PM IST = 13:00 UTC. Deliberately an hour before the carousel's
+    # 14:00 slot so the two never contend for the same push.
+    - cron: "0 13 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Render and commit, but do not publish"
+        type: boolean
+        default: false
+      reel_id:
+        description: "Publish this reel id instead of the oldest queued"
+        type: string
+        default: ""
+
+concurrency:
+  group: publish          # shared with the carousel workflow: never push concurrently
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  reel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Skip if nothing queued
+        id: queued
+        run: |
+          if ls reels/data/*.reel.json >/dev/null 2>&1; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            echo "Queued reels:"; ls -1 reels/data/*.reel.json
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            echo "No reels queued — run the Colab voice batch. Exiting cleanly."
+          fi
+
+      - name: Setup Python
+        if: steps.queued.outputs.found == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Setup Node
+        if: steps.queued.outputs.found == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: reels/package-lock.json
+
+      - name: Install Python dependencies
+        if: steps.queued.outputs.found == 'true'
+        run: pip install -r requirements.txt
+
+      - name: Install Remotion dependencies
+        if: steps.queued.outputs.found == 'true'
+        working-directory: reels
+        run: |
+          npm ci --no-audit --no-fund
+          # npm 12 defers postinstall scripts, which leaves esbuild without its
+          # platform binary and makes the Remotion bundle step fail.
+          npm approve-scripts esbuild || true
+          npm rebuild esbuild
+
+      - name: Configure git
+        if: steps.queued.outputs.found == 'true'
+        run: |
+          git config user.email "profit-prompts-bot@users.noreply.github.com"
+          git config user.name "profit-prompts-bot"
+
+      - name: Render and publish
+        if: steps.queued.outputs.found == 'true'
+        env:
+          IG_USER_ID:      ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          if [ -n "${{ inputs.reel_id }}" ]; then ARGS="$ARGS --id ${{ inputs.reel_id }}"; fi
+          python publish_reel.py $ARGS
+
+      - name: Prune old renders
+        if: steps.queued.outputs.found == 'true' && inputs.dry_run != true
+        run: |
+          # MP4s are ~11MB each. Keeping every one turns the repo into
+          # something nobody can clone within a year, so keep the last 14
+          # and drop the rest. Instagram has its own copy by this point.
+          cd Generated_Reels 2>/dev/null || exit 0
+          ls -1t *.mp4 2>/dev/null | tail -n +15 | while read -r old; do
+            echo "pruning $old"
+            git rm --quiet "$old"
+          done
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(reels): prune renders older than the last 14"
+            git push origin HEAD
+          fi
