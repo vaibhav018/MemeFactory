@@ -1,0 +1,40 @@
+{
+  "id": "example",
+  "handle": "@profit_prompts_",
+  "vo": "You pay two hundred dollars a month. Then you hit the cap. Resetting it costs eighty more. Most people find out mid-deadline, which is the worst possible time. Find your real ceiling before it finds you. And keep a working account with a second provider, ready before you need it. That is the whole fix.",
+  "beats": [
+    {
+      "at": 0.0,
+      "type": "hook",
+      "text": "Your subscription has a paywall inside it",
+      "sub": "Nobody mentions this at checkout"
+    },
+    {
+      "at": 4.0,
+      "type": "stat",
+      "stat": "$280",
+      "unit": "/mo",
+      "caption": "what a $200 plan really costs the month you hit the ceiling"
+    },
+    {
+      "at": 9.0,
+      "type": "point",
+      "num": "01",
+      "title": "Know your ceiling",
+      "body": "Find the number before you build a workflow that depends on it being there."
+    },
+    {
+      "at": 14.0,
+      "type": "point",
+      "num": "02",
+      "title": "Keep a key warm",
+      "body": "A working account with a second provider, ready before the cap lands mid-deadline."
+    },
+    {
+      "at": 18.5,
+      "type": "cta",
+      "text": "Follow for the next one",
+      "sub": "@profit_prompts_"
+    }
+  ]
+}

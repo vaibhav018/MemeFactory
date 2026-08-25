@@ -1,4 +1,4 @@
-# Secrets - never commit these
+﻿# Secrets - never commit these
 .env
 credentials/service_account.json
 credentials/oauth_token.json
@@ -23,11 +23,11 @@ queue/posted/*.json
 !queue/approved/.gitkeep
 !queue/posted/.gitkeep
 
-# Swipe scraper output — local-only. User reviews drafts before promoting
+# Swipe scraper output â€” local-only. User reviews drafts before promoting
 # approved ones to queue/curated/<YYYYMMDD_HH>.json (which IS tracked).
 swipe/
 queue/curated_draft/
-# Generated_Memes IS committed — Actions needs public raw URLs for Instagram
+# Generated_Memes IS committed â€” Actions needs public raw URLs for Instagram
 assets/Downloaded/
 logs/
 
@@ -48,5 +48,5 @@ output/real_test/
 # Reels
 reels/node_modules/
 reels/out/
-reels/public/audio/
+reels/public/audio/*.wav
 
