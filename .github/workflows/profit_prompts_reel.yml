@@ -107,12 +107,17 @@ jobs:
           # MP4s are ~11MB each. Keeping every one turns the repo into
           # something nobody can clone within a year, so keep the last 14
           # and drop the rest. Instagram has its own copy by this point.
-          cd Generated_Reels 2>/dev/null || exit 0
-          ls -1t *.mp4 2>/dev/null | tail -n +15 | while read -r old; do
-            echo "pruning $old"
-            git rm --quiet "$old"
+          # Renders AND source clips both accumulate: ~11MB and ~1-5MB each.
+          # Keep the last 14 of each. Instagram has its own copy of anything
+          # already published, and a consumed source clip is never re-rendered.
+          for dir in Generated_Reels reels/public/video; do
+            [ -d "$dir" ] || continue
+            ls -1t "$dir"/*.mp4 2>/dev/null | tail -n +15 | while read -r old; do
+              echo "pruning $old"
+              git rm --quiet "$old"
+            done
           done
           if ! git diff --cached --quiet; then
-            git commit -m "chore(reels): prune renders older than the last 14"
+            git commit -m "chore(reels): prune renders and sources beyond the last 14"
             git push origin HEAD
           fi
