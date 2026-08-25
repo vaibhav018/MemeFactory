@@ -121,17 +121,11 @@ export const Curated: React.FC<CuratedData> = ({
         }}
       >
         <div style={{display: 'flex', alignItems: 'center', gap: 20, marginBottom: 26}}>
+          {/* Brand mark, never a photograph of anyone. The logo carries its
+              own ring, so no border is needed here. */}
           <Img
-            src={staticFile('avatar.png')}
-            style={{
-              width: 92,
-              height: 92,
-              borderRadius: '50%',
-              flex: 'none',
-              // evolving.ai rings the avatar; it separates the head from the
-              // black ground, which a bare circle does not.
-              border: '3px solid rgba(255,255,255,.92)',
-            }}
+            src={staticFile('logo.png')}
+            style={{width: 92, height: 92, borderRadius: '50%', flex: 'none'}}
           />
           <div style={{lineHeight: 1.12}}>
             <div

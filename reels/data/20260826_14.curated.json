@@ -1,0 +1,19 @@
+{
+  "id": "20260826_14",
+  "displayName": "Profit Prompts",
+  "handle": "@profit_prompts_",
+  "verified": true,
+  "commentary": "A humanoid robot just ran the 100m in **9.39 seconds** — faster than Usain Bolt has ever run it",
+  "videoSrc": "video/robot100m.mp4",
+  "sourceAspect": 0.5625,
+  "sourceCrop": {
+    "top": 0.4172,
+    "height": 0.2867
+  },
+  "durationInSeconds": 12.4,
+  "credit": {
+    "name": "World Humanoid Robot Games",
+    "note": "CCTV broadcast, Beijing"
+  },
+  "caption": "A humanoid robot ran the 100m in 9.39 seconds at the World Humanoid Robot Games in Beijing.\\n\\nUsain Bolt\\u2019s world record is 9.58, set in Berlin in 2009. Tiangong Ultra, built by the Beijing Humanoid Robot Innovation Centre, went under it. Honor\\u2019s Lightning came second at 9.47 \\u2014 also under Bolt.\\n\\nLocomotion was the hard problem in robotics for thirty years. That part is now done.\\n\\nFootage: World Humanoid Robot Games / CCTV broadcast.\\n\\n#robotics #ai #humanoidrobot #technews #usainbolt #beijing"
+}

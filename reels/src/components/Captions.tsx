@@ -43,8 +43,7 @@ export const Captions: React.FC<{captions: Caption[]}> = ({captions}) => {
         lineHeight: 1.15,
         letterSpacing: '-0.02em',
         textTransform: 'uppercase',
-        // Double shadow acts as a scrim: legible even if a descender from the
-        // portrait's jawline ends up behind a word.
+        // Double shadow acts as a scrim: legible over b-roll or a busy ground.
         textShadow:
           '0 4px 24px rgba(0,0,0,.95), 0 0 60px rgba(0,0,0,.85)',
         zIndex: 5,

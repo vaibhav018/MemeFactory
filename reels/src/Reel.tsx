@@ -10,7 +10,6 @@ import {
 } from 'remotion';
 import {theme, font, SAFE} from './theme';
 import {Fonts} from './Fonts';
-import {Portrait} from './components/Portrait';
 import {Captions} from './components/Captions';
 import {Beats} from './components/Beats';
 import type {Reel as ReelData} from './types';
@@ -18,10 +17,10 @@ import type {Reel as ReelData} from './types';
 /**
  * The reel.
  *
- * Layer order, back to front: ground -> optional generated b-roll -> portrait
- * -> beat card -> captions -> brand chrome. The b-roll is deliberately
- * optional: LTX-2.5 output is garnish, and a missing clip must never stop a
- * scheduled post.
+ * Layer order, back to front: ground -> optional generated b-roll -> beat card
+ * -> captions -> brand chrome. No presenter: this pipeline never renders a
+ * photograph of a person. The b-roll is deliberately optional — LTX-2.5 output
+ * is garnish, and a missing clip must never stop a scheduled post.
  */
 export const Reel: React.FC<ReelData> = ({
   audioSrc,
@@ -60,7 +59,7 @@ export const Reel: React.FC<ReelData> = ({
         </AbsoluteFill>
       ) : null}
 
-      <Portrait />
+      {/* No presenter. This pipeline never renders a photograph of a person. */}
       <Beats beats={beats} />
       <Captions captions={captions} />
 

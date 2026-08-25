@@ -16,7 +16,7 @@ import {
  *   npx remotion render Reel    out/x.mp4 --props=data/<id>.reel.json
  *   npx remotion render Curated out/x.mp4 --props=data/<id>.curated.json
  *
- * Reel    — our own voiceover, portrait and beat cards.
+ * Reel    — our own voiceover, beat cards and captions.
  * Curated — a tweet-style header over someone else's clip. Cheaper to make and,
  *           on the competitor sample, the better performer.
  *
