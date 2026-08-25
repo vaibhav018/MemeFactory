@@ -63,6 +63,15 @@ export type Curated = {
    * use 1 for square, 9/16 for a vertical source.
    */
   sourceAspect?: number;
+  /**
+   * Crop a band out of the source, as fractions of its height. Found footage
+   * is often already someone's finished vertical post with their own header
+   * baked in; this lifts out just the underlying clip. Done in the composition
+   * rather than by re-encoding, so there is no generation loss.
+   */
+  sourceCrop?: {top: number; height: number};
+  /** Trim the source. Seconds from its start. */
+  startFrom?: number;
   durationInSeconds: number;
   /** Always fill this in. Someone made the clip. */
   credit?: {name: string; note?: string};

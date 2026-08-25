@@ -73,8 +73,17 @@ export const Curated: React.FC<CuratedData> = ({
   credit,
   verified = true,
   sourceAspect = 16 / 9,
+  sourceCrop,
+  startFrom,
 }) => {
-  const videoHeight = Math.round(W / sourceAspect);
+  // Uncropped: the box is the source's own shape at full width.
+  // Cropped: the box is only the band we keep, and the video is rendered at
+  // full height inside it and offset so that band lands in view.
+  const fullHeight = Math.round(W / sourceAspect);
+  const videoHeight = sourceCrop
+    ? Math.round(fullHeight * sourceCrop.height)
+    : fullHeight;
+  const offsetY = sourceCrop ? Math.round(fullHeight * sourceCrop.top) : 0;
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
 
@@ -169,10 +178,26 @@ export const Curated: React.FC<CuratedData> = ({
         {/* Source clip: full width, natural aspect, never cropped to fill.
             Height comes from sourceAspect, so a 16:9 clip fills edge to edge
             exactly as it does on @evolving.ai. */}
-        <div style={{width: W, height: videoHeight, background: '#000'}}>
+        <div
+          style={{
+            width: W,
+            height: videoHeight,
+            background: '#000',
+            overflow: 'hidden',
+            position: 'relative',
+          }}
+        >
           <OffthreadVideo
             src={staticFile(videoSrc)}
-            style={{width: '100%', height: '100%', objectFit: 'contain'}}
+            startFrom={startFrom ? Math.round(startFrom * 30) : undefined}
+            style={{
+              position: 'absolute',
+              top: -offsetY,
+              left: 0,
+              width: W,
+              height: fullHeight,
+              objectFit: 'contain',
+            }}
           />
         </div>
 

@@ -1,0 +1,19 @@
+{
+  "id": "robotrace-test",
+  "displayName": "Profit Prompts",
+  "handle": "@profit_prompts_",
+  "verified": true,
+  "commentary": "A humanoid robot just ran the 400m in **45.66 seconds** \u2014 and the running form is the best part",
+  "videoSrc": "video/robotrace.mp4",
+  "sourceAspect": 0.5625,
+  "sourceCrop": {
+    "top": 0.365,
+    "height": 0.285
+  },
+  "startFrom": 6,
+  "durationInSeconds": 20,
+  "credit": {
+    "name": "World Humanoid Robot Games",
+    "note": "Beijing broadcast"
+  }
+}
