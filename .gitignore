@@ -44,3 +44,9 @@ Thumbs.db
 
 output/template_selftest/
 output/real_test/
+
+# Reels
+reels/node_modules/
+reels/out/
+reels/public/audio/
+

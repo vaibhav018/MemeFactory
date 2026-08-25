@@ -1,0 +1,22 @@
+{
+  "name": "profit-prompts-reels",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Remotion compositions for @profit_prompts_ Reels. Renders a 1080x1920 vertical reel from a reel.json contract: cloned-voice VO, word-synced captions, cutout portrait, and slide beats reusing the carousel design system.",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render Reel out/reel.mp4",
+    "still": "remotion still Reel out/frame.png"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.190",
+    "@remotion/media-utils": "4.0.190",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.190"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "typescript": "5.6.3"
+  }
+}
