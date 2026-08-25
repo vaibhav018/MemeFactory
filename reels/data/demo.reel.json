@@ -1,0 +1,74 @@
+{
+  "id": "demo",
+  "audioSrc": "",
+  "durationInSeconds": 14,
+  "handle": "@profit_prompts_",
+  "brollSrc": null,
+  "captions": [
+    {"word": "You", "start": 0.10, "end": 0.32},
+    {"word": "pay", "start": 0.32, "end": 0.58},
+    {"word": "two", "start": 0.58, "end": 0.84},
+    {"word": "hundred", "start": 0.84, "end": 1.24},
+    {"word": "dollars", "start": 1.24, "end": 1.72},
+    {"word": "a", "start": 1.72, "end": 1.82},
+    {"word": "month.", "start": 1.82, "end": 2.30},
+    {"word": "Then", "start": 2.45, "end": 2.72},
+    {"word": "you", "start": 2.72, "end": 2.92},
+    {"word": "hit", "start": 2.92, "end": 3.14},
+    {"word": "the", "start": 3.14, "end": 3.28},
+    {"word": "cap.", "start": 3.28, "end": 3.80},
+    {"word": "Resetting", "start": 4.10, "end": 4.70},
+    {"word": "it", "start": 4.70, "end": 4.86},
+    {"word": "costs", "start": 4.86, "end": 5.24},
+    {"word": "eighty", "start": 5.24, "end": 5.70},
+    {"word": "more.", "start": 5.70, "end": 6.20},
+    {"word": "Find", "start": 6.60, "end": 6.94},
+    {"word": "your", "start": 6.94, "end": 7.16},
+    {"word": "real", "start": 7.16, "end": 7.48},
+    {"word": "ceiling", "start": 7.48, "end": 7.98},
+    {"word": "before", "start": 7.98, "end": 8.36},
+    {"word": "it", "start": 8.36, "end": 8.50},
+    {"word": "finds", "start": 8.50, "end": 8.86},
+    {"word": "you.", "start": 8.86, "end": 9.40},
+    {"word": "Keep", "start": 10.20, "end": 10.54},
+    {"word": "a", "start": 10.54, "end": 10.64},
+    {"word": "second", "start": 10.64, "end": 11.08},
+    {"word": "key", "start": 11.08, "end": 11.40},
+    {"word": "warm.", "start": 11.40, "end": 11.98}
+  ],
+  "beats": [
+    {
+      "at": 0.0,
+      "type": "hook",
+      "text": "Your subscription has a paywall inside it",
+      "sub": "Nobody mentions this at checkout"
+    },
+    {
+      "at": 4.0,
+      "type": "stat",
+      "stat": "$280",
+      "unit": "/mo",
+      "caption": "what a $200 plan really costs the month you hit the ceiling"
+    },
+    {
+      "at": 6.5,
+      "type": "point",
+      "num": "01",
+      "title": "Know your ceiling",
+      "body": "Find the number before you build a workflow that depends on it being there."
+    },
+    {
+      "at": 10.1,
+      "type": "point",
+      "num": "02",
+      "title": "Keep a key warm",
+      "body": "A working account with a second provider, ready before the cap lands mid-deadline."
+    },
+    {
+      "at": 12.4,
+      "type": "cta",
+      "text": "Follow for the next one",
+      "sub": "@profit_prompts_"
+    }
+  ]
+}

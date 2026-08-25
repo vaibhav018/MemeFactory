@@ -9,14 +9,17 @@
     "still": "remotion still Reel out/frame.png"
   },
   "dependencies": {
-    "@remotion/cli": "4.0.190",
-    "@remotion/media-utils": "4.0.190",
+    "@remotion/cli": "4.0.516",
+    "@remotion/media-utils": "4.0.516",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "remotion": "4.0.190"
+    "remotion": "4.0.516"
   },
   "devDependencies": {
     "@types/react": "18.3.12",
     "typescript": "5.6.3"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true
   }
 }

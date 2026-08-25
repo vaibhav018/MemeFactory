@@ -11,7 +11,7 @@ import type {Caption} from '../types';
  * with the active word in brand yellow. Reels are watched muted more often
  * than not, so this is the primary channel, not decoration.
  */
-const WORDS_PER_LINE = 4;
+const WORDS_PER_LINE = 3;
 
 export const Captions: React.FC<{captions: Caption[]}> = ({captions}) => {
   const frame = useCurrentFrame();
@@ -39,11 +39,14 @@ export const Captions: React.FC<{captions: Caption[]}> = ({captions}) => {
         textAlign: 'center',
         fontFamily: font.body,
         fontWeight: 800,
-        fontSize: 76,
+        fontSize: 64,
         lineHeight: 1.15,
         letterSpacing: '-0.02em',
         textTransform: 'uppercase',
-        textShadow: '0 4px 24px rgba(0,0,0,.85)',
+        // Double shadow acts as a scrim: legible even if a descender from the
+        // portrait's jawline ends up behind a word.
+        textShadow:
+          '0 4px 24px rgba(0,0,0,.95), 0 0 60px rgba(0,0,0,.85)',
         zIndex: 5,
       }}
     >

@@ -15,8 +15,19 @@ export const W = 1080;
 export const H = 1920;
 export const FPS = 30;
 
-/** Safe area: IG overlays the bottom ~320px with caption/CTA chrome. */
-export const SAFE = {top: 220, bottom: 380, side: 80} as const;
+/**
+ * Vertical budget for 1920px, worked out from an actual render:
+ *   0-220     brand chrome
+ *   220-900   beat card
+ *   900-1450  presenter's face  <- captions must clear this
+ *   1450-1650 captions
+ *   1650-1920 handle + Instagram's own bottom UI
+ * IG overlays roughly the bottom 250px, so captions sit just above it.
+ */
+export const SAFE = {top: 220, bottom: 300, side: 80} as const;
+
+/** Portrait width. Sized so the chin clears the caption band. */
+export const PORTRAIT_W = 900;
 
 export const font = {
   display: '"Anton", Impact, sans-serif',

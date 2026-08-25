@@ -1,6 +1,6 @@
 import React from 'react';
 import {Img, staticFile, useCurrentFrame, useVideoConfig, interpolate} from 'remotion';
-import {theme} from '../theme';
+import {theme, PORTRAIT_W} from '../theme';
 
 /**
  * The presenter: a background-free PNG of the operator, bottom-anchored,
@@ -41,7 +41,7 @@ export const Portrait: React.FC<{src?: string}> = ({src = 'portrait.png'}) => {
           position: 'absolute',
           bottom: drift,
           left: '50%',
-          width: 1080,
+          width: PORTRAIT_W,
           transform: `translateX(-50%) scale(${scale})`,
           transformOrigin: 'bottom center',
           filter: 'drop-shadow(0 0 60px rgba(0,0,0,.6))',
