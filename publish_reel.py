@@ -197,7 +197,7 @@ def main() -> int:
         git("add", "-A", str(DATA.relative_to(BASE).as_posix()))
         git("commit", "-m", f"queue: consume reel {rid}", check=False)
         git("push", "origin", "HEAD", check=False)
-        print(f"  consumed {reel_path.name}")
+        print(f"  consumed {job_path.name}")
 
     print(f"\nDone: {media_id}")
     return 0
