@@ -55,26 +55,42 @@ def _tool(*names: str) -> str:
     sys.exit(f"{names[0]} not found on PATH")
 
 
-def pick_reel(explicit: str = "") -> Path:
-    """Oldest unposted reel.json by filename, matching the curated-queue rule."""
-    if explicit:
-        p = DATA / f"{explicit}.reel.json"
-        if not p.exists():
-            sys.exit(f"no such reel: {p}")
-        return p
+# Two formats share this queue and this publisher. The suffix picks the
+# Remotion composition; nothing else differs downstream.
+FORMATS = {".reel.json": "Reel", ".curated.json": "Curated"}
+
+
+def _job_id(p: Path) -> str:
+    for suffix in FORMATS:
+        if p.name.endswith(suffix):
+            return p.name[: -len(suffix)]
+    return p.stem
+
+
+def pick_job(explicit: str = "") -> tuple[Path, str]:
+    """Oldest unposted job by filename. Returns (path, composition id)."""
     candidates = sorted(
-        p for p in DATA.glob("*.reel.json")
-        if p.is_file() and p.name.removesuffix(".reel.json") not in FIXTURES
+        p for suffix in FORMATS for p in DATA.glob(f"*{suffix}")
+        if p.is_file() and _job_id(p) not in FIXTURES
     )
+    if explicit:
+        candidates = [p for p in candidates if _job_id(p) == explicit]
+        if not candidates:
+            sys.exit(f"no queued job with id {explicit!r} in {DATA}")
+
     if not candidates:
-        sys.exit("no reels queued in reels/data/ — run the Colab voice notebook")
-    return candidates[0]
+        sys.exit("nothing queued in reels/data/ — run the Colab voice notebook "
+                 "for a Reel, or add a <id>.curated.json for a curated clip")
+
+    chosen = candidates[0]
+    comp = next(c for s, c in FORMATS.items() if chosen.name.endswith(s))
+    return chosen, comp
 
 
-def render(reel_path: Path, out: Path) -> None:
+def render(job_path: Path, out: Path, composition: str) -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
-    cmd = [_tool("npx.cmd", "npx"), "remotion", "render", "Reel", str(out),
-           f"--props={reel_path}"]
+    cmd = [_tool("npx.cmd", "npx"), "remotion", "render", composition, str(out),
+           f"--props={job_path}"]
     print(f"  {' '.join(cmd)}")
     r = subprocess.run(cmd, cwd=REELS, timeout=TIMEOUT)
     if r.returncode != 0:
@@ -98,26 +114,42 @@ def main() -> int:
                     help="Leave the reel.json in the queue after publishing")
     args = ap.parse_args()
 
-    reel_path = pick_reel(args.id)
-    reel = json.loads(reel_path.read_text(encoding="utf-8"))
+    job_path, composition = pick_job(args.id)
+    reel = json.loads(job_path.read_text(encoding="utf-8"))
     rid = reel["id"]
-    print(f"Reel: {rid}  ({reel['durationInSeconds']}s, "
-          f"{len(reel['captions'])} caption words, {len(reel['beats'])} beats)")
 
-    # An empty audioSrc resolves to reels/public/ itself, which exists — so
-    # check the field before checking the file, or a voiceless reel sails
-    # straight through to Instagram.
-    if not reel.get("audioSrc"):
-        sys.exit(f"{reel_path.name} has no audioSrc — it has not been through "
-                 f"the Colab voice batch yet.")
-    audio = REELS / "public" / reel["audioSrc"]
-    if not audio.is_file():
-        sys.exit(f"audio missing: {audio}\n"
-                 f"Commit the mp3 from the Colab batch before publishing.")
+    if composition == "Reel":
+        print(f"Reel: {rid}  ({reel['durationInSeconds']}s, "
+              f"{len(reel['captions'])} caption words, {len(reel['beats'])} beats)")
+        # An empty audioSrc resolves to reels/public/ itself, which exists — so
+        # check the field before checking the file, or a voiceless reel sails
+        # straight through to Instagram.
+        if not reel.get("audioSrc"):
+            sys.exit(f"{job_path.name} has no audioSrc — it has not been through "
+                     f"the Colab voice batch yet.")
+        asset = REELS / "public" / reel["audioSrc"]
+        if not asset.is_file():
+            sys.exit(f"audio missing: {asset}\n"
+                     f"Commit the mp3 from the Colab batch before publishing.")
+    else:
+        credit = (reel.get("credit") or {}).get("name")
+        print(f"Curated: {rid}  ({reel['durationInSeconds']}s, "
+              f"credit: {credit or 'NONE'})")
+        if not reel.get("videoSrc"):
+            sys.exit(f"{job_path.name} has no videoSrc")
+        asset = REELS / "public" / reel["videoSrc"]
+        if not asset.is_file():
+            sys.exit(f"source clip missing: {asset}")
+        # Republishing someone's clip uncredited is the one failure here that
+        # cannot be undone after the fact, so it is a hard stop rather than a
+        # warning nobody reads in a cron log.
+        if not credit:
+            sys.exit(f"{job_path.name} has no credit.name — refusing to publish "
+                     f"someone else's clip without crediting them.")
 
     out = OUT_DIR / f"{rid}.mp4"
-    print("Rendering...")
-    render(reel_path, out)
+    print(f"Rendering ({composition})...")
+    render(job_path, out, composition)
 
     rel = out.relative_to(BASE).as_posix()
 
@@ -138,15 +170,25 @@ def main() -> int:
 
     caption = reel.get("caption") or ""
     if not caption:
-        hook = next((b for b in reel["beats"] if b["type"] == "hook"), None)
-        caption = hook["text"] if hook else rid
-        print("  no caption in reel.json — falling back to the hook text")
+        if composition == "Reel":
+            hook = next((b for b in reel.get("beats", []) if b["type"] == "hook"), None)
+            caption = hook["text"] if hook else rid
+        else:
+            caption = reel.get("commentary", "").replace("**", "")
+        print("  no caption field — derived one from the content")
+
+    if composition == "Curated":
+        # The on-screen credit reaches viewers; the caption tag reaches the
+        # creator, who often reshares. Only one of those is free distribution.
+        tag = (reel.get("credit") or {}).get("name", "")
+        if tag and tag not in caption:
+            caption = f"{caption}\n\nFull credit to {tag} for the clip."
 
     media_id = publish_reel(rel, caption, dry_run=args.dry_run)
 
     if not args.dry_run and not args.keep:
         POSTED.mkdir(parents=True, exist_ok=True)
-        reel_path.rename(POSTED / reel_path.name)
+        job_path.rename(POSTED / job_path.name)
         git("add", "-A", str(DATA.relative_to(BASE).as_posix()))
         git("commit", "-m", f"queue: consume reel {rid}", check=False)
         git("push", "origin", "HEAD", check=False)
