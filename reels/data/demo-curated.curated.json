@@ -1,0 +1,14 @@
+{
+  "id": "demo-curated",
+  "displayName": "Profit Prompts",
+  "handle": "@profit_prompts_",
+  "verified": true,
+  "commentary": "Someone rebuilt a **$200/month AI workflow** using only free tools, and the output is genuinely **indistinguishable**",
+  "videoSrc": "video/testclip.mp4",
+  "durationInSeconds": 15,
+  "credit": {
+    "name": "@originalcreator",
+    "note": "via Instagram"
+  },
+  "caption": "Someone rebuilt a $200/month AI workflow using only free tools.\n\nFull credit to @originalcreator for the clip — go follow them.\n\n#ai #aitools #freetools #productivity"
+}

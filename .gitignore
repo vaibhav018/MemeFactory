@@ -50,3 +50,5 @@ reels/node_modules/
 reels/out/
 reels/public/audio/*.wav
 
+reels/public/video/
+

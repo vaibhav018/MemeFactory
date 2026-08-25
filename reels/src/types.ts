@@ -43,6 +43,39 @@ export type Reel = {
   handle?: string;
 };
 
+/**
+ * The curated-clip format: a tweet-style header over someone else's video.
+ * No voiceover and no captions of our own — the source clip carries itself.
+ */
+export type Curated = {
+  id: string;
+  displayName?: string;
+  handle?: string;
+  verified?: boolean;
+  /** One or two lines of take. `**bold**` marks the phrases that carry it. */
+  commentary: string;
+  /** Public path under reels/public, e.g. "video/redalert.mp4". */
+  videoSrc: string;
+  durationInSeconds: number;
+  /** Always fill this in. Someone made the clip. */
+  credit?: {name: string; note?: string};
+  /** Caption for the post; the credit belongs in here too. */
+  caption?: string;
+};
+
+export const defaultCurated: Curated = {
+  id: 'demo-curated',
+  displayName: 'Profit Prompts',
+  handle: '@profit_prompts_',
+  verified: true,
+  commentary:
+    'Someone rebuilt a **$200/month workflow** with free tools and the output ' +
+    'is genuinely **indistinguishable**',
+  videoSrc: '',
+  durationInSeconds: 15,
+  credit: {name: '@creator'},
+};
+
 export const defaultReel: Reel = {
   id: 'demo',
   audioSrc: '',
