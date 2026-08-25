@@ -8,7 +8,7 @@ import {
   useVideoConfig,
   interpolate,
 } from 'remotion';
-import {theme, font} from './theme';
+import {theme, font, W, H} from './theme';
 import {Fonts} from './Fonts';
 import type {Curated as CuratedData} from './types';
 
@@ -54,6 +54,17 @@ const Verified: React.FC = () => (
   </svg>
 );
 
+/**
+ * Layout measured off six @evolving.ai frames rather than guessed:
+ *   header first lit row  18.6% - 21.0% of frame height
+ *   video top             33.7% - 36.2%
+ *   video                 full width, natural aspect, never cropped
+ * Their 16:9 clips land ~31.6% tall at full width, which is what a 1080-wide
+ * 16:9 video is. So there is no fixed video box — the source dictates it.
+ */
+const HEADER_TOP = Math.round(H * 0.195);   // 374
+const GAP = 40;                             // header to clip
+
 export const Curated: React.FC<CuratedData> = ({
   displayName = 'Profit Prompts',
   handle = '@profit_prompts_',
@@ -61,7 +72,9 @@ export const Curated: React.FC<CuratedData> = ({
   videoSrc,
   credit,
   verified = true,
+  sourceAspect = 16 / 9,
 }) => {
+  const videoHeight = Math.round(W / sourceAspect);
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
 
@@ -75,12 +88,25 @@ export const Curated: React.FC<CuratedData> = ({
     <AbsoluteFill style={{background: theme.ink, color: theme.paper}}>
       <Fonts />
 
+      {/* Header and clip flow in sequence rather than sitting at fixed offsets.
+          Measuring @evolving.ai, their clip starts at 33.7% behind a one-line
+          take and 36.2% behind a three-line one — the clip follows the text.
+          Absolute positioning both put the video edge through the last line. */}
       <div
         style={{
           position: 'absolute',
-          top: 300,
-          left: 56,
-          right: 56,
+          top: HEADER_TOP,
+          left: 0,
+          right: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: GAP,
+        }}
+      >
+      <div
+        style={{
+          paddingLeft: 56,
+          paddingRight: 56,
           opacity: enter,
           transform: `translateY(${interpolate(enter, [0, 1], [18, 0])}px)`,
         }}
@@ -88,7 +114,15 @@ export const Curated: React.FC<CuratedData> = ({
         <div style={{display: 'flex', alignItems: 'center', gap: 20, marginBottom: 26}}>
           <Img
             src={staticFile('avatar.png')}
-            style={{width: 92, height: 92, borderRadius: '50%', flex: 'none'}}
+            style={{
+              width: 92,
+              height: 92,
+              borderRadius: '50%',
+              flex: 'none',
+              // evolving.ai rings the avatar; it separates the head from the
+              // black ground, which a bare circle does not.
+              border: '3px solid rgba(255,255,255,.92)',
+            }}
           />
           <div style={{lineHeight: 1.12}}>
             <div
@@ -132,40 +166,36 @@ export const Curated: React.FC<CuratedData> = ({
         </div>
       </div>
 
-      {/* Source clip, letterboxed at natural aspect — never cropped to fill. */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 700,
-          left: 0,
-          right: 0,
-          height: 810,
-          background: '#000',
-        }}
-      >
-        <OffthreadVideo
-          src={staticFile(videoSrc)}
-          style={{width: '100%', height: '100%', objectFit: 'contain'}}
-        />
-      </div>
-
-      {credit?.name ? (
-        <div
-          style={{
-            position: 'absolute',
-            top: 1540,
-            left: 56,
-            right: 56,
-            fontFamily: font.mono,
-            fontSize: 26,
-            letterSpacing: '0.06em',
-            color: '#6E747A',
-          }}
-        >
-          clip by {credit.name}
-          {credit.note ? ` · ${credit.note}` : ''}
+        {/* Source clip: full width, natural aspect, never cropped to fill.
+            Height comes from sourceAspect, so a 16:9 clip fills edge to edge
+            exactly as it does on @evolving.ai. */}
+        <div style={{width: W, height: videoHeight, background: '#000'}}>
+          <OffthreadVideo
+            src={staticFile(videoSrc)}
+            style={{width: '100%', height: '100%', objectFit: 'contain'}}
+          />
         </div>
-      ) : null}
+
+        {/* Credit sits directly under the clip, where evolving.ai puts the
+            source's own subtitle line. They credit in the caption only; on
+            screen costs nothing and is the decent thing to do. */}
+        {credit?.name ? (
+          <div
+            style={{
+              paddingLeft: 56,
+              paddingRight: 56,
+              marginTop: -6,
+              fontFamily: font.body,
+              fontSize: 30,
+              fontWeight: 500,
+              color: '#7C828A',
+            }}
+          >
+            clip by {credit.name}
+            {credit.note ? ` · ${credit.note}` : ''}
+          </div>
+        ) : null}
+      </div>
     </AbsoluteFill>
   );
 };

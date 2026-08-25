@@ -56,6 +56,13 @@ export type Curated = {
   commentary: string;
   /** Public path under reels/public, e.g. "video/redalert.mp4". */
   videoSrc: string;
+  /**
+   * Width/height of the source clip. The video box is sized from this so a
+   * 16:9 clip fills edge to edge at its natural shape, which is what
+   * @evolving.ai's layout actually does. 16/9 covers most found footage;
+   * use 1 for square, 9/16 for a vertical source.
+   */
+  sourceAspect?: number;
   durationInSeconds: number;
   /** Always fill this in. Someone made the clip. */
   credit?: {name: string; note?: string};
