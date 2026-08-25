@@ -15,11 +15,20 @@ export type Caption = {
   end: number;
 };
 
+/**
+ * `at` is seconds. `cue` is optional: a phrase from the VO marking where this
+ * card belongs. scripts/snap_beats.py rewrites `at` to the moment that phrase
+ * is actually spoken, which is the only reliable way to place cards — beats
+ * are hand-timed against a guess at the VO length, and the generated audio
+ * never matches the guess. The first real reel drifted 2.4s without it.
+ */
+type BeatBase = {at: number; cue?: string};
+
 export type Beat =
-  | {at: number; type: 'hook'; text: string; sub?: string}
-  | {at: number; type: 'point'; num: string; title: string; body?: string}
-  | {at: number; type: 'stat'; stat: string; unit?: string; caption: string}
-  | {at: number; type: 'cta'; text: string; sub?: string};
+  | (BeatBase & {type: 'hook'; text: string; sub?: string})
+  | (BeatBase & {type: 'point'; num: string; title: string; body?: string})
+  | (BeatBase & {type: 'stat'; stat: string; unit?: string; caption: string})
+  | (BeatBase & {type: 'cta'; text: string; sub?: string});
 
 export type Reel = {
   id: string;

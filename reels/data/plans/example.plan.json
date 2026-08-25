@@ -14,27 +14,31 @@
       "type": "stat",
       "stat": "$280",
       "unit": "/mo",
-      "caption": "what a $200 plan really costs the month you hit the ceiling"
+      "caption": "what a $200 plan really costs the month you hit the ceiling",
+      "cue": "Resetting it costs"
     },
     {
       "at": 9.0,
       "type": "point",
       "num": "01",
       "title": "Know your ceiling",
-      "body": "Find the number before you build a workflow that depends on it being there."
+      "body": "Find the number before you build a workflow that depends on it being there.",
+      "cue": "Find your real ceiling"
     },
     {
       "at": 14.0,
       "type": "point",
       "num": "02",
       "title": "Keep a key warm",
-      "body": "A working account with a second provider, ready before the cap lands mid-deadline."
+      "body": "A working account with a second provider, ready before the cap lands mid-deadline.",
+      "cue": "And keep a working account"
     },
     {
       "at": 18.5,
       "type": "cta",
       "text": "Follow for the next one",
-      "sub": "@profit_prompts_"
+      "sub": "@profit_prompts_",
+      "cue": "That is the whole fix"
     }
   ]
 }

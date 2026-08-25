@@ -284,31 +284,35 @@
       "sub": "Nobody mentions this at checkout"
     },
     {
-      "at": 4.0,
+      "at": 4.22,
       "type": "stat",
       "stat": "$280",
       "unit": "/mo",
-      "caption": "what a $200 plan really costs the month you hit the ceiling"
+      "caption": "what a $200 plan really costs the month you hit the ceiling",
+      "cue": "Resetting it costs"
     },
     {
-      "at": 9.0,
+      "at": 11.44,
       "type": "point",
       "num": "01",
       "title": "Know your ceiling",
-      "body": "Find the number before you build a workflow that depends on it being there."
+      "body": "Find the number before you build a workflow that depends on it being there.",
+      "cue": "Find your real ceiling"
     },
     {
-      "at": 14.0,
+      "at": 14.42,
       "type": "point",
       "num": "02",
       "title": "Keep a key warm",
-      "body": "A working account with a second provider, ready before the cap lands mid-deadline."
+      "body": "A working account with a second provider, ready before the cap lands mid-deadline.",
+      "cue": "And keep a working account"
     },
     {
-      "at": 18.5,
+      "at": 19.16,
       "type": "cta",
       "text": "Follow for the next one",
-      "sub": "@profit_prompts_"
+      "sub": "@profit_prompts_",
+      "cue": "That is the whole fix"
     }
   ],
   "caption": "Your AI subscription has a second paywall inside it.\n\nYou pay for the plan, you hit the usage cap mid-deadline, and resetting it costs extra on top. Worth knowing your real ceiling before you build a workflow that assumes it is not there.\n\nFollow for the next one.\n\n#ai #openai #chatgpt #aitools #freelancing #productivity"

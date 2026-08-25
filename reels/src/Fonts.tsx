@@ -22,8 +22,12 @@ export const Fonts: React.FC = () => {
         weight: '100 800',
       }),
     ];
+    // FontFaceSet.add exists at runtime in Chromium but is missing from this
+    // TS DOM lib, so the set is narrowed rather than casting the whole call.
+    const fontSet = document.fonts as FontFaceSet & {add(f: FontFace): void};
+
     Promise.all(
-      faces.map((f) => f.load().then((loaded) => document.fonts.add(loaded)))
+      faces.map((f) => f.load().then((loaded) => fontSet.add(loaded)))
     )
       .then(() => continueRender(handle))
       .catch(() => continueRender(handle));
