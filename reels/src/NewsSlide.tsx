@@ -49,15 +49,14 @@ export const NewsSlide: React.FC<NewsSlideData> = ({
   });
 
   const winW = width - PAD * 2;
-  const areaTop = Math.round(height * 0.28);
-  const areaH = height - areaTop - PAD;
+  const topOfText = Math.round(height * 0.088);
+  const maxWinH = height - topOfText - PAD;
 
   // The window takes the FOOTAGE's shape, not a fixed box. Forcing a 2:1 band
   // into a near-square window with objectFit:cover zooms it four times and the
   // result is unreadable mush — which is exactly what the first render did.
   const shownAspect = sourceCrop ? sourceAspect / sourceCrop.height : sourceAspect;
-  const winH = Math.min(areaH, Math.round(winW / shownAspect));
-  const winTop = areaTop + Math.round((areaH - winH) / 2);
+  const winH = Math.min(maxWinH, Math.round(winW / shownAspect));
 
   // Crop by rendering at full height inside the window and offsetting, rather
   // than re-encoding the source.
@@ -91,10 +90,13 @@ export const NewsSlide: React.FC<NewsSlideData> = ({
         </div>
       </div>
 
+      {/* Text and footage FLOW in sequence. Centring the window in a fixed
+          area below the text left a ~280px dead band, because body length
+          varies per item and the reserved space was sized for the longest. */}
       <div
         style={{
           position: 'absolute',
-          top: Math.round(height * 0.088),
+          top: topOfText,
           left: PAD,
           right: PAD,
           opacity: enter,
@@ -125,31 +127,30 @@ export const NewsSlide: React.FC<NewsSlideData> = ({
         >
           {body}
         </div>
-      </div>
 
-      {/* the footage itself */}
-      <div
-        style={{
-          position: 'absolute',
-          top: winTop,
-          left: PAD,
-          width: winW,
-          height: winH,
-          borderRadius: RADIUS,
-          overflow: 'hidden',
-          background: '#000',
-        }}
-      >
-        <OffthreadVideo
-          src={staticFile(videoSrc)}
-          startFrom={startFrom ? Math.round(startFrom * fps) : undefined}
-          style={
-            sourceCrop
-              ? {position: 'absolute', top: -offsetY, left: 0, width: winW, height: fullH,
-                 objectFit: 'cover'}
-              : {width: '100%', height: '100%', objectFit: 'cover'}
-          }
-        />
+        {/* the footage itself */}
+        <div
+          style={{
+            marginTop: 44,
+            width: winW,
+            height: winH,
+            borderRadius: RADIUS,
+            overflow: 'hidden',
+            background: '#000',
+            position: 'relative',
+          }}
+        >
+          <OffthreadVideo
+            src={staticFile(videoSrc)}
+            startFrom={startFrom ? Math.round(startFrom * fps) : undefined}
+            style={
+              sourceCrop
+                ? {position: 'absolute', top: -offsetY, left: 0, width: winW, height: fullH,
+                   objectFit: 'cover'}
+                : {width: '100%', height: '100%', objectFit: 'cover'}
+            }
+          />
+        </div>
       </div>
     </AbsoluteFill>
   );

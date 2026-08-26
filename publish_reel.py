@@ -52,11 +52,24 @@ def _is_fixture(job_id: str) -> bool:
 
 
 def _tool(*names: str) -> str:
-    """Resolve an executable without assuming PATH shape across OSes."""
+    """Resolve an executable without assuming PATH shape across OSes.
+
+    PATH alone is not enough on Windows: Node installs to a known directory but
+    only reaches PATH in shells started after the install, so the same command
+    works in one terminal and fails in the next. Fall back to the known homes.
+    """
     for name in names:
         found = shutil.which(name)
         if found:
             return found
+    for d in (Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "nodejs",
+              Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "nodejs",
+              Path(os.environ.get("APPDATA", "")) / "npm",
+              Path("/usr/local/bin"), Path("/usr/bin")):
+        for name in names:
+            p = d / name
+            if p.exists():
+                return str(p)
     sys.exit(f"{names[0]} not found on PATH")
 
 

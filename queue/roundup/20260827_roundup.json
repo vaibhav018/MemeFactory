@@ -1,0 +1,73 @@
+{
+  "id": "20260827_roundup",
+  "_format": "Weekly roundup. Cover still, five video items, closing still. Each item's footage is OF the thing described — that is the format, and an animated version of our own text is not it.",
+
+  "hook": "5 THINGS AI DID THIS WEEK",
+  "subline": "Three of them were robots. One of them was funny.",
+  "close": "SAVE THIS ONE",
+  "close_sub": "New roundup every Thursday. @profit_prompts_",
+
+  "image_prompts": [
+    "Cinematic 3D render, a humanoid robot in a sprinter's starting blocks on a stadium track at night, floodlights raking across wet tartan, steam rising, shot from ground level on a 35mm lens, dramatic rim light, near-black background, moody and photographic, no text, no logos",
+    "Cinematic 3D render, an empty stadium track at dawn with a single pair of robot running blades left at the finish line, long shadows, volumetric haze, shallow depth of field, near-black background, quiet and cinematic, no text, no logos"
+  ],
+
+  "items": [
+    {
+      "headline": "A robot broke Usain Bolt's 100m record",
+      "body": "X-Humanoid's TienKung Ultra ran it in 9.39 seconds at the World Humanoid Robot Games in Beijing — under the 9.58 Bolt set in 2009. Different rules, same clock.",
+      "clip": "DcWiymhgPOf",
+      "sourceAspect": 0.5625,
+      "sourceCrop": {"top": 0.4172, "height": 0.2867},
+      "startFrom": 1.0,
+      "seconds": 10.0
+    },
+    {
+      "headline": "Then four of them ran straight into a barrier",
+      "body": "Same Games, blade-footed sprinters at full speed. The leader flipped through the air in a shower of sparks. Balance is still the hard part.",
+      "clip": "Dcf2-TRTMig",
+      "sourceAspect": 0.5625,
+      "sourceCrop": {"top": 0.3094, "height": 0.3398},
+      "startFrom": 1.5,
+      "seconds": 11.0
+    },
+    {
+      "headline": "One buried a free kick and hit the SIUUU",
+      "body": "A humanoid scored, then ran the Ronaldo celebration on its own. The Games are really a test of balance, coordination and autonomous movement — the showboating is a side effect.",
+      "clip": "DcYnH3aTyD2",
+      "sourceAspect": 0.5625,
+      "sourceCrop": {"top": 0.3414, "height": 0.3172},
+      "startFrom": 2.0,
+      "seconds": 12.0
+    },
+    {
+      "headline": "Someone built an India delivery-driver simulator with AI video",
+      "body": "A Chinese creator generated a GTA-style India where you're a delivery rider trying to survive one order. Entirely AI video. Chaotic, and closer to home than most of these demos get.",
+      "clip": "DcGbMNyzzDC",
+      "sourceAspect": 0.5625,
+      "sourceCrop": {"top": 0.3422, "height": 0.2398},
+      "startFrom": 3.0,
+      "seconds": 12.0
+    },
+    {
+      "headline": "Apple's $899 Mac mini is now an AI machine",
+      "body": "The M6 mini landed this week: 4x the AI performance of the M4, a dual 16-core Neural Engine, 170GB/s bandwidth. Priced at the point where running models locally stops being a flex.",
+      "clip": "DceORlnzGRA",
+      "sourceAspect": 0.5625,
+      "sourceCrop": {"top": 0.3406, "height": 0.318},
+      "startFrom": 2.0,
+      "seconds": 11.0
+    }
+  ],
+
+  "caption": "Five things AI actually did this week.\n\n1. TienKung Ultra ran the 100m in 9.39s at the World Humanoid Robot Games in Beijing — faster than Bolt's 9.58.\n2. Four sprinters piled into the barrier at full speed.\n3. One scored a free kick and did the SIUUU.\n4. A Chinese creator built an India delivery-driver simulator entirely out of AI video.\n5. Apple's M6 Mac mini arrived at $899 with 4x the AI performance of the M4.\n\nWhich one are you still thinking about?\n\nFootage via @evolving.ai and @askgpts, from the World Humanoid Robot Games broadcast and the original creators.\n\n#ai #robotics #humanoidrobot #artificialintelligence #machinelearning #technews #macmini #aitools",
+
+  "_verification": {
+    "bolt_record": "VERIFIED — TienKung Ultra 9.39s vs Bolt 9.58s (2009). Note: robot 100m is not run under IAAF conditions; the body text says 'different rules, same clock' rather than claiming an equivalent record.",
+    "mac_mini": "VERIFIED 2026-08-26 — $899, M6, 4x AI vs M4, dual 16-core Neural Engine, 170GB/s. Preorders 25 Aug, ships 22 Sep. TechCrunch, gHacks, pulse2.",
+    "pile_up": "Footage-evident. No numeric claim made.",
+    "free_kick": "Footage-evident. No numeric claim made.",
+    "india_sim": "Footage-evident. Attributed as 'a Chinese creator' because the individual is not named in the source.",
+    "dropped": "Namespace Macs-as-cloud-infrastructure — could not confirm the company or the claim in search. Cut rather than shipped unverified."
+  }
+}
