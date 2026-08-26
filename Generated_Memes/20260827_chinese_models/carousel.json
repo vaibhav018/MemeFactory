@@ -1,0 +1,13 @@
+{
+  "id": "20260827_chinese_models",
+  "caption": "Everyone is paying monthly for models that have free, commercially-usable equivalents.\n\nDeepSeek-V3 — 104K stars, MIT licence, 671B parameters.\nOllama — 179K stars, MIT, runs Kimi / GLM / MiniMax / DeepSeek / Qwen locally.\nQwen3 — Apache 2.0.\nGLM-4.5 — Apache 2.0.\n\nThe part almost nobody checks: the licence travels with the weights, not with your hardware. Running a non-commercial model on your own GPU does not make it commercial. Apache 2.0 and MIT are the ones you can bill a client for.\n\nStar counts pulled from the GitHub API on 26 Aug 2026.\n\nWhich of these are you actually running?\n\n#ai #opensource #deepseek #qwen #ollama #llm #machinelearning #aitools #localai #artificialintelligence",
+  "slides": [
+    "Generated_Memes/20260827_chinese_models/20260827_chinese_models_s01_slide_01.jpg",
+    "Generated_Memes/20260827_chinese_models/20260827_chinese_models_s02.mp4",
+    "Generated_Memes/20260827_chinese_models/20260827_chinese_models_s03.mp4",
+    "Generated_Memes/20260827_chinese_models/20260827_chinese_models_s04_slide_01.jpg",
+    "Generated_Memes/20260827_chinese_models/20260827_chinese_models_s05_slide_01.jpg",
+    "Generated_Memes/20260827_chinese_models/20260827_chinese_models_s06_slide_01.jpg",
+    "Generated_Memes/20260827_chinese_models/20260827_chinese_models_s07_slide_01.jpg"
+  ]
+}

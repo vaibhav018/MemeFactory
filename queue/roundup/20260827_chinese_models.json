@@ -1,0 +1,66 @@
+{
+  "id": "20260827_chinese_models",
+  "_format": "Daily 11:00 post. One topic, 7 slides, 2 of them video. Footage is self-recorded from scripts/record_screen.py — no sourcing cost, no attribution, exactly on-topic.",
+  "_verified": "GitHub API, 26 Aug 2026. Re-check before publishing: ollama 179,473 MIT | DeepSeek-V3 104,417 MIT | llama.cpp 125,713 MIT | Qwen3 27,557 Apache-2.0 | GLM-4.5 4,415 Apache-2.0 | Kimi-K2 11,104 modified MIT",
+  "slides": [
+    {
+      "type": "still",
+      "text": "China is *giving away* the models the West rents to you",
+      "subline": "Free weights. Real licences. Check the star counts.",
+      "prompt": "Cinematic 3D render, a single glowing server rack door standing open in a vast dark data hall, cold blue light spilling out across a wet concrete floor, volumetric haze, shot on a 35mm lens at floor level, near-black background, moody and photographic, no text, no logos, no signage"
+    },
+    {
+      "type": "video",
+      "headline": "DeepSeek-V3: 104,000 stars, MIT licence",
+      "body": "671B parameters, 37B active per token. The weights are public and the code licence is MIT — you can use it commercially without asking anyone.",
+      "clip": "rec_deepseek",
+      "local": true,
+      "sourceAspect": 1.3333333333333333,
+      "startFrom": 0.5,
+      "seconds": 8.0,
+      "sourceCrop": {
+        "top": 0.082,
+        "height": 0.918
+      }
+    },
+    {
+      "type": "video",
+      "headline": "Ollama runs them all, and it's at 179K stars",
+      "body": "One tool, MIT licensed, that pulls Kimi, GLM, MiniMax, DeepSeek, Qwen and Gemma onto your own machine. Look at what its own description now lists.",
+      "clip": "rec_ollama",
+      "local": true,
+      "sourceAspect": 1.3333333333333333,
+      "startFrom": 0.5,
+      "seconds": 8.0,
+      "sourceCrop": {
+        "top": 0.082,
+        "height": 0.918
+      }
+    },
+    {
+      "type": "still",
+      "text": "The licence is the part *nobody* checks",
+      "subline": "Apache 2.0 and MIT let you bill. Non-commercial does not.",
+      "prompt": "Cinematic 3D render, a heavy legal stamp resting on a dark desk beside a closed folder, single hard key light from the left, deep shadows, shallow depth of field, near-black background, moody and photographic, no text, no logos, no writing"
+    },
+    {
+      "type": "still",
+      "text": "What you can actually *ship* with",
+      "subline": "Qwen3 Apache 2.0 - DeepSeek MIT - GLM Apache 2.0 - Kimi modified MIT",
+      "prompt": "Cinematic 3D render, four identical matte cubes on a dark reflective surface lit from above by a narrow strip light, one cube pushed forward out of the row, near-black background, minimal and photographic, no text, no logos"
+    },
+    {
+      "type": "still",
+      "text": "The catch nobody mentions",
+      "subline": "The licence travels with the weights, not with your hardware.",
+      "prompt": "Cinematic 3D render, a thin steel chain running out of frame across a dark surface, one link catching a single hard highlight, extreme shallow depth of field, near-black background, moody and photographic, no text, no logos"
+    },
+    {
+      "type": "still",
+      "text": "SAVE THIS BEFORE YOU PAY FOR ANOTHER API KEY",
+      "subline": "New tools every morning at 11. @profit_prompts_",
+      "prompt": "Cinematic 3D render, a dark desk at night lit only by a laptop screen glow from off-frame, an empty chair pushed back, volumetric haze, shot on a 35mm lens, near-black background, quiet and cinematic, no text, no logos"
+    }
+  ],
+  "caption": "Everyone is paying monthly for models that have free, commercially-usable equivalents.\n\nDeepSeek-V3 — 104K stars, MIT licence, 671B parameters.\nOllama — 179K stars, MIT, runs Kimi / GLM / MiniMax / DeepSeek / Qwen locally.\nQwen3 — Apache 2.0.\nGLM-4.5 — Apache 2.0.\n\nThe part almost nobody checks: the licence travels with the weights, not with your hardware. Running a non-commercial model on your own GPU does not make it commercial. Apache 2.0 and MIT are the ones you can bill a client for.\n\nStar counts pulled from the GitHub API on 26 Aug 2026.\n\nWhich of these are you actually running?\n\n#ai #opensource #deepseek #qwen #ollama #llm #machinelearning #aitools #localai #artificialintelligence"
+}

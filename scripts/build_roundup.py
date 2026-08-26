@@ -104,6 +104,25 @@ def render_news_slide(item: dict, out: Path) -> None:
     print(f"    rendered {out.name} ({out.stat().st_size // 1024} KB)")
 
 
+def normalise(spec: dict) -> list[dict]:
+    """Accept either shape and return one ordered list of slides.
+
+    The weekly roundup is cover + all-video + close, but a daily post mixes
+    stills and video freely, so the general form is a single ordered `slides`
+    list where each entry declares its own type.
+    """
+    if "slides" in spec:
+        return spec["slides"]
+
+    prompts = spec.get("image_prompts", [])
+    out = [{"type": "still", "text": spec["hook"], "subline": spec["subline"],
+            "prompt": prompts[0] if prompts else ""}]
+    out += [{"type": "video", **it} for it in spec["items"]]
+    out.append({"type": "still", "text": spec["close"], "subline": spec["close_sub"],
+                "prompt": prompts[-1] if len(prompts) > 1 else ""})
+    return out
+
+
 def main() -> int:
     load_env()
     spec_path = Path(sys.argv[1] if len(sys.argv) > 1 else "roundup.json")
@@ -116,33 +135,35 @@ def main() -> int:
     from engine.visual.background_gen import generate_background
     from engine.visual.html_renderer import render_carousel
 
-    # 1. Bookend stills: cover and close, through the normal slide template.
-    print("Cover and closing slides...")
-    bgs = []
-    for i, prompt in enumerate(spec["image_prompts"], 1):
-        p = out_dir / f"background_{i:02d}.jpg"
-        if not p.exists():
-            generate_background(prompt, {}, p)
-        bgs.append(p)
+    slides = normalise(spec)
+    order: list[Path] = []
 
-    bookends = [
-        {"slide": 1, "text": spec["hook"], "subline": spec["subline"]},
-        {"slide": 2, "text": spec["close"], "subline": spec["close_sub"]},
-    ]
-    ends = render_carousel(bgs, bookends, {}, out_dir, f"{post_id}_end")
+    for n, sl in enumerate(slides, start=1):
+        kind = sl.get("type", "video")
+        label = sl.get("headline") or sl.get("text") or ""
+        print(f"  [{n}] {kind:<5} {label[:58]}")
 
-    # 2. One video slide per item.
-    print("\nItem slides...")
-    videos = []
-    for n, item in enumerate(spec["items"], start=1):
-        print(f"  [{n}] {item['headline'][:56]}")
-        fetch_clip(item["clip"], VIDEO_DIR / f"{item['clip']}.mp4")
-        mp4 = out_dir / f"{post_id}_item_{n:02d}.mp4"
-        if not mp4.exists():
-            render_news_slide(item, mp4)
-        videos.append(mp4)
+        if kind == "still":
+            bg = out_dir / f"background_{n:02d}.jpg"
+            if not bg.exists():
+                generate_background(sl.get("prompt", ""), {}, bg)
+            # Rendered one at a time: render_carousel picks a background by
+            # slide position, so handing it the whole set would not map 1:1.
+            made = render_carousel(
+                [bg], [{"slide": 1, "text": sl["text"], "subline": sl.get("subline", "")}],
+                {}, out_dir, f"{post_id}_s{n:02d}")
+            order.append(made[0])
+        else:
+            clip = VIDEO_DIR / f"{sl['clip']}.mp4"
+            if not clip.exists() and not sl.get("local"):
+                fetch_clip(sl["clip"], clip)
+            if not clip.exists():
+                sys.exit(f"clip missing: {clip}")
+            mp4 = out_dir / f"{post_id}_s{n:02d}.mp4"
+            if not mp4.exists():
+                render_news_slide(sl, mp4)
+            order.append(mp4)
 
-    order = [ends[0]] + videos + [ends[1]]
     manifest = out_dir / "carousel.json"
     manifest.write_text(json.dumps({
         "id": post_id,
@@ -150,7 +171,8 @@ def main() -> int:
         "slides": [p.relative_to(BASE).as_posix() for p in order],
     }, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    print(f"\n{len(order)} slides ({len(videos)} video) -> {manifest}")
+    n_video = sum(1 for p in order if p.suffix == ".mp4")
+    print(f"\n{len(order)} slides ({n_video} video) -> {manifest}")
     for p in order:
         print(f"  {p.suffix}  {p.name}")
     return 0

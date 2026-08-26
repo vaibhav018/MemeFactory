@@ -16,6 +16,7 @@ NewsSlide crops and rounds like any other clip.
 from __future__ import annotations
 
 import argparse
+import json
 import shutil
 import subprocess
 import sys
@@ -25,14 +26,27 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 BASE = Path(__file__).resolve().parents[1]
-W, H = 1440, 810
+
+# 4:3, not 16:9. The slide is 4:5, so a wide clip lands as a short letterbox
+# with the page text scaled to ~0.67 and unreadable on a phone. A squarer
+# capture fills the window, which means bigger type at the same slide size.
+W, H = 1200, 900
+
+# GitHub's body text is ~14px. Zooming the page before capture is what makes
+# it legible after the clip is scaled into the slide.
+ZOOM = 1.2
 
 # A repo page is mostly chrome. Hide the parts that date the clip or pull the
 # eye away from the numbers we are pointing at.
 HIDE_CSS = """
-  .js-header-wrapper, .header-logged-out, header.Header,
-  .js-notice, .flash-notice, .js-cookie-consent, dialog,
-  .footer, footer, .js-feature-preview-indicator { display: none !important; }
+  /* GitHub serves a different header to logged-out visitors, so hiding one
+     class is not enough — the marketing nav (Platform/Solutions/Pricing plus
+     Sign in) rides on .HeaderMenu and .AppHeader. */
+  header, .AppHeader, .HeaderMenu, .js-header-wrapper, .header-logged-out,
+  .js-notice, .flash, .flash-notice, .js-cookie-consent, dialog,
+  .footer, footer, .js-feature-preview-indicator,
+  [data-testid="cookie-consent"], .position-fixed.bottom-0
+    { display: none !important; }
   html { scroll-behavior: auto !important; }
   *, *::before, *::after { animation-play-state: paused !important; }
 """
@@ -79,7 +93,8 @@ def _smooth_scroll(page, total_px: int, seconds: float) -> None:
     )
 
 
-def record(mode: str, target: str, out: Path, seconds: float) -> None:
+def record(mode: str, target: str, out: Path, seconds: float,
+           scroll_px: int = 620) -> None:
     tmp = out.parent / "_rec"
     tmp.mkdir(parents=True, exist_ok=True)
 
@@ -100,9 +115,42 @@ def record(mode: str, target: str, out: Path, seconds: float) -> None:
             color_scheme="dark",
         )
         page = ctx.new_page()
+        # Injected before any page script runs, and re-asserted on mutation, so
+        # the chrome is never visible — not even in the opening frames. Adding
+        # the style after load left GitHub's marketing nav on screen until
+        # hydration finished, which is the first second of every clip.
+        page.add_init_script(
+            """(() => {
+                 const css = %s;
+                 const put = () => {
+                   if (!document.head) return;
+                   if (document.getElementById('__hide')) return;
+                   const s = document.createElement('style');
+                   s.id = '__hide';
+                   s.textContent = css;
+                   document.head.appendChild(s);
+                 };
+                 put();
+                 document.addEventListener('DOMContentLoaded', put);
+                 new MutationObserver(put).observe(document.documentElement,
+                   {childList: true, subtree: true});
+               })()""" % json.dumps(HIDE_CSS)
+        )
         print(f"  loading {url}")
         page.goto(url, wait_until="domcontentloaded", timeout=90_000)
-        page.add_style_tag(content=HIDE_CSS)
+        # SPAs (star-history among them) redirect straight after load, which
+        # destroys the execution context mid-call. Settle first, and treat the
+        # style tag as best-effort — it is cosmetic, not the recording.
+        try:
+            page.wait_for_load_state("networkidle", timeout=20_000)
+        except Exception:
+            pass
+        try:
+            page.add_style_tag(content=HIDE_CSS)
+            if mode != "stars":
+                page.evaluate(f"document.body.style.zoom = '{ZOOM}'")
+        except Exception:
+            print("  (style tag skipped — page navigated)")
 
         if mode == "stars":
             # The chart animates in and is the whole point; give it time to draw
@@ -110,8 +158,17 @@ def record(mode: str, target: str, out: Path, seconds: float) -> None:
             page.wait_for_timeout(6_000)
             page.wait_for_timeout(int(seconds * 1000))
         else:
-            page.wait_for_timeout(2_500)
-            _smooth_scroll(page, 1400, seconds * 0.75)
+            # Linger on the top of the page. The star count, licence and
+            # description are the reason the clip exists; scrolling deep into
+            # the README loses all three within a couple of seconds.
+            page.wait_for_timeout(3_000)
+            # GitHub hydrates and re-renders its header after the first style
+            # tag lands, putting the marketing nav back. Re-apply once settled.
+            try:
+                page.add_style_tag(content=HIDE_CSS)
+            except Exception:
+                pass
+            _smooth_scroll(page, scroll_px, seconds * 0.6)
             page.wait_for_timeout(1_200)
 
         ctx.close()
@@ -132,6 +189,23 @@ def record(mode: str, target: str, out: Path, seconds: float) -> None:
     )
     if r.returncode != 0 or not out.exists():
         sys.exit(f"transcode failed:\n{r.stderr[-600:]}")
+
+    # Always leave a frame to look at. A capture can succeed and still be
+    # worthless — star-history now serves a "add a GitHub token" modal instead
+    # of a chart, and the recording of that modal transcoded perfectly.
+    try:
+        import cv2
+        cap = cv2.VideoCapture(str(out))
+        n = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+        cap.set(cv2.CAP_PROP_POS_FRAMES, int(n * 0.75))
+        ok, fr = cap.read()
+        if ok:
+            shot = out.with_suffix(".frame.jpg")
+            cv2.imwrite(str(shot), fr)
+            print(f"  check the frame: {shot}")
+        cap.release()
+    except Exception:
+        pass
     for f in tmp.glob("*"):
         f.unlink()
     tmp.rmdir()
@@ -144,8 +218,10 @@ def main() -> int:
     ap.add_argument("target")
     ap.add_argument("--out", required=True)
     ap.add_argument("--seconds", type=float, default=8.0)
+    ap.add_argument("--scroll", type=int, default=620,
+                    help="pixels to travel; keep it small to stay near the top")
     a = ap.parse_args()
-    record(a.mode, a.target, Path(a.out), a.seconds)
+    record(a.mode, a.target, Path(a.out), a.seconds, a.scroll)
     return 0
 
 
