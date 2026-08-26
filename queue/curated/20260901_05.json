@@ -75,7 +75,8 @@
     }
   ],
   "image_prompts": [
-    "Cinematic 3D rendered illustration, five glowing monoliths of different heights standing in a dark desert under a stormy sky, the tallest one blazing with light while the others are dim, dramatic backlighting, heavy atmospheric haze, saturated teal and orange, glossy render, upper two thirds, no text"
+    "Cinematic 3D rendered illustration, five glowing monoliths of different heights standing in a dark desert under a stormy sky, the tallest one blazing with light while the others are dim, dramatic backlighting, heavy atmospheric haze, saturated teal and orange, glossy render, upper two thirds, no text",
+    "Cinematic 3D rendered illustration, a lone figure in silhouette walking toward the single brightest monolith across dark sand, the other four fading behind, dramatic backlighting, atmospheric haze, saturated teal, glossy render, upper two thirds, no text"
   ],
   "authored_by": "claude_laptop_session",
   "source": {

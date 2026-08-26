@@ -70,7 +70,8 @@
     }
   ],
   "image_prompts": [
-    "Cinematic 3D rendered illustration, two identical film projectors facing each other on a dark stage, one gleaming gold and chained shut with a heavy padlock, the other plain steel and wide open with light pouring out, dramatic single-source lighting, deep shadows, saturated amber palette, glossy render, upper two thirds, no text"
+    "Cinematic 3D rendered illustration, two identical film projectors facing each other on a dark stage, one gleaming gold and chained shut with a heavy padlock, the other plain steel and wide open with light pouring out, dramatic single-source lighting, deep shadows, saturated amber palette, glossy render, upper two thirds, no text",
+    "Cinematic 3D rendered illustration, a giant open padlock rendered in gold sitting on a dark reflective surface with light streaming through the shackle, dramatic rim lighting, hyper-saturated amber and black, glossy render, upper two thirds, no text"
   ],
   "authored_by": "claude_laptop_session",
   "source": {

@@ -70,7 +70,8 @@
     }
   ],
   "image_prompts": [
-    "Cinematic 3D rendered illustration, a vintage microphone wrapped in heavy iron chains with a legal wax seal stamped on the chain, dark studio background, single dramatic overhead spotlight, deep shadows, saturated red and gold, glossy render, upper two thirds, no text"
+    "Cinematic 3D rendered illustration, a vintage microphone wrapped in heavy iron chains with a legal wax seal stamped on the chain, dark studio background, single dramatic overhead spotlight, deep shadows, saturated red and gold, glossy render, upper two thirds, no text",
+    "Cinematic 3D rendered illustration, the same vintage microphone with the chains fallen away in a heap and glowing warm light spilling from the microphone head, dark studio, dramatic rim lighting, saturated gold, glossy render, upper two thirds, no text"
   ],
   "authored_by": "claude_laptop_session",
   "source": {

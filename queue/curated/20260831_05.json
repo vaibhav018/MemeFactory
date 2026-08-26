@@ -52,7 +52,8 @@
     }
   ],
   "image_prompts": [
-    "Cinematic 3D rendered illustration, a world globe made of glowing circuitry with the Indian subcontinent rendered as a dark unlit gap while every other region blazes with light, dark space background, dramatic rim lighting, saturated blue and orange, glossy render, upper two thirds, no text"
+    "Cinematic 3D rendered illustration, a world globe made of glowing circuitry with the Indian subcontinent rendered as a dark unlit gap while every other region blazes with light, dark space background, dramatic rim lighting, saturated blue and orange, glossy render, upper two thirds, no text",
+    "Cinematic 3D rendered illustration, the same circuitry globe with the Indian subcontinent now blazing brightest of all in warm gold, light spreading outward from it, dark space background, dramatic glow, glossy render, upper two thirds, no text"
   ],
   "authored_by": "claude_laptop_session",
   "source": {
