@@ -20,6 +20,8 @@ Requires: playwright + `python -m playwright install chromium`.
 from __future__ import annotations
 
 import json
+import shutil
+import subprocess
 from pathlib import Path
 
 _BASE = Path(__file__).resolve().parents[2]
@@ -133,6 +135,100 @@ def render_carousel(
             browser.close()
 
     return written
+
+
+def render_slide_video(
+    slide: dict,
+    output_path: Path,
+    slide_num: int,
+    total_slides: int,
+    bg: Path | None = None,
+    handle: str = "@profit_prompts_",
+    seconds: float = 6.0,
+    fps: int = 24,
+) -> Path:
+    """Render one slide as a short MP4 for use as a carousel video child.
+
+    Instagram carousels accept video children, and competitors use one to break
+    up an otherwise static swipe. Rather than rebuild the slide design in
+    Remotion, this drives the same templates/slide.html through a progress
+    parameter and captures frames — one design, two output formats.
+
+    Frames are captured by calling setProgress() rather than reloading, so the
+    page lays out and loads fonts once. Encoding uses Remotion's bundled ffmpeg
+    (image2 demuxer, libx264), which is already a dependency.
+    """
+    _check()
+    from playwright.sync_api import sync_playwright
+
+    frames_dir = output_path.parent / f".frames_{output_path.stem}"
+    if frames_dir.exists():
+        shutil.rmtree(frames_dir)
+    frames_dir.mkdir(parents=True, exist_ok=True)
+
+    n = max(2, int(round(seconds * fps)))
+    payload = {
+        "slide": slide_num,
+        "total": total_slides,
+        "handle": handle,
+        "data": slide,
+        "bg": bg.resolve().as_uri() if bg and bg.exists() else None,
+        "progress": 0.0,
+    }
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(args=["--font-render-hinting=none"])
+        page = browser.new_page(viewport={"width": _W, "height": _H},
+                                device_scale_factor=1)
+        try:
+            page.add_init_script(f"window.SLIDE = {json.dumps(payload)};")
+            page.goto(_TEMPLATE.resolve().as_uri())
+            page.wait_for_load_state("networkidle")
+            page.wait_for_function(
+                "document.documentElement.dataset.ready === '1'", timeout=15000)
+
+            shot = page.locator("#slide")
+            for i in range(n):
+                page.evaluate("p => window.setProgress(p)", i / (n - 1))
+                shot.screenshot(path=str(frames_dir / f"f_{i:05d}.png"))
+        finally:
+            browser.close()
+
+    _encode(frames_dir, output_path, fps)
+    shutil.rmtree(frames_dir, ignore_errors=True)
+    print(f"    video slide {slide_num} ✓ ({seconds:g}s, {output_path.stat().st_size // 1024} KB)")
+    return output_path
+
+
+def _encode(frames_dir: Path, output_path: Path, fps: int) -> None:
+    """Encode a frame sequence to H.264. Instagram re-encodes anyway, so this
+    targets compatibility over bitrate: yuv420p and an even pixel size are the
+    two things it actually rejects."""
+    ffmpeg = shutil.which("ffmpeg")
+    if ffmpeg:
+        cmd_head, cwd = [ffmpeg], _BASE
+    else:
+        npx = shutil.which("npx.cmd") or shutil.which("npx")
+        if not npx:
+            raise RendererUnavailable("no ffmpeg on PATH and no npx to reach Remotion's copy")
+        # `npx remotion` resolves against the nearest node_modules, which lives
+        # in reels/ — running it from the repo root fails with "could not
+        # determine executable to run".
+        cmd_head, cwd = [npx, "remotion", "ffmpeg"], _BASE / "reels"
+
+    # Absolute paths: cwd may be reels/ for the npx route, so anything relative
+    # would resolve against the wrong directory.
+    cmd = cmd_head + [
+        "-y", "-loglevel", "error",
+        "-framerate", str(fps),
+        "-i", str((frames_dir / "f_%05d.png").resolve()),
+        "-c:v", "libx264", "-preset", "medium", "-crf", "22",
+        "-pix_fmt", "yuv420p",
+        str(output_path.resolve()),
+    ]
+    r = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
+    if r.returncode != 0 or not output_path.exists():
+        raise RuntimeError(f"ffmpeg failed ({r.returncode}): {r.stderr[-400:]}")
 
 
 def selftest(output_dir: Path | None = None) -> list[Path]:

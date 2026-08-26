@@ -80,6 +80,42 @@ def render_slides(bg_paths, slides, pillar, out_dir: Path, post_id: str):
     return compose_carousel(bg_paths, slides, pillar, out_dir, post_id)
 
 
+def upgrade_slide_to_video(slide_paths, slides, bg_paths, out_dir: Path, post_id: str):
+    """Re-render one slide as a short MP4 and swap it into the carousel.
+
+    Instagram carousels accept video children, and competitors use one to
+    interrupt an otherwise static swipe — movement in the middle of a carousel
+    measurably holds people longer than seven stills.
+
+    Targets the `numbered` list slide, because sequence is the one layout where
+    a staggered reveal carries meaning rather than being decoration. If a post
+    has no list slide, nothing changes.
+
+    Failure here is never fatal: the still already exists, so a broken encode
+    costs the animation, not the post.
+    """
+    idx = next((i for i, s in enumerate(slides) if s.get("layout") == "numbered"), None)
+    if idx is None:
+        return slide_paths
+
+    try:
+        from engine.visual.html_renderer import render_slide_video
+
+        texture = bg_paths[1] if len(bg_paths) >= 3 else None
+        out = out_dir / f"{post_id}_slide_{idx + 1:02d}.mp4"
+        render_slide_video(
+            slides[idx], out,
+            slide_num=idx + 1, total_slides=len(slides),
+            bg=Path(texture) if texture else None,
+        )
+        paths = list(slide_paths)
+        paths[idx] = out
+        return paths
+    except Exception as e:
+        print(f"  [video-slide] skipped ({type(e).__name__}: {e}) — keeping the still")
+        return slide_paths
+
+
 def generate_post(
     conn,
     retries: int = 2,
@@ -323,6 +359,8 @@ def publish_next_curated(conn) -> int:
     # Compose slides
     print("Composing slides...")
     slide_paths = render_slides(bg_paths, curated["slides"], pillar, bg_dir, post_id)
+    slide_paths = upgrade_slide_to_video(
+        slide_paths, curated["slides"], bg_paths, bg_dir, post_id)
     repo_rel_paths = [str(p.relative_to(_BASE)) for p in slide_paths]
 
     post = {

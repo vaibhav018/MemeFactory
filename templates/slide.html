@@ -272,6 +272,45 @@ if (bookend) {
   })();
 }
 
+/* ── motion ────────────────────────────────────────────────────────────────
+   When the renderer supplies SLIDE.progress (0..1) it is capturing frames for
+   a video slide rather than a still. Instagram carousels accept video children,
+   and competitors use one to break up an otherwise static swipe.
+
+   Two effects, both deliberately restrained — this is a slide that happens to
+   move, not a motion graphic:
+     · the whole body lifts and fades in over the first beat
+     · numbered rows stagger in one after another, which is the only layout
+       where sequence carries meaning
+   A still render (progress undefined) is completely unaffected. */
+function applyMotion() {
+  const p = window.SLIDE && window.SLIDE.progress;
+  if (typeof p !== "number") return;
+
+  const ease = (t) => 1 - Math.pow(1 - Math.max(0, Math.min(1, t)), 3);
+
+  const body = document.getElementById("body");
+  if (body) {
+    const intro = ease(p / 0.16);
+    body.style.opacity = String(intro);
+    body.style.transform = `translateY(${(1 - intro) * 26}px)`;
+  }
+
+  const rows = document.querySelectorAll(".row");
+  rows.forEach((row, i) => {
+    const start = 0.18 + i * 0.11;          // stagger, ~0.6s apart at 6s
+    const t = ease((p - start) / 0.13);
+    row.style.opacity = String(t);
+    row.style.transform = `translateX(${(1 - t) * 34}px)`;
+  });
+
+  // Slow drift on the texture so flat colour never sits perfectly still.
+  const itex = document.getElementById("itex");
+  if (itex && itex.style.backgroundImage) {
+    itex.style.transform = `scale(${1 + p * 0.05})`;
+  }
+}
+
 /* Autofit — shrink the largest type until content clears its container.
    MUST run after the webfonts load: Anton is far more condensed than any
    fallback, so measuring too early sees extra line wraps and shrinks the
@@ -293,8 +332,17 @@ function fit() {
     }
   }
   document.documentElement.setAttribute("data-fit", guard);
+  applyMotion();          // after autofit: motion must not affect measurement
   document.documentElement.setAttribute("data-ready", "1");
 }
+
+/* Re-pose for a new frame without re-running layout or refetching fonts.
+   The video renderer calls this per frame, which is what makes capturing
+   180 frames take seconds rather than minutes. */
+window.setProgress = function (p) {
+  window.SLIDE.progress = p;
+  applyMotion();
+};
 
 if (document.fonts && document.fonts.ready) {
   document.fonts.ready.then(() => requestAnimationFrame(fit));

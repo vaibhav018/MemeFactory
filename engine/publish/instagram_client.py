@@ -149,17 +149,32 @@ def publish_carousel(image_repo_paths: list[str], caption: str, dry_run: bool = 
 
     token, uid = _token(), _user_id()
 
-    # Step 1: create child containers
+    # Step 1: create child containers.
+    #
+    # A carousel may mix images and videos, which is what competitors use to
+    # break up an otherwise static swipe. The extension decides the child type;
+    # a video child also has to finish transcoding before the parent container
+    # will accept it, so those are waited on individually.
     child_ids = []
     for path in image_repo_paths:
         url = _raw_url(path)
-        r = requests.post(
-            f"{GRAPH}/{uid}/media",
-            data={"image_url": url, "is_carousel_item": "true", "access_token": token},
-            timeout=30,
-        )
-        r.raise_for_status()
-        child_ids.append(r.json()["id"])
+        is_video = path.lower().endswith((".mp4", ".mov"))
+        payload = {"is_carousel_item": "true", "access_token": token}
+        if is_video:
+            payload |= {"media_type": "VIDEO", "video_url": url}
+        else:
+            payload["image_url"] = url
+
+        r = requests.post(f"{GRAPH}/{uid}/media", data=payload, timeout=60)
+        if not r.ok:
+            raise RuntimeError(
+                f"carousel child failed ({'video' if is_video else 'image'}) "
+                f"{url}: {r.status_code} {r.text[:250]}")
+        cid = r.json()["id"]
+        if is_video:
+            print(f"    video child {cid} — waiting for transcode")
+            _wait_for_container(cid, timeout=600)
+        child_ids.append(cid)
 
     # Step 2: create carousel container
     r = requests.post(
