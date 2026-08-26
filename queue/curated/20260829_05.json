@@ -2,47 +2,65 @@
   "id": "20260829_05",
   "pillar_id": "ai_tools_workflows",
   "pillar_name": "AI Tools & Workflows",
-  "topic": "The free tier lie",
-  "angle": "Most tools advertised as free are demos with a credit card behind them",
-  "hook": "Most free AI tools are not free",
-  "caption": "Half the reels selling you free AI tools are describing trial credits. The tell is always the same and it takes ten seconds to check. This is the list of what is genuinely free versus what is a demo with a countdown attached.\n\n🔖 Save this — you'll want it when it's relevant.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#aitools #freetools #saas #productivity #ai",
+  "topic": "Run a real model on your own laptop",
+  "angle": "One command, no account, no bill",
+  "hook": "Run a real AI model on your laptop, free",
+  "caption": "Everyone assumes local AI means a server rack. It means one command and a model that fits your RAM. Here is the ladder from a laptop that struggles to one that does not, and what each rung can actually do.\n\n🔖 Save this — the links are all free.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#ollama #localai #aitools #opensource #freetools",
   "slides": [
     {
       "slide": 1,
-      "text": "Most *free* AI tools are not free",
-      "subline": "Here is how to tell in ten seconds"
+      "text": "Run a real AI model on *your* laptop, free",
+      "subline": "One command. No account, no key, no bill"
     },
     {
-      "text": "There is a difference between a free tier and a free trial. Almost every reel selling you tools blurs it.",
+      "text": "Local means it runs on your machine, works offline, costs nothing per use, and never sends your work to anyone.",
       "slide": 2
     },
     {
       "layout": "step",
       "step_num": "1",
-      "title": "The ten-second test",
-      "body": "Try to reach the pricing page without signing up. If the free column has a number of credits rather than a rate limit, it is a trial and it ends.",
+      "title": "Install Ollama",
+      "body": "One installer, then one command to pull a model. It handles the download, the quantisation and the serving. There is no configuration step to get wrong.",
       "slide": 3
     },
     {
-      "layout": "split",
-      "left_label": "FREE TIER",
-      "left_text": "Rate-limited forever. Resets daily or monthly. No card.",
-      "right_label": "FREE TRIAL",
-      "right_text": "A credit balance that runs out once and never refills.",
+      "layout": "numbered",
+      "items": [
+        {
+          "num": "8GB",
+          "title": "Small models",
+          "desc": "Summarising, drafting, cleanup"
+        },
+        {
+          "num": "16GB",
+          "title": "Mid models",
+          "desc": "Real coding help, long documents"
+        },
+        {
+          "num": "24GB",
+          "title": "Large models",
+          "desc": "Close to the paid tiers"
+        },
+        {
+          "num": "2GB",
+          "title": "Old laptop",
+          "desc": "Rent an hour of GPU instead"
+        }
+      ],
       "slide": 4
     },
     {
       "layout": "big_stat",
       "stat": "0",
-      "unit": "cards",
-      "caption": "a genuine free tier never asks for one up front",
+      "unit": "per call",
+      "caption": "what inference costs once the model lives on your machine",
       "slide": 5
     },
     {
       "layout": "step",
       "step_num": "2",
-      "title": "Why they do it",
-      "body": "Trial credits convert better than free tiers, and reels about free tools get reach. Both incentives point the same way, so the language stays deliberately fuzzy.",
+      "title": "Where local still loses",
+      "body": "The hardest reasoning still belongs to the frontier models, and your battery will notice. Use local for volume, privacy and drafting. Keep one hosted key for the genuinely hard problems.",
       "slide": 6
     },
     {
@@ -52,16 +70,16 @@
     }
   ],
   "image_prompts": [
-    "Cinematic 3D rendered illustration, a giant glowing FREE sign made of neon hanging above a mousetrap holding a credit card as bait, dark warehouse setting, dramatic single-source lighting from the neon, hyper-saturated pink and cyan, deep shadows, glossy render, upper two thirds, no text",
-    "Abstract cinematic 3D texture, dark warehouse air with faint pink and cyan neon bleeding through fog, no objects, no signage, extremely low contrast, near-black, glossy render, no text",
-    "Cinematic 3D rendered illustration, a hand holding a magnifying glass over a contract covered in tiny illegible print, one clause glowing red through the lens, dark desk, dramatic side lighting, saturated red and black, glossy render, upper two thirds, no text"
+    "Cinematic 3D rendered illustration, a laptop sitting open on a bare wooden table with a glowing brain-shaped light source hovering just above the keyboard, ethernet cable unplugged and coiled beside it, dark room, dramatic single-source lighting, saturated cyan against near-black, glossy render, subject in upper two thirds, no text",
+    "Abstract cinematic 3D texture, faint cyan glow diffusing through dark air, no objects, no devices, extremely low contrast, near-black with muted cyan, glossy render, no text",
+    "Cinematic 3D rendered illustration, the same glowing brain-shaped light now resting fully inside a closed laptop shell that glows faintly at its seams, dark room, dramatic rim lighting, saturated cyan, glossy render, upper two thirds, no text"
   ],
   "authored_by": "claude_laptop_session",
   "source": {
-    "note": "Week of 26 Aug - 1 Sep 2026, morning slot only. Covers are satirical cinematic 3D per the competitor teardown, not the photoreal documentary style that averaged 21 reach. No comment bait in captions.",
-    "format_variant": "satirical_4x5",
-    "cover_prompt": "Cinematic 3D rendered illustration, a giant glowing FREE sign made of neon hanging above a mousetrap holding a credit card as bait, dark warehouse setting, dramatic single-source lighting from the neon, hyper-saturated pink and cyan, deep shadows, glossy render, upper two thirds, no text",
-    "last_slide_prompt": "Cinematic 3D rendered illustration, a hand holding a magnifying glass over a contract covered in tiny illegible print, one clause glowing red through the lens, dark desk, dramatic side lighting, saturated red and black, glossy render, upper two thirds, no text",
-    "texture_prompt": "Abstract cinematic 3D texture, dark warehouse air with faint pink and cyan neon bleeding through fog, no objects, no signage, extremely low contrast, near-black, glossy render, no text"
+    "note": "Rewritten as tool/repo listicles. Both signals favour lists: @syntaix.ai's best cover is '10 GITHUB REPOS EVERY TRADER SHOULD KNOW ABOUT', and the YouTube cross-check was '11 FREE AI Tools That WILL Replace Your Paid Apps' at 189k views. Star counts and model names are from secondary sources on 26 Aug 2026 and move fast - re-check before publishing.",
+    "format_variant": "listicle_satirical_4x5",
+    "cover_prompt": "Cinematic 3D rendered illustration, a laptop sitting open on a bare wooden table with a glowing brain-shaped light source hovering just above the keyboard, ethernet cable unplugged and coiled beside it, dark room, dramatic single-source lighting, saturated cyan against near-black, glossy render, subject in upper two thirds, no text",
+    "texture_prompt": "Abstract cinematic 3D texture, faint cyan glow diffusing through dark air, no objects, no devices, extremely low contrast, near-black with muted cyan, glossy render, no text",
+    "last_slide_prompt": "Cinematic 3D rendered illustration, the same glowing brain-shaped light now resting fully inside a closed laptop shell that glows faintly at its seams, dark room, dramatic rim lighting, saturated cyan, glossy render, upper two thirds, no text"
   }
 }

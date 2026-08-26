@@ -2,18 +2,18 @@
   "id": "20260827_05",
   "pillar_id": "ai_tools_workflows",
   "pillar_name": "AI Tools & Workflows",
-  "topic": "Open-source video models caught up this month",
-  "angle": "The gap between free weights and paid APIs closed faster than anyone planned for",
-  "hook": "Open video models just caught the paid ones",
-  "caption": "A year ago open video generation was a toy. This month the open-weight models are producing output people cannot reliably distinguish from the paid APIs, and several ship licences that permit commercial use outright. The catch is hardware, not quality.\n\n🔖 Save this — you'll want it when it's relevant.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#ai #opensource #aivideo #aitools #contentcreation",
+  "topic": "GitHub repos that exploded in 2026",
+  "angle": "Five repos, all free, all with more stars than most companies have users",
+  "hook": "5 GitHub repos that passed 100,000 stars",
+  "caption": "Star counts are a popularity contest, but at this scale they tell you something real: these are the tools enough people found useful that they came back to bookmark them. Every one is free and installs in a single command.\n\n🔖 Save this — the links are all free.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#github #opensource #aitools #developers #freetools",
   "slides": [
     {
       "slide": 1,
-      "text": "Open video models just caught the *paid* ones",
-      "subline": "And the licences are better than you think"
+      "text": "5 GitHub repos that passed *100,000* stars",
+      "subline": "All free. All installable tonight"
     },
     {
-      "text": "The quality argument is basically over. What is left is a hardware argument, and that one is still real.",
+      "text": "A star is someone bookmarking a repo to come back to. At six figures, that is a lot of people who found it worth returning to.",
       "slide": 2
     },
     {
@@ -21,46 +21,51 @@
       "items": [
         {
           "num": "01",
-          "title": "WAN 2.2",
-          "desc": "Apache 2.0. Commercial use, no credits"
+          "title": "OpenClaw",
+          "desc": "210k stars. Local AI assistant, 50+ apps"
         },
         {
           "num": "02",
-          "title": "LTX-2.5",
-          "desc": "Free commercially under $10M revenue"
+          "title": "DeepSeek Harness",
+          "desc": "195k. Everything is a plugin"
         },
         {
           "num": "03",
-          "title": "Mochi 1",
-          "desc": "Apache 2.0, weights on Hugging Face"
+          "title": "Ollama",
+          "desc": "165k. Any local model, one command"
         },
         {
           "num": "04",
-          "title": "The catch",
-          "desc": "8GB+ VRAM, or you rent it"
+          "title": "ComfyUI",
+          "desc": "106k. Node-based image pipelines"
+        },
+        {
+          "num": "05",
+          "title": "Agent skills",
+          "desc": "80k. The most-installed skill pack"
         }
       ],
       "slide": 3
     },
     {
-      "layout": "step",
-      "step_num": "1",
-      "title": "Read the licence first",
-      "body": "Licences travel with the weights, not the hardware. Free GPU does not make a non-commercial model commercial, and several popular ones are non-commercial.",
+      "layout": "big_stat",
+      "stat": "9K",
+      "unit": "to 60K",
+      "caption": "what OpenClaw gained in a matter of days after going viral",
       "slide": 4
     },
     {
-      "layout": "big_stat",
-      "stat": "$1.69",
-      "unit": "/hr",
-      "caption": "what an A100 costs to rent when you do not own a GPU",
+      "layout": "step",
+      "step_num": "1",
+      "title": "Start with Ollama",
+      "body": "One command pulls a model and runs it locally. No account, no key, no per-token bill. It is the lowest-friction way to find out whether local AI is good enough for what you do.",
       "slide": 5
     },
     {
       "layout": "step",
       "step_num": "2",
-      "title": "Where this actually lands",
-      "body": "You do not need to own hardware. You need to know which model has a licence you can build on, and rent the rest by the hour.",
+      "title": "Then pick one more",
+      "body": "Installing five tools in a weekend means learning none of them. Take the one that maps to a job you already do badly, and give it a fortnight.",
       "slide": 6
     },
     {
@@ -70,16 +75,16 @@
     }
   ],
   "image_prompts": [
-    "Cinematic 3D rendered illustration, two identical film projectors facing each other on a dark stage, one gleaming gold and chained shut with a heavy padlock, the other plain steel and wide open with light pouring out, dramatic single-source lighting, deep shadows, saturated amber palette, glossy render, upper two thirds, no text",
-    "Abstract cinematic 3D texture, dark stage floor with soft amber light pooling and long diffuse shadows, heavy atmospheric haze, no objects, no subject, extremely low contrast, muted amber and near-black, glossy render, no text",
-    "Cinematic 3D rendered illustration, a giant open padlock rendered in gold sitting on a dark reflective surface with light streaming through the shackle, dramatic rim lighting, hyper-saturated amber and black, glossy render, upper two thirds, no text"
+    "Cinematic 3D rendered illustration, a colossal glowing golden star crash-landed in a dark crater with tiny silhouetted figures standing around its rim looking up, dust still settling, dramatic rim lighting, hyper-saturated gold against near-black, glossy render, subject in upper two thirds, no text",
+    "Abstract cinematic 3D texture, faint golden particles drifting through deep dark space, no objects, no stars in focus, extremely low contrast, near-black with muted gold, glossy render, no text",
+    "Cinematic 3D rendered illustration, a single glowing golden star held in an open cupped hand against a dark background, warm light spilling between the fingers, dramatic rim lighting, hyper-saturated gold, glossy render, upper two thirds, no text"
   ],
   "authored_by": "claude_laptop_session",
   "source": {
-    "note": "Week of 26 Aug - 1 Sep 2026, morning slot only. Covers are satirical cinematic 3D per the competitor teardown, not the photoreal documentary style that averaged 21 reach. No comment bait in captions.",
-    "format_variant": "satirical_4x5",
-    "cover_prompt": "Cinematic 3D rendered illustration, two identical film projectors facing each other on a dark stage, one gleaming gold and chained shut with a heavy padlock, the other plain steel and wide open with light pouring out, dramatic single-source lighting, deep shadows, saturated amber palette, glossy render, upper two thirds, no text",
-    "last_slide_prompt": "Cinematic 3D rendered illustration, a giant open padlock rendered in gold sitting on a dark reflective surface with light streaming through the shackle, dramatic rim lighting, hyper-saturated amber and black, glossy render, upper two thirds, no text",
-    "texture_prompt": "Abstract cinematic 3D texture, dark stage floor with soft amber light pooling and long diffuse shadows, heavy atmospheric haze, no objects, no subject, extremely low contrast, muted amber and near-black, glossy render, no text"
+    "note": "Rewritten as tool/repo listicles. Both signals favour lists: @syntaix.ai's best cover is '10 GITHUB REPOS EVERY TRADER SHOULD KNOW ABOUT', and the YouTube cross-check was '11 FREE AI Tools That WILL Replace Your Paid Apps' at 189k views. Star counts and model names are from secondary sources on 26 Aug 2026 and move fast - re-check before publishing.",
+    "format_variant": "listicle_satirical_4x5",
+    "cover_prompt": "Cinematic 3D rendered illustration, a colossal glowing golden star crash-landed in a dark crater with tiny silhouetted figures standing around its rim looking up, dust still settling, dramatic rim lighting, hyper-saturated gold against near-black, glossy render, subject in upper two thirds, no text",
+    "texture_prompt": "Abstract cinematic 3D texture, faint golden particles drifting through deep dark space, no objects, no stars in focus, extremely low contrast, near-black with muted gold, glossy render, no text",
+    "last_slide_prompt": "Cinematic 3D rendered illustration, a single glowing golden star held in an open cupped hand against a dark background, warm light spilling between the fingers, dramatic rim lighting, hyper-saturated gold, glossy render, upper two thirds, no text"
   }
 }

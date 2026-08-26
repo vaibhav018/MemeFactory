@@ -1,19 +1,19 @@
 {
   "id": "20260828_05",
-  "pillar_id": "wealth_hustles",
-  "pillar_name": "Wealth & Hustles",
-  "topic": "Training your own AI model costs less than people think, and more than it is worth",
-  "angle": "Real numbers on what a from-scratch model actually costs",
-  "hook": "Training your own AI video model costs $200,000",
-  "caption": "People ask what it takes to train a video model from scratch. Here are the real numbers, published by the teams who did it. The cheapest credible attempt was celebrated precisely because it was 90% cheaper than everything before it.\n\n🔖 Save this — you'll want it when it's relevant.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#ai #machinelearning #startups #techbusiness #founders",
+  "pillar_id": "tech_science",
+  "pillar_name": "Tech & Science",
+  "topic": "Chinese open models beating the paid ones",
+  "angle": "Four of the five leading open models come from Chinese labs, with free weights",
+  "hook": "China is giving away models the West charges for",
+  "caption": "Four of the five leading open models in 2026 come from Chinese labs — DeepSeek, Moonshot, Zhipu and Alibaba. They publish weights, several under genuinely permissive licences, and they have closed most of the coding and reasoning gap with the closed frontier.\n\n🔖 Save this — the links are all free.\n➡️ Follow @profit_prompts_ for the AI stack that actually pays.\n\n#ai #opensource #deepseek #qwen #llm #technews",
   "slides": [
     {
       "slide": 1,
-      "text": "Training your own AI video model costs *$200,000*",
-      "subline": "And that is the cheap one"
+      "text": "China is *giving away* models the West charges for",
+      "subline": "Free weights. Permissive licences. Right now"
     },
     {
-      "text": "The number people guess is either wildly low or wildly high. Here is what the teams who actually did it published.",
+      "text": "Open weights used to mean second-rate. In 2026 four of the five leading open models are Chinese, and they are not second-rate.",
       "slide": 2
     },
     {
@@ -21,47 +21,52 @@
       "items": [
         {
           "num": "01",
-          "title": "Open-Sora 2.0",
-          "desc": "$200k — the cheapest credible one"
+          "title": "Kimi K3",
+          "desc": "2.8T params. Biggest open model there is"
         },
         {
           "num": "02",
-          "title": "Step-Video",
-          "desc": "$1 million"
+          "title": "DeepSeek V4",
+          "desc": "Best all-round. MIT licensed"
         },
         {
           "num": "03",
-          "title": "Movie Gen",
-          "desc": "$2.5 million"
+          "title": "Qwen 3.6",
+          "desc": "Apache 2.0. Easiest to self-host"
         },
         {
           "num": "04",
-          "title": "Fine-tune instead",
-          "desc": "$20-100 per run"
+          "title": "GLM 5.2",
+          "desc": "Strongest at tool use and agents"
+        },
+        {
+          "num": "05",
+          "title": "MiniMax",
+          "desc": "Long context and multimodal"
         }
       ],
       "slide": 3
     },
     {
-      "layout": "big_stat",
-      "stat": "4,160",
-      "unit": "GPU days",
-      "caption": "what the $200k bought: 224 H200s running for weeks",
+      "layout": "step",
+      "step_num": "1",
+      "title": "Check the licence, not the benchmark",
+      "body": "DeepSeek ships MIT and Qwen ships Apache 2.0 — you can build a business on either. Some others are open weights but restricted use. The licence decides what you are allowed to sell.",
       "slide": 4
     },
     {
       "layout": "split",
-      "left_label": "FROM SCRATCH",
-      "left_text": "$200k minimum, a research team, and months before you know if it worked.",
-      "right_label": "FINE-TUNE",
-      "right_text": "About fifty dollars and a weekend to find out if the idea has legs.",
+      "left_label": "CLOSED",
+      "left_text": "Per-token billing, usage caps, and the price is whatever they decide next quarter.",
+      "right_label": "OPEN WEIGHTS",
+      "right_text": "Download once, run anywhere, and nobody can reprice it out from under you.",
       "slide": 5
     },
     {
       "layout": "step",
-      "step_num": "1",
-      "title": "The part that matters",
-      "body": "The model is not the moat. Anyone can rent the same GPUs. What is defensible is the data nobody else has, or the specific job you solve better.",
+      "step_num": "2",
+      "title": "You do not need a GPU",
+      "body": "Rent one. An A100 is about $1.69 an hour, so an evening of experimenting costs less than lunch. Owning hardware is the expensive way to find out if this works for you.",
       "slide": 6
     },
     {
@@ -71,16 +76,16 @@
     }
   ],
   "image_prompts": [
-    "Cinematic 3D rendered illustration, an enormous stack of server racks shaped like a mountain with a tiny businessman in a suit standing at the base looking up, dramatic backlighting, cold blue server LEDs, heavy atmospheric haze, extreme scale contrast, glossy render, upper two thirds, no text",
-    "Abstract cinematic 3D texture, blurred server rack lights receding into deep haze, bokeh points of cold blue, no objects in focus, extremely low contrast, near-black with faint blue, glossy render, no text",
-    "Cinematic 3D rendered illustration, a single glowing GPU card resting on a velvet cushion under a museum spotlight behind glass, dark gallery background, dramatic single-source lighting, saturated blue, glossy render, upper two thirds, no text"
+    "Cinematic 3D rendered illustration, an enormous ornate red and gold gate standing wide open in a dark landscape with light flooding out from behind it, a small closed steel vault door beside it dwarfed by comparison, dramatic backlighting, atmospheric haze, hyper-saturated red and gold, glossy render, subject in upper two thirds, no text",
+    "Abstract cinematic 3D texture, faint red and gold light bleeding through deep darkness, no objects, no structures, extremely low contrast, near-black, glossy render, no text",
+    "Cinematic 3D rendered illustration, a crowd of tiny silhouetted figures streaming through the open red and gold gate toward the light, seen from behind, dark landscape, dramatic backlighting, hyper-saturated gold, glossy render, upper two thirds, no text"
   ],
   "authored_by": "claude_laptop_session",
   "source": {
-    "note": "Week of 26 Aug - 1 Sep 2026, morning slot only. Covers are satirical cinematic 3D per the competitor teardown, not the photoreal documentary style that averaged 21 reach. No comment bait in captions.",
-    "format_variant": "satirical_4x5",
-    "cover_prompt": "Cinematic 3D rendered illustration, an enormous stack of server racks shaped like a mountain with a tiny businessman in a suit standing at the base looking up, dramatic backlighting, cold blue server LEDs, heavy atmospheric haze, extreme scale contrast, glossy render, upper two thirds, no text",
-    "last_slide_prompt": "Cinematic 3D rendered illustration, a single glowing GPU card resting on a velvet cushion under a museum spotlight behind glass, dark gallery background, dramatic single-source lighting, saturated blue, glossy render, upper two thirds, no text",
-    "texture_prompt": "Abstract cinematic 3D texture, blurred server rack lights receding into deep haze, bokeh points of cold blue, no objects in focus, extremely low contrast, near-black with faint blue, glossy render, no text"
+    "note": "Rewritten as tool/repo listicles. Both signals favour lists: @syntaix.ai's best cover is '10 GITHUB REPOS EVERY TRADER SHOULD KNOW ABOUT', and the YouTube cross-check was '11 FREE AI Tools That WILL Replace Your Paid Apps' at 189k views. Star counts and model names are from secondary sources on 26 Aug 2026 and move fast - re-check before publishing.",
+    "format_variant": "listicle_satirical_4x5",
+    "cover_prompt": "Cinematic 3D rendered illustration, an enormous ornate red and gold gate standing wide open in a dark landscape with light flooding out from behind it, a small closed steel vault door beside it dwarfed by comparison, dramatic backlighting, atmospheric haze, hyper-saturated red and gold, glossy render, subject in upper two thirds, no text",
+    "texture_prompt": "Abstract cinematic 3D texture, faint red and gold light bleeding through deep darkness, no objects, no structures, extremely low contrast, near-black, glossy render, no text",
+    "last_slide_prompt": "Cinematic 3D rendered illustration, a crowd of tiny silhouetted figures streaming through the open red and gold gate toward the light, seen from behind, dark landscape, dramatic backlighting, hyper-saturated gold, glossy render, upper two thirds, no text"
   }
 }
