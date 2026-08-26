@@ -71,6 +71,7 @@
   ],
   "image_prompts": [
     "Cinematic 3D rendered illustration, a vintage microphone wrapped in heavy iron chains with a legal wax seal stamped on the chain, dark studio background, single dramatic overhead spotlight, deep shadows, saturated red and gold, glossy render, upper two thirds, no text",
+    "Abstract cinematic 3D texture, dark recording studio air with faint gold light falling through dust, acoustic foam far out of focus, no objects, extremely low contrast, near-black with muted gold, glossy render, no text",
     "Cinematic 3D rendered illustration, the same vintage microphone with the chains fallen away in a heap and glowing warm light spilling from the microphone head, dark studio, dramatic rim lighting, saturated gold, glossy render, upper two thirds, no text"
   ],
   "authored_by": "claude_laptop_session",
@@ -78,6 +79,7 @@
     "note": "Week of 26 Aug - 1 Sep 2026, morning slot only. Covers are satirical cinematic 3D per the competitor teardown, not the photoreal documentary style that averaged 21 reach. No comment bait in captions.",
     "format_variant": "satirical_4x5",
     "cover_prompt": "Cinematic 3D rendered illustration, a vintage microphone wrapped in heavy iron chains with a legal wax seal stamped on the chain, dark studio background, single dramatic overhead spotlight, deep shadows, saturated red and gold, glossy render, upper two thirds, no text",
-    "last_slide_prompt": "Cinematic 3D rendered illustration, the same vintage microphone with the chains fallen away in a heap and glowing warm light spilling from the microphone head, dark studio, dramatic rim lighting, saturated gold, glossy render, upper two thirds, no text"
+    "last_slide_prompt": "Cinematic 3D rendered illustration, the same vintage microphone with the chains fallen away in a heap and glowing warm light spilling from the microphone head, dark studio, dramatic rim lighting, saturated gold, glossy render, upper two thirds, no text",
+    "texture_prompt": "Abstract cinematic 3D texture, dark recording studio air with faint gold light falling through dust, acoustic foam far out of focus, no objects, extremely low contrast, near-black with muted gold, glossy render, no text"
   }
 }

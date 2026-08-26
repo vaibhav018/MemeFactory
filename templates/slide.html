@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>slide</title>
 <style>
-  /* ══════════════════════════════════════════════════════════════════
+  /* ══════════════════════════════════════════════════════════════════
      @profit_prompts_ — carousel slide design system  ·  1080 x 1350 (4:5)
      Rendered by engine/visual/html_renderer.py (Playwright/Chromium).
 
@@ -13,7 +13,7 @@
      black-bar-bottom with a hairline seam, a small centred badge, heavy
      condensed caps, and colour-highlighted keywords.
      Preview: open in a browser — falls back to DEMO data.
-     ══════════════════════════════════════════════════════════════════ */
+     ══════════════════════════════════════════════════════════════════ */
 
   @font-face { font-family:"Anton";   src:url("../assets/fonts/Anton-Regular.ttf") format("truetype");        font-weight:400;     font-display:block; }
   @font-face { font-family:"InterVar";src:url("../assets/fonts/Inter-Variable.ttf") format("truetype");        font-weight:100 900; font-display:block; }
@@ -36,7 +36,7 @@
     display:flex; flex-direction:column;
   }
 
-  /* ═════ COVER / CTA (bookend): photo panel over black headline bar ═════ */
+  /* ═════ COVER / CTA (bookend): photo panel over black headline bar ═════ */
   #photo {
     height:var(--photo-h); position:relative; flex:none; overflow:hidden;
     background:#101014;
@@ -97,7 +97,21 @@
     letter-spacing:.12em; text-transform:uppercase; color:var(--paper);
   }
 
-  /* ═════ INTERIOR SLIDES ═════ */
+  /* ═════ INTERIOR SLIDES ═════ */
+  /* Optional shared texture behind the type. Held low and heavily scrimmed:
+     body copy runs 42-46px here and legibility beats atmosphere every time. */
+  #itex { position:absolute; inset:0; z-index:1; opacity:0; background-size:cover;
+          background-position:center; }
+  /* Scrim is lighter than instinct suggests: the texture prompts already
+     produce near-black images, so a heavy overlay on top crushes them to a
+     flat field and the generation is wasted. Darkest where the body copy
+     sits, lightest in the upper third where there is only a heading. */
+  #itex::after {
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(180deg,
+      rgba(11,11,12,.55) 0%, rgba(11,11,12,.40) 30%,
+      rgba(11,11,12,.72) 62%, rgba(11,11,12,.88) 100%);
+  }
   #grain {
     position:absolute; inset:0; z-index:2; opacity:.05; pointer-events:none;
     background-image:
@@ -163,7 +177,7 @@
   <div id="bar"><div class="headline"></div><div class="subline"></div><div class="swipe"></div></div>
 
   <!-- interior structure -->
-  <div id="grain"></div><div id="rail"></div>
+  <div id="itex"></div><div id="grain"></div><div id="rail"></div>
   <div class="topbar"><span class="brand"></span><span class="idx"></span></div>
   <div class="stage"><div class="body" id="body"></div></div>
   <div class="footer"><span class="handle"></span><span></span></div>
@@ -216,6 +230,14 @@ if (bookend) {
 } else {
   photo.style.display = "none";
   bar.style.display = "none";
+
+  // Shared interior texture, when the pipeline supplied a third image.
+  if (S.bg) {
+    const it = document.getElementById("itex");
+    it.style.backgroundImage = `url("${S.bg}")`;
+    it.style.opacity = "0.62";
+  }
+
   document.querySelector(".brand").textContent  = "Profit Prompts";
   document.querySelector(".idx").textContent    = `${S.slide}/${S.total}`;
   document.querySelector(".handle").textContent = S.handle || "@profit_prompts_";

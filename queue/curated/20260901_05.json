@@ -76,6 +76,7 @@
   ],
   "image_prompts": [
     "Cinematic 3D rendered illustration, five glowing monoliths of different heights standing in a dark desert under a stormy sky, the tallest one blazing with light while the others are dim, dramatic backlighting, heavy atmospheric haze, saturated teal and orange, glossy render, upper two thirds, no text",
+    "Abstract cinematic 3D texture, dark desert haze under a stormy sky with faint teal light on the horizon, no objects, no structures, extremely low contrast, near-black with muted teal, glossy render, no text",
     "Cinematic 3D rendered illustration, a lone figure in silhouette walking toward the single brightest monolith across dark sand, the other four fading behind, dramatic backlighting, atmospheric haze, saturated teal, glossy render, upper two thirds, no text"
   ],
   "authored_by": "claude_laptop_session",
@@ -83,6 +84,7 @@
     "note": "Week of 26 Aug - 1 Sep 2026, morning slot only. Covers are satirical cinematic 3D per the competitor teardown, not the photoreal documentary style that averaged 21 reach. No comment bait in captions.",
     "format_variant": "satirical_4x5",
     "cover_prompt": "Cinematic 3D rendered illustration, five glowing monoliths of different heights standing in a dark desert under a stormy sky, the tallest one blazing with light while the others are dim, dramatic backlighting, heavy atmospheric haze, saturated teal and orange, glossy render, upper two thirds, no text",
-    "last_slide_prompt": "Cinematic 3D rendered illustration, a lone figure in silhouette walking toward the single brightest monolith across dark sand, the other four fading behind, dramatic backlighting, atmospheric haze, saturated teal, glossy render, upper two thirds, no text"
+    "last_slide_prompt": "Cinematic 3D rendered illustration, a lone figure in silhouette walking toward the single brightest monolith across dark sand, the other four fading behind, dramatic backlighting, atmospheric haze, saturated teal, glossy render, upper two thirds, no text",
+    "texture_prompt": "Abstract cinematic 3D texture, dark desert haze under a stormy sky with faint teal light on the horizon, no objects, no structures, extremely low contrast, near-black with muted teal, glossy render, no text"
   }
 }

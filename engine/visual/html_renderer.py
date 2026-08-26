@@ -89,12 +89,24 @@ def render_carousel(
                     "data": slide,
                     "bg": None,
                 }
+                # Background assignment by position, not rotation:
+                #   [cover]                  -> slide 1 only
+                #   [cover, last]            -> slide 1 and the closing slide
+                #   [cover, texture, last]   -> plus one shared texture behind
+                #                               every interior slide
+                #
+                # The interior texture is deliberately ONE image rather than
+                # five. Five unrelated generations behind five slides fight
+                # each other; a single atmospheric field from the same world as
+                # the cover makes the deck read as one piece.
                 chosen = None
                 if bg_paths:
                     if i == 1:
-                        chosen = bg_paths[0]                      # the cover
-                    elif i == total and len(bg_paths) > 1:
-                        chosen = bg_paths[1]                      # CTA bookend
+                        chosen = bg_paths[0]
+                    elif i == total and len(bg_paths) >= 2:
+                        chosen = bg_paths[-1]
+                    elif len(bg_paths) >= 3:
+                        chosen = bg_paths[1]
                     elif use_texture:
                         chosen = bg_paths[(i - 1) % len(bg_paths)]
                 if chosen is not None and chosen.exists():

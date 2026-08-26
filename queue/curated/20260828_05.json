@@ -72,6 +72,7 @@
   ],
   "image_prompts": [
     "Cinematic 3D rendered illustration, an enormous stack of server racks shaped like a mountain with a tiny businessman in a suit standing at the base looking up, dramatic backlighting, cold blue server LEDs, heavy atmospheric haze, extreme scale contrast, glossy render, upper two thirds, no text",
+    "Abstract cinematic 3D texture, blurred server rack lights receding into deep haze, bokeh points of cold blue, no objects in focus, extremely low contrast, near-black with faint blue, glossy render, no text",
     "Cinematic 3D rendered illustration, a single glowing GPU card resting on a velvet cushion under a museum spotlight behind glass, dark gallery background, dramatic single-source lighting, saturated blue, glossy render, upper two thirds, no text"
   ],
   "authored_by": "claude_laptop_session",
@@ -79,6 +80,7 @@
     "note": "Week of 26 Aug - 1 Sep 2026, morning slot only. Covers are satirical cinematic 3D per the competitor teardown, not the photoreal documentary style that averaged 21 reach. No comment bait in captions.",
     "format_variant": "satirical_4x5",
     "cover_prompt": "Cinematic 3D rendered illustration, an enormous stack of server racks shaped like a mountain with a tiny businessman in a suit standing at the base looking up, dramatic backlighting, cold blue server LEDs, heavy atmospheric haze, extreme scale contrast, glossy render, upper two thirds, no text",
-    "last_slide_prompt": "Cinematic 3D rendered illustration, a single glowing GPU card resting on a velvet cushion under a museum spotlight behind glass, dark gallery background, dramatic single-source lighting, saturated blue, glossy render, upper two thirds, no text"
+    "last_slide_prompt": "Cinematic 3D rendered illustration, a single glowing GPU card resting on a velvet cushion under a museum spotlight behind glass, dark gallery background, dramatic single-source lighting, saturated blue, glossy render, upper two thirds, no text",
+    "texture_prompt": "Abstract cinematic 3D texture, blurred server rack lights receding into deep haze, bokeh points of cold blue, no objects in focus, extremely low contrast, near-black with faint blue, glossy render, no text"
   }
 }

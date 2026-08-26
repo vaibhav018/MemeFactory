@@ -53,6 +53,7 @@
   ],
   "image_prompts": [
     "Cinematic 3D rendered illustration, a world globe made of glowing circuitry with the Indian subcontinent rendered as a dark unlit gap while every other region blazes with light, dark space background, dramatic rim lighting, saturated blue and orange, glossy render, upper two thirds, no text",
+    "Abstract cinematic 3D texture, faint circuitry lines glowing dimly across a dark curved surface, deep space blackness, no continents, no globe, extremely low contrast, near-black with faint blue and orange, glossy render, no text",
     "Cinematic 3D rendered illustration, the same circuitry globe with the Indian subcontinent now blazing brightest of all in warm gold, light spreading outward from it, dark space background, dramatic glow, glossy render, upper two thirds, no text"
   ],
   "authored_by": "claude_laptop_session",
@@ -60,6 +61,7 @@
     "note": "Week of 26 Aug - 1 Sep 2026, morning slot only. Covers are satirical cinematic 3D per the competitor teardown, not the photoreal documentary style that averaged 21 reach. No comment bait in captions.",
     "format_variant": "satirical_4x5",
     "cover_prompt": "Cinematic 3D rendered illustration, a world globe made of glowing circuitry with the Indian subcontinent rendered as a dark unlit gap while every other region blazes with light, dark space background, dramatic rim lighting, saturated blue and orange, glossy render, upper two thirds, no text",
-    "last_slide_prompt": "Cinematic 3D rendered illustration, the same circuitry globe with the Indian subcontinent now blazing brightest of all in warm gold, light spreading outward from it, dark space background, dramatic glow, glossy render, upper two thirds, no text"
+    "last_slide_prompt": "Cinematic 3D rendered illustration, the same circuitry globe with the Indian subcontinent now blazing brightest of all in warm gold, light spreading outward from it, dark space background, dramatic glow, glossy render, upper two thirds, no text",
+    "texture_prompt": "Abstract cinematic 3D texture, faint circuitry lines glowing dimly across a dark curved surface, deep space blackness, no continents, no globe, extremely low contrast, near-black with faint blue and orange, glossy render, no text"
   }
 }

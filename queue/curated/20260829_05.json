@@ -53,6 +53,7 @@
   ],
   "image_prompts": [
     "Cinematic 3D rendered illustration, a giant glowing FREE sign made of neon hanging above a mousetrap holding a credit card as bait, dark warehouse setting, dramatic single-source lighting from the neon, hyper-saturated pink and cyan, deep shadows, glossy render, upper two thirds, no text",
+    "Abstract cinematic 3D texture, dark warehouse air with faint pink and cyan neon bleeding through fog, no objects, no signage, extremely low contrast, near-black, glossy render, no text",
     "Cinematic 3D rendered illustration, a hand holding a magnifying glass over a contract covered in tiny illegible print, one clause glowing red through the lens, dark desk, dramatic side lighting, saturated red and black, glossy render, upper two thirds, no text"
   ],
   "authored_by": "claude_laptop_session",
@@ -60,6 +61,7 @@
     "note": "Week of 26 Aug - 1 Sep 2026, morning slot only. Covers are satirical cinematic 3D per the competitor teardown, not the photoreal documentary style that averaged 21 reach. No comment bait in captions.",
     "format_variant": "satirical_4x5",
     "cover_prompt": "Cinematic 3D rendered illustration, a giant glowing FREE sign made of neon hanging above a mousetrap holding a credit card as bait, dark warehouse setting, dramatic single-source lighting from the neon, hyper-saturated pink and cyan, deep shadows, glossy render, upper two thirds, no text",
-    "last_slide_prompt": "Cinematic 3D rendered illustration, a hand holding a magnifying glass over a contract covered in tiny illegible print, one clause glowing red through the lens, dark desk, dramatic side lighting, saturated red and black, glossy render, upper two thirds, no text"
+    "last_slide_prompt": "Cinematic 3D rendered illustration, a hand holding a magnifying glass over a contract covered in tiny illegible print, one clause glowing red through the lens, dark desk, dramatic side lighting, saturated red and black, glossy render, upper two thirds, no text",
+    "texture_prompt": "Abstract cinematic 3D texture, dark warehouse air with faint pink and cyan neon bleeding through fog, no objects, no signage, extremely low contrast, near-black, glossy render, no text"
   }
 }
