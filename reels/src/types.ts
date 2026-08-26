@@ -79,6 +79,36 @@ export type Curated = {
   caption?: string;
 };
 
+/**
+ * One item of a roundup carousel, rendered as a video slide at 1080x1350.
+ * The footage must be OF the thing described — that is the whole format.
+ */
+export type NewsSlide = {
+  id: string;
+  headline: string;
+  body: string;
+  /** Public path under reels/public, e.g. "video/relight.mp4". */
+  videoSrc: string;
+  sourceAspect?: number;
+  sourceCrop?: {top: number; height: number};
+  startFrom?: number;
+  durationInSeconds: number;
+  handle?: string;
+  displayName?: string;
+  credit?: {name: string; note?: string};
+};
+
+export const defaultNewsSlide: NewsSlide = {
+  id: 'demo-news',
+  headline: 'A robot outran Usain Bolt, then crashed into a wall',
+  body: 'Tiangong Ultra ran the 100m in 9.39 seconds at the World Humanoid '
+    + 'Robot Games in Beijing, beating the 9.58 record Bolt set in 2009.',
+  videoSrc: '',
+  durationInSeconds: 8,
+  handle: '@profit_prompts_',
+  displayName: 'Profit Prompts',
+};
+
 export const defaultCurated: Curated = {
   id: 'demo-curated',
   displayName: 'Profit Prompts',

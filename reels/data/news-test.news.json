@@ -1,0 +1,14 @@
+{
+  "id": "news-test",
+  "headline": "A robot outran Usain Bolt at the Beijing games",
+  "body": "Tiangong Ultra ran the 100m in 9.39 seconds at the World Humanoid Robot Games, beating the 9.58 record Bolt set in Berlin in 2009. Honor’s Lightning came second at 9.47, also under it.",
+  "videoSrc": "video/robot100m.mp4",
+  "sourceAspect": 0.5625,
+  "sourceCrop": {
+    "top": 0.4172,
+    "height": 0.2867
+  },
+  "durationInSeconds": 8,
+  "handle": "@profit_prompts_",
+  "displayName": "Profit Prompts"
+}

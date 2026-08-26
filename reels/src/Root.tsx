@@ -2,13 +2,20 @@ import React from 'react';
 import {Composition, getInputProps} from 'remotion';
 import {Reel} from './Reel';
 import {Curated} from './Curated';
+import {NewsSlide} from './NewsSlide';
 import {W, H, FPS} from './theme';
 import {
   defaultReel,
   defaultCurated,
+  defaultNewsSlide,
   type Reel as ReelData,
   type Curated as CuratedData,
+  type NewsSlide as NewsSlideData,
 } from './types';
+
+/** Carousel slides are 4:5, not the 9:16 the Reel compositions use. */
+const SLIDE_W = 1080;
+const SLIDE_H = 1350;
 
 /**
  * Two formats, rendered the same way:
@@ -30,6 +37,7 @@ export const RemotionRoot: React.FC = () => {
 
   const reel: ReelData = {...defaultReel, ...(input as Partial<ReelData>)};
   const curated: CuratedData = {...defaultCurated, ...(input as Partial<CuratedData>)};
+  const news: NewsSlideData = {...defaultNewsSlide, ...(input as Partial<NewsSlideData>)};
 
   const frames = (seconds: number, tail: number) =>
     Math.max(1, Math.round((seconds + tail) * FPS));
@@ -54,6 +62,19 @@ export const RemotionRoot: React.FC = () => {
         width={W}
         height={H}
         defaultProps={curated}
+      />
+      {/* A roundup item as a carousel video child — 4:5, not 9:16. */}
+      <Composition
+        id="NewsSlide"
+        component={NewsSlide}
+        durationInFrames={Math.max(
+          1,
+          Math.round((news.durationInSeconds || defaultNewsSlide.durationInSeconds) * FPS)
+        )}
+        fps={FPS}
+        width={SLIDE_W}
+        height={SLIDE_H}
+        defaultProps={news}
       />
     </>
   );
