@@ -186,8 +186,11 @@ def generate_post(
         slide_paths = render_slides(bg_paths, slides, pillar, bg_dir, post_id)
         print(f"  {len(slide_paths)} slides -> {bg_dir}")
 
-        # Repo-relative paths for GitHub raw URLs
-        repo_rel_paths = [str(p.relative_to(_BASE)) for p in slide_paths]
+        # Repo-relative paths for GitHub raw URLs.
+        # .as_posix(), never str(): on Windows str() yields backslashes, which
+        # quote() escapes to %5C and Instagram rejects with error 9004. CI runs
+        # Linux, so this only bites when publishing from a dev machine.
+        repo_rel_paths = [p.relative_to(_BASE).as_posix() for p in slide_paths]
 
         post = {
             "id": post_id,
@@ -361,7 +364,8 @@ def publish_next_curated(conn) -> int:
     slide_paths = render_slides(bg_paths, curated["slides"], pillar, bg_dir, post_id)
     slide_paths = upgrade_slide_to_video(
         slide_paths, curated["slides"], bg_paths, bg_dir, post_id)
-    repo_rel_paths = [str(p.relative_to(_BASE)) for p in slide_paths]
+    # .as_posix(), never str() — see the note in generate_post().
+    repo_rel_paths = [p.relative_to(_BASE).as_posix() for p in slide_paths]
 
     post = {
         "id": post_id,
