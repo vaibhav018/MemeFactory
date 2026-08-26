@@ -77,21 +77,39 @@ def detect_band(path: Path) -> tuple[dict | None, float]:
         return None, 16 / 9
 
     rows = []
-    for pct in (0.2, 0.35, 0.5, 0.65, 0.8):
+    for pct in (0.15, 0.28, 0.4, 0.5, 0.6, 0.72, 0.85):
         cap.set(cv2.CAP_PROP_POS_FRAMES, int(n * pct))
         ok, frame = cap.read()
         if ok:
-            rows.append((frame.max(axis=2) > 30).mean(axis=1))
+            # Does this row carry ANY real content? Requiring most of the row
+            # to be bright fails on dark cinematic footage — a night battle
+            # scene never clears it, the band comes back empty, and the clip
+            # gets waved through as "already raw" with the poster's header
+            # still baked in.
+            rows.append(frame.max(axis=2).max(axis=1) > 26)
     cap.release()
     if not rows:
         return None, w / h
 
-    lit = np.min(np.array(rows), axis=0) > 0.9
+    lit = np.logical_and.reduce(np.array(rows))
     idx = np.where(lit)[0]
     if len(idx) < 10:
         return None, w / h
 
-    top, bot = int(idx.min()), int(idx.max())
+    # Longest CONTIGUOUS run, not min..max. The poster's header has white text
+    # in it, so its rows are lit in every frame too; spanning the extremes
+    # swallows the header, the gap and the caption line in one band.
+    best = run_a = a = int(idx[0])
+    best_b = int(idx[0])
+    for i in range(1, len(idx)):
+        if idx[i] != idx[i - 1] + 1:
+            if idx[i - 1] - a > best_b - best:
+                best, best_b = a, int(idx[i - 1])
+            a = int(idx[i])
+    if idx[-1] - a > best_b - best:
+        best, best_b = a, int(idx[-1])
+
+    top, bot = best, best_b
     frac_h = (bot - top) / h
     # A band covering nearly the whole frame means the clip is already raw.
     if frac_h > 0.92:

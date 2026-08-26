@@ -1,0 +1,23 @@
+{
+  "id": "20260826_ra2",
+  "displayName": "Profit Prompts",
+  "handle": "@profit_prompts_",
+  "verified": true,
+
+  "commentary": "A 25-year-old strategy game just got the movie treatment it never had — made by **one person with AI**, not a studio",
+
+  "videoSrc": "video/DcTpTA-AIOR.mp4",
+  "sourceAspect": 0.5625,
+  "sourceCrop": {"top": 0.3648, "height": 0.2828},
+  "startFrom": 125,
+  "durationInSeconds": 22,
+
+  "credit": {
+    "name": "@evolving.ai",
+    "note": "original creator unnamed in the source"
+  },
+
+  "caption": "Red Alert 2 — the 2000 RTS — rebuilt as a live-action war film by one person using AI video.\n\nTanya. Kirov airships. Apocalypse tanks. The exact units, not a loose homage.\n\nThis is the part that should worry studios and excite everyone else: a 25-year-old game finally got its movie, and it took one creator instead of a production house.\n\nFor context on where the models are: ByteDance shipped Seedance 2.5 on 31 July — 30 seconds in a single generation, up to 50 reference inputs. Seedance 2.0 currently leads the Artificial Analysis video arena ahead of Veo 3.1 and Kling 3.0. I can't confirm which model made this particular film, so I'm not going to claim one.\n\nClip via @evolving.ai. The original creator isn't named in the source — if you know who made it, tag them and I'll credit properly.\n\nWhat would you rebuild first?\n\n#ai #aivideo #redalert2 #seedance #videogeneration #artificialintelligence #aifilm #generativeai",
+
+  "_note": "The sweep marked this clip 'already raw'. It is not — @evolving.ai's header is baked in, and detect_band() missed it because the film inside is 2:1 letterboxed, so the black film bars read as page background. Band measured directly: rows 467-829 of 1280."
+}
