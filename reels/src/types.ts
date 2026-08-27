@@ -75,7 +75,9 @@ export type Curated = {
   durationInSeconds: number;
   /** Always fill this in. Someone made the clip. */
   credit?: {name: string; note?: string};
-  /** Caption for the post; the credit belongs in here too. */
+  /** Caption for the post. The credit MUST appear in here — it is no longer
+   *  drawn on the frame, and publish_reel refuses a job whose caption does not
+   *  name credit.name. */
   caption?: string;
 };
 

@@ -170,6 +170,13 @@ def main() -> int:
         if not credit:
             sys.exit(f"{job_path.name} has no credit.name — refusing to publish "
                      f"someone else's clip without crediting them.")
+        # The credit strip used to be drawn on the frame. It is not any more, so
+        # the caption is the only place credit can live — and a credit nobody
+        # renders and nobody wrote is the same as no credit at all.
+        if credit not in (reel.get("caption") or ""):
+            sys.exit(f"{job_path.name} names {credit} as the source but the "
+                     f"caption never mentions it. Credit is caption-only now — "
+                     f"put it at the end of the caption before publishing.")
         # detect_band() marks a crop it does not trust. Honouring one would
         # publish the aggregator's header full-bleed instead of the footage,
         # which is the same accident as publishing uncredited, just louder.

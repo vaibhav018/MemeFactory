@@ -21,9 +21,10 @@ import type {Curated as CuratedData} from './types';
  * captions of our own. It outperformed every carousel we measured, and it
  * costs almost nothing to produce.
  *
- * The credit line is ours, not theirs — they credit in the caption only. On
- * screen it is cheap insurance and the decent thing to do with someone else's
- * footage.
+ * Credit goes in the caption, not on the frame — the same place @evolving.ai
+ * puts it. An on-screen credit strip eats vertical space in a format whose
+ * whole job is showing the footage, so publish_reel enforces the credit in the
+ * caption text instead of drawing it here.
  */
 
 /** Renders **bold** spans. Key phrases carry the hook; a flat line does not. */
@@ -70,7 +71,6 @@ export const Curated: React.FC<CuratedData> = ({
   handle = '@profit_prompts_',
   commentary,
   videoSrc,
-  credit,
   verified = true,
   sourceAspect = 16 / 9,
   sourceCrop,
@@ -194,26 +194,6 @@ export const Curated: React.FC<CuratedData> = ({
             }}
           />
         </div>
-
-        {/* Credit sits directly under the clip, where evolving.ai puts the
-            source's own subtitle line. They credit in the caption only; on
-            screen costs nothing and is the decent thing to do. */}
-        {credit?.name ? (
-          <div
-            style={{
-              paddingLeft: 56,
-              paddingRight: 56,
-              marginTop: -6,
-              fontFamily: font.body,
-              fontSize: 30,
-              fontWeight: 500,
-              color: '#7C828A',
-            }}
-          >
-            clip by {credit.name}
-            {credit.note ? ` · ${credit.note}` : ''}
-          </div>
-        ) : null}
       </div>
     </AbsoluteFill>
   );
