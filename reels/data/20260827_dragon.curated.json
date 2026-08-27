@@ -1,0 +1,21 @@
+{
+ "id": "20260827_dragon",
+ "displayName": "Profit Prompts",
+ "handle": "@profit_prompts_",
+ "verified": true,
+ "commentary": "Two mythologies no studio could ever put in one film — **one person did it anyway**, with AI",
+ "videoSrc": "video/DcdnWnbgAsp.mp4",
+ "sourceAspect": 0.5625,
+ "sourceCrop": {
+  "top": 0.3516,
+  "height": 0.2953
+ },
+ "startFrom": 92,
+ "durationInSeconds": 22,
+ "credit": {
+  "name": "@evolving.ai",
+  "note": "original creator unnamed in the source; no mentions on the post"
+ },
+ "caption": "Chinese mythology against a Norse world-ender, in one battle.\n\nThe Four Symbols — Azure Dragon, Vermilion Bird, White Tiger, Qilin — plus the Nine-Tailed Fox, against Níðhöggr, the dragon that gnaws at the roots of the world tree.\n\nWhy this one matters past the spectacle: it could not be made the normal way. Not because of budget — because of clearance. Two mythologies, two studios' worth of rights, a nine-figure VFX bill. It dies in development every time.\n\nOne person made it anyway.\n\nThat's the actual shift, and it isn't \"AI makes video\". It's that the projects nobody was ever going to greenlight now get made.\n\nClip via @evolving.ai — the original creator isn't named in the source and the post tags nobody. If you know who made it, tag them and I'll credit properly.\n\nWhat would you make if nobody had to approve it?\n\n#ai #aivideo #aifilm #generativeai #chinesemythology #norsemythology #vfx #artificialintelligence #aiart #filmmaking",
+ "_note": "Excerpt 92-114s chosen by eye from a contact sheet: green energy clash into the red and purple beams, ending on the pack charging through fire. The band (rows 450-827 of 1280, 1.91:1) was verified against a preview frame, not trusted from detect_band alone."
+}

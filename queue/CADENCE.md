@@ -54,20 +54,50 @@ lands under 500 views the route is for carousel slides only.
 
 | Date | Format | Topic | Clip / route |
 |---|---|---|---|
-| Thu 27 Aug | **carousel 1** | Chinese open models beating the paid ones | self — *posted* |
-| Fri 28 Aug | reel | Star Wars as a 1940s German folk ballad | `DcYeInaAtF6` |
-| Sat 29 Aug | reel | Trade war as an AI music video | `DceNWd7Abs7` |
+| Thu 27 Aug | **carousel 1** | Chinese open models beating the paid ones | self — *posted 12:57* |
+| Thu 27 Aug | reel | Chinese myth against a Norse world-ender | `DcdnWnbgAsp` — *queued 18:30* |
+| Fri 28 Aug | reel | Tiangong Omni runs 400m in 45.66s | `Dca_mVYgm48` |
+| Sat 29 Aug | reel | *unassigned* | — |
 | Sun 30 Aug | reel | Run a real model on your laptop, free | self — **the experiment** |
-| Mon 31 Aug | reel | Tiangong Omni runs 400m in 45.66s | `Dca_mVYgm48` |
+| Mon 31 Aug | reel | *unassigned* | — |
 | Tue 1 Sep | **carousel 2** | What the humanoid games actually proved | found |
-| Wed 2 Sep | reel | Chinese mythology meets a Norse world-ender | `DcdnWnbgAsp` |
+| Wed 2 Sep | reel | *unassigned* | — |
 | Thu 3 Sep | reel | Seedance 2.5 | **blocked** — needs a generated clip |
 | Fri 4 Sep | reel | Westeros survives into 2048 | `DcWNqUTAezL` — **crop by hand first** |
 | Sat 5 Sep | reel | The repo that quietly hit 202K stars | self |
 | Sun 6 Sep | **carousel 3** | Weekly roundup #2 | found |
-| Mon 7 Sep | reel | The Odyssey as the Vietnam War | `Dbq0RjMg8IO` |
+| Mon 7 Sep | reel | *unassigned* | — |
 | Tue 8 Sep | reel | *unassigned* | needs a sweep around 3 Sep |
 | Wed 9 Sep | reel | Free AI tools you can legally bill for | self |
+
+27 Aug carries both a carousel and a reel. That is not the 26 Aug mistake
+repeating: what split reach that day was two *carousels* an hour apart. A
+carousel reaching 11 accounts cannot meaningfully cannibalise a reel, and 26 Aug
+ran a carousel and a reel and the reel still took 3,560.
+
+## Clips ruled out, and why
+
+`DcYeInaAtF6` — Star Wars as a 1940s German folk ballad, 31,434 engagement, and
+it was the assigned pick for tonight until the frames were actually looked at.
+Around 100-140s the costuming is Wehrmacht uniforms, a peaked officer's cap and
+a steel-helmeted Vader analogue. Across the full three minutes that reads as the
+transposition it is. In a twenty-second excerpt on an AI and money page it reads
+as Nazi imagery with no frame around it, and Instagram moderates that on sight.
+Not worth a strike. **Do not queue this clip.**
+
+`DceNWd7Abs7` — "Canadian Resistance Army - Trade War", 56,181, the highest
+engagement in the entire pool and from @demonflyingfox directly with no
+aggregator header. Skipped anyway: it is political satire, and this account does
+not do politics.
+
+`Dbq0RjMg8IO` — "The Odyssey but it's the Vietnam War", 18,124. Plausible, but
+war footage from the same creator, so check the frames for the same problem
+before queueing rather than assuming.
+
+The general rule this batch produced: **look at the frames before assigning a
+clip, not after.** Engagement rank says nothing about whether footage is
+publishable, and two of the top three in this pool are not.
+
 
 Nine of eleven reel slots have a clip or a route. One is blocked on Seedance,
 one needs a fresh sweep. That is the honest state, not a full fortnight.
