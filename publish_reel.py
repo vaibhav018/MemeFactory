@@ -189,7 +189,12 @@ def main() -> int:
     git("add", rel)
     status = git("status", "--porcelain", rel).stdout.strip()
     if status:
-        git("commit", "-m", f"reel: {rid} [{datetime.now(timezone.utc):%Y-%m-%dT%H:%MZ}]")
+        # Pathspec, not a bare commit: `git commit -m` writes the whole index,
+        # so anything a person happened to have staged rides along in what is
+        # supposed to be a one-file publish commit. On a cron that means
+        # half-finished edits shipping unattended.
+        git("commit", "-m", f"reel: {rid} [{datetime.now(timezone.utc):%Y-%m-%dT%H:%MZ}]",
+            "--", rel)
         push = git("push", "origin", "HEAD", check=False)
         if push.returncode != 0:
             sys.exit(f"push failed, refusing to publish an unreachable url:\n{push.stderr}")
@@ -221,7 +226,8 @@ def main() -> int:
         POSTED.mkdir(parents=True, exist_ok=True)
         job_path.rename(POSTED / job_path.name)
         git("add", "-A", str(DATA.relative_to(BASE).as_posix()))
-        git("commit", "-m", f"queue: consume reel {rid}", check=False)
+        git("commit", "-m", f"queue: consume reel {rid}",
+            "--", str(DATA.relative_to(BASE).as_posix()), check=False)
         git("push", "origin", "HEAD", check=False)
         print(f"  consumed {job_path.name}")
 
