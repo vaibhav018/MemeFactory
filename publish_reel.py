@@ -85,7 +85,7 @@ def _job_id(p: Path) -> str:
     return p.stem
 
 
-def pick_job(explicit: str = "") -> tuple[Path, str]:
+def pick_job(explicit: str = "") -> tuple[Path | None, str]:
     """Oldest unposted job by filename. Returns (path, composition id)."""
     candidates = sorted(
         p for suffix in FORMATS for p in DATA.glob(f"*{suffix}")
@@ -97,8 +97,12 @@ def pick_job(explicit: str = "") -> tuple[Path, str]:
             sys.exit(f"no queued job with id {explicit!r} in {DATA}")
 
     if not candidates:
-        sys.exit("nothing queued in reels/data/ — run the Colab voice notebook "
-                 "for a Reel, or add a <id>.curated.json for a curated clip")
+        # An empty queue is a normal night, not a failure. Exiting non-zero
+        # here painted every quiet run red, which is exactly how two nights of
+        # genuinely broken reel publishing went unnoticed in the run history.
+        print("nothing queued in reels/data/ — add a <id>.curated.json for a "
+              "curated clip, or run the Colab voice batch for a voiced Reel")
+        return None, ""
 
     chosen = candidates[0]
     comp = next(c for s, c in FORMATS.items() if chosen.name.endswith(s))
@@ -133,6 +137,8 @@ def main() -> int:
     args = ap.parse_args()
 
     job_path, composition = pick_job(args.id)
+    if job_path is None:
+        return 0
     reel = json.loads(job_path.read_text(encoding="utf-8"))
     rid = reel["id"]
 

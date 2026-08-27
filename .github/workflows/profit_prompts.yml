@@ -16,9 +16,14 @@ name: profit-prompts
 
 on:
   schedule:
-    # Carousel is the MORNING slot only, from 26 Aug 2026.
-    # 11:00 AM IST = 05:30 UTC daily
+    # 11:00 AM IST = 05:30 UTC.
     - cron: "30 5 * * *"
+    # Catch-ups. GitHub's cron is best-effort and this slot has been landing
+    # 23-31 minutes late; on 27 Aug 2026 it did not fire at all — no run, no
+    # failure, nothing in the history to notice. Each attempt asks Instagram
+    # whether the slot is already filled and exits if so.
+    - cron: "30 6 * * *"
+    - cron: "30 7 * * *"
     # The 14:00 UTC evening carousel is retired: the night slot is now a Reel,
     # published by profit_prompts_reel.yml at 13:00 UTC. Leaving both enabled
     # posted twice within an hour.
@@ -49,24 +54,52 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
+      # Carousels are now a 3-per-fortnight format, not a daily one: they
+      # averaged 1-4 likes while the reels pull 40+, so the queue decides which
+      # days get one. An empty queue is a reel-only day, not a failure — and
+      # nothing here falls back to live generation any more, because that
+      # fallback is what filled the grid with the posts nobody engaged with.
+      - name: Decide whether today gets a carousel
+        id: slot
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: |
+          IST_DATE=$(TZ=Asia/Kolkata date +%Y%m%d)
+          MANIFEST=$(ls -1 "Generated_Memes/${IST_DATE}"_*/carousel.json 2>/dev/null | head -1 || true)
+          echo "manifest=$MANIFEST" >> "$GITHUB_OUTPUT"
+          if [ -z "$MANIFEST" ]; then
+            echo "go=false" >> "$GITHUB_OUTPUT"
+            echo "No carousel built for $IST_DATE — reel-only day. Exiting cleanly."
+            exit 0
+          fi
+          echo "Carousel for today: $MANIFEST"
+          pip install requests --quiet
+          if python scripts/posted_today.py --kind carousel; then
+            echo "go=false" >> "$GITHUB_OUTPUT"
+            echo "This is a catch-up run and the slot is already filled."
+          else
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Setup Python
+        if: steps.slot.outputs.go == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
           cache: pip
 
       - name: Install dependencies
+        if: steps.slot.outputs.go == 'true'
         run: pip install -r requirements.txt
 
-      - name: Install Chromium for the HTML slide renderer
-        run: python -m playwright install --with-deps chromium
-
       - name: Configure git
+        if: steps.slot.outputs.go == 'true'
         run: |
           git config user.email "profit-prompts-bot@users.noreply.github.com"
           git config user.name "profit-prompts-bot"
 
       - name: Run pipeline
+        if: steps.slot.outputs.go == 'true'
         env:
           IG_USER_ID:      ${{ secrets.IG_USER_ID }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
@@ -76,15 +109,9 @@ jobs:
           # GITHUB_REPOSITORY is auto-injected by Actions -- used by
           # engine.publish.instagram_client to build raw.githubusercontent URLs.
         run: |
+          MANIFEST="${{ steps.slot.outputs.manifest }}"
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-            python pipeline.py --dry-run
-          # Prefer hand-curated posts (Claude Sunday-batch) over live LLM
-          # generation. If queue/curated/ has posts, publish the oldest.
-          # Otherwise fall back to live-generation --publish.
-          elif ls queue/curated/*.json >/dev/null 2>&1; then
-            echo "queue/curated has posts — publishing next curated"
-            python pipeline.py --publish-curated
+            python publish_roundup.py "$MANIFEST" --dry-run
           else
-            echo "queue/curated empty — falling back to live-generation --publish"
-            python pipeline.py --publish
+            python publish_roundup.py "$MANIFEST"
           fi

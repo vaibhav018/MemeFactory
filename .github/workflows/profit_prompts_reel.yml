@@ -12,9 +12,15 @@ name: profit-prompts-reel
 
 on:
   schedule:
-    # 6:30 PM IST = 13:00 UTC. Deliberately an hour before the carousel's
-    # 14:00 slot so the two never contend for the same push.
+    # 6:30 PM IST = 13:00 UTC.
     - cron: "0 13 * * *"
+    # Catch-ups. GitHub's cron is best-effort: this repo's slots have been
+    # firing 20-30 minutes late most days and on 27 Aug 2026 the carousel slot
+    # did not fire at all — no run, no failure, nothing to notice. Each attempt
+    # asks Instagram whether the slot is already filled and exits if so, so a
+    # dropped trigger costs an hour instead of the whole day.
+    - cron: "0 14 * * *"
+    - cron: "0 15 * * *"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -44,15 +50,29 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
-      - name: Skip if nothing queued
+      - name: Skip if nothing queued, or already posted
         id: queued
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
         run: |
-          if ls reels/data/*.reel.json >/dev/null 2>&1; then
-            echo "found=true" >> "$GITHUB_OUTPUT"
-            echo "Queued reels:"; ls -1 reels/data/*.reel.json
-          else
+          # Curated clips are the format this account actually reels with, and
+          # the old glob only looked for *.reel.json — so a queued curated job
+          # was skipped outright. The fixture files (demo.reel.json et al) match
+          # the glob too, which made the guard read "queued" on an empty queue
+          # every night and hand publish_reel.py nothing to do.
+          QUEUED=$(ls -1 reels/data/*.reel.json reels/data/*.curated.json 2>/dev/null | grep -vE '/(demo|example|sample|test)' || true)
+          if [ -z "$QUEUED" ]; then
             echo "found=false" >> "$GITHUB_OUTPUT"
-            echo "No reels queued — run the Colab voice batch. Exiting cleanly."
+            echo "Nothing queued in reels/data/. Exiting cleanly."
+            exit 0
+          fi
+          echo "Queued:"; echo "$QUEUED"
+          pip install requests --quiet
+          if python scripts/posted_today.py --kind reel; then
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            echo "This is a catch-up run and the slot is already filled."
+          else
+            echo "found=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Setup Python
