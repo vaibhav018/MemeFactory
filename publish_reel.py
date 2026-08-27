@@ -170,6 +170,13 @@ def main() -> int:
         if not credit:
             sys.exit(f"{job_path.name} has no credit.name — refusing to publish "
                      f"someone else's clip without crediting them.")
+        # detect_band() marks a crop it does not trust. Honouring one would
+        # publish the aggregator's header full-bleed instead of the footage,
+        # which is the same accident as publishing uncredited, just louder.
+        if (reel.get("sourceCrop") or {}).get("suspect"):
+            sys.exit(f"{job_path.name} carries a crop flagged suspect by "
+                     f"discover_reels — check the preview frame and set "
+                     f"sourceCrop by hand, then drop the suspect flag.")
 
     out = OUT_DIR / f"{rid}.mp4"
     print(f"Rendering ({composition})...")

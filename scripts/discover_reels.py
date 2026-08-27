@@ -114,7 +114,17 @@ def detect_band(path: Path) -> tuple[dict | None, float]:
     # A band covering nearly the whole frame means the clip is already raw.
     if frac_h > 0.92:
         return None, w / h
-    return {"top": round(top / h, 4), "height": round(frac_h, 4)}, w / h
+
+    crop = {"top": round(top / h, 4), "height": round(frac_h, 4)}
+    # Dark, letterboxed cinematic footage can lose this contest to the poster's
+    # own header: the header is bright in every frame and unbroken, the film is
+    # neither, so the longest contiguous lit run turns out to be the branding.
+    # A real footage band is most of the frame. Anything this thin is a failed
+    # detection, and cropping to it would publish somebody's logo full-bleed —
+    # so it is marked rather than trusted, and the publishers refuse it.
+    if frac_h < 0.25:
+        crop["suspect"] = True
+    return crop, w / h
 
 
 def preview(path: Path, dest: Path, crop: dict | None) -> None:
@@ -211,11 +221,19 @@ def main() -> int:
         c["sourceCrop"] = crop
         c.pop("videoUrl")
         kept.append(c)
-        tag = "cropped" if crop else "already raw"
+        tag = ("SUSPECT CROP - set it by hand" if (crop or {}).get("suspect")
+               else "cropped" if crop else "already raw")
         print(f"  {c['engagement']:>7} | {c['seconds']:>5.1f}s | {c['posted']} | "
               f"@{c['handle'][:16]:<16} | {tag}")
 
-    (OUT / "candidates.json").write_text(
+    # A targeted probe (--handles one_account) writes the same file a full
+    # sweep does, and a full sweep is 13 Apify calls and several minutes. Keep
+    # the previous result so a narrow run cannot quietly destroy a wide one.
+    out_file = OUT / "candidates.json"
+    if out_file.exists():
+        (OUT / "candidates.prev.json").write_text(
+            out_file.read_text(encoding="utf-8"), encoding="utf-8")
+    out_file.write_text(
         json.dumps(kept, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"\n{len(kept)} candidates -> {OUT}")
     print("Look at the .jpg previews, pick one, then write the commentary line.")
