@@ -16,14 +16,16 @@ name: profit-prompts
 
 on:
   schedule:
-    # 11:00 AM IST = 05:30 UTC.
-    - cron: "30 5 * * *"
+    # ~11:00 AM IST. Deliberately not on the half hour: GitHub queues scheduled
+    # runs and drops or delays the ones landing on congested minutes, and :00
+    # and :30 are the most congested there are.
+    - cron: "27 5 * * *"
     # Catch-ups. GitHub's cron is best-effort and this slot has been landing
     # 23-31 minutes late; on 27 Aug 2026 it did not fire at all — no run, no
     # failure, nothing in the history to notice. Each attempt asks Instagram
     # whether the slot is already filled and exits if so.
-    - cron: "30 6 * * *"
-    - cron: "30 7 * * *"
+    - cron: "13 6 * * *"
+    - cron: "41 7 * * *"
     # The 14:00 UTC evening carousel is retired: the night slot is now a Reel,
     # published by profit_prompts_reel.yml at 13:00 UTC. Leaving both enabled
     # posted twice within an hour.

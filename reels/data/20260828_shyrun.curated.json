@@ -1,0 +1,21 @@
+{
+ "id": "20260828_shyrun",
+ "displayName": "Profit Prompts",
+ "handle": "@profit_prompts_",
+ "verified": true,
+ "commentary": "Nobody designed that run — **the robot invented it**, in simulation",
+ "videoSrc": "video/Dca_mVYgm48.mp4",
+ "sourceAspect": 0.5625,
+ "sourceCrop": {
+  "top": 0.3508,
+  "height": 0.3156
+ },
+ "startFrom": 9,
+ "durationInSeconds": 22,
+ "credit": {
+  "name": "@evolving.ai",
+  "note": "original broadcast footage uncredited in the source"
+ },
+ "caption": "Tiangong Omni took 400m gold at the World Humanoid Robot Games in Beijing. 45.66 seconds, 1.35 metres tall, arms clamped over its face the whole way.\n\nThe pose is the story, not the time.\n\nNo engineer designed it. The gait emerged on its own through reinforcement learning in simulation — the robot was rewarded for staying upright and fast, and this is the shape it converged on. Its developers have said outright that it was spontaneous, not specified.\n\nThat's the part worth sitting with. It looks wrong because it was never trying to look human. This is what \"fast and stable\" turns out to look like when nothing is copying us.\n\nChinese media nicknamed it the shy run.\n\nClip via @evolving.ai — the original broadcast footage isn't credited in the source.\n\n#ai #robotics #humanoidrobots #reinforcementlearning #machinelearning #beijing #artificialintelligence #robots #technology #futuretech",
+ "_note": "Excerpt 9-31s of a 33s clip: the face-covering close-up early, finishing on the line. 45.66s / 1.35m / RL-emergent gait verified against ecns.cn and Global Times, not taken from the reposter's caption."
+}
