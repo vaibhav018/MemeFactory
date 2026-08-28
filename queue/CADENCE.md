@@ -140,6 +140,26 @@ Two handling notes on this batch:
   a bright unbroken banner. detect_band now marks a band under 25% of frame
   height `suspect`, prints it loudly, and publish_reel refuses to publish one.
 
+## Posting time: decided, do not re-litigate
+
+GitHub runs this repo's scheduled workflows about **nine hours late**. Measured
+28 Aug: the 05:30 UTC carousel fired at 16:37, the three reel attempts at 22:39,
+23:39 and 00:14. Crons have been moved off :00 and :30, which is the documented
+cause of delayed and dropped runs, but that is a hope rather than a fix.
+
+**Decision (28 Aug 2026): accept the late runs.** No local scheduler, no
+always-on host. Posts land when GitHub gets to them.
+
+What that costs, stated once so nobody rediscovers it: an evening reel took
+3,560 views and a small-hours one took 606. Late runs land in the second slot.
+
+What makes it survivable is `scripts/posted_today.py`. Publishing by hand at a
+good hour and letting the late run arrive afterwards is safe — the late run asks
+Instagram whether the slot is filled and skips. That already happened on 27 Aug:
+the 16:37 run found the carousel posted and skipped every step instead of
+posting it twice. So "publish by hand when it matters, let the cron cover the
+rest" needs no extra machinery.
+
 ## How a day gets scheduled
 
 Nothing is date-driven in the workflows any more. The queue is the schedule:
