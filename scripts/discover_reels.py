@@ -60,10 +60,10 @@ def watchlist() -> list[str]:
 def detect_band(path: Path) -> tuple[dict | None, float]:
     """Find the inner footage band, and return (crop, source_aspect).
 
-    Rows lit in EVERY sampled frame are the clip; rows that go dark somewhere
-    are the poster's own letterbox and chrome. Sampling several frames is what
-    makes this reliable — a single frame cannot tell a black bar from a dark
-    shot.
+    Rows that are mostly lit at some point are the clip; rows that are never
+    more than speckled are the poster's chrome — header, caption, letterbox.
+    Sampling many frames is what makes this reliable: a single frame cannot
+    tell a black bar from a dark shot.
     """
     import cv2
     import numpy as np
@@ -76,38 +76,39 @@ def detect_band(path: Path) -> tuple[dict | None, float]:
         cap.release()
         return None, 16 / 9
 
-    rows = []
-    for pct in (0.15, 0.28, 0.4, 0.5, 0.6, 0.72, 0.85):
+    # Fraction of each row that carries light, MAXED across sampled frames.
+    #
+    # Two earlier versions of this both shipped bad crops. Requiring most of a
+    # row lit in EVERY frame fails on dark cinematic footage, which is never
+    # bright all the way through, so the band came back empty and the clip was
+    # waved through with the poster's header still on it. Accepting a row lit
+    # ANYWHERE in every frame fails the other way: a header holds white text in
+    # every frame too, so on dark letterboxed footage the header won the
+    # longest-run contest and the crop framed the competitor's logo.
+    #
+    # Max-across-frames of fraction-lit separates them cleanly. A film row is
+    # mostly lit in at least one sampled moment; a caption row never is, however
+    # many frames you look at. Validated against four clips whose bands were
+    # measured by hand — three matched exactly.
+    coverage = np.zeros(h)
+    for pct in np.linspace(0.08, 0.92, 14):
         cap.set(cv2.CAP_PROP_POS_FRAMES, int(n * pct))
         ok, frame = cap.read()
         if ok:
-            # Does this row carry ANY real content? Requiring most of the row
-            # to be bright fails on dark cinematic footage — a night battle
-            # scene never clears it, the band comes back empty, and the clip
-            # gets waved through as "already raw" with the poster's header
-            # still baked in.
-            rows.append(frame.max(axis=2).max(axis=1) > 26)
+            coverage = np.maximum(coverage, (frame.max(axis=2) > 26).mean(axis=1))
     cap.release()
-    if not rows:
-        return None, w / h
 
-    lit = np.logical_and.reduce(np.array(rows))
-    idx = np.where(lit)[0]
+    idx = np.where(coverage > 0.85)[0]
     if len(idx) < 10:
         return None, w / h
 
-    # Longest CONTIGUOUS run, not min..max. The poster's header has white text
-    # in it, so its rows are lit in every frame too; spanning the extremes
-    # swallows the header, the gap and the caption line in one band.
-    best = run_a = a = int(idx[0])
-    best_b = int(idx[0])
+    runs, a = [], int(idx[0])
     for i in range(1, len(idx)):
         if idx[i] != idx[i - 1] + 1:
-            if idx[i - 1] - a > best_b - best:
-                best, best_b = a, int(idx[i - 1])
+            runs.append((a, int(idx[i - 1])))
             a = int(idx[i])
-    if idx[-1] - a > best_b - best:
-        best, best_b = a, int(idx[-1])
+    runs.append((a, int(idx[-1])))
+    best, best_b = max(runs, key=lambda r: r[1] - r[0])
 
     top, bot = best, best_b
     frac_h = (bot - top) / h

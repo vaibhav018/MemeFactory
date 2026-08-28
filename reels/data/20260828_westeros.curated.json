@@ -1,0 +1,21 @@
+{
+ "id": "20260828_westeros",
+ "displayName": "Profit Prompts",
+ "handle": "@profit_prompts_",
+ "verified": true,
+ "commentary": "Someone asked what Westeros looks like in 2048 — and then **just built it**",
+ "videoSrc": "video/DcWNqUTAezL.mp4",
+ "sourceAspect": 0.5625,
+ "sourceCrop": {
+  "top": 0.3359,
+  "height": 0.3273
+ },
+ "startFrom": 24,
+ "durationInSeconds": 22,
+ "credit": {
+  "name": "@evolving.ai",
+  "note": "original creator unnamed in the source"
+ },
+ "caption": "Game of Thrones never ended. Westeros ran on to 2048.\n\nWinterfell has a skyline behind it. The Ironborn raid on motorbikes instead of longships. A maester steps off a helicopter. The North still holds, it just holds with armour columns now.\n\nWhat makes this worth twenty seconds isn't the effects. It's that the question and the answer used to be separated by a studio, a greenlight and three years. Somebody thought \"what would this look like\" and then simply went and looked.\n\nThat gap closing is the whole story of the last two years, and it is not really about film. Every idea you have ever had that died at \"who would build that\" is sitting in the same position this was.\n\nClip via @evolving.ai — the original creator isn't named in the source. If you know who made it, tag them and I'll credit properly.\n\n#ai #aivideo #gameofthrones #aifilm #generativeai #westeros #artificialintelligence #aiart #filmmaking #futuretech",
+ "_note": "Excerpt 24-46s: castle-with-skyline into the motorbike raiders into the helicopter maester — the three shots that state the premise fastest. Band 0.3359/0.3273 was the clip that came back SUSPECT at 5.6%; measured properly it is rows 430-849 of 1280, and detect_band now agrees."
+}
