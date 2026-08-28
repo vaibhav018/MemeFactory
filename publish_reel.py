@@ -177,6 +177,17 @@ def main() -> int:
             sys.exit(f"{job_path.name} names {credit} as the source but the "
                      f"caption never mentions it. Credit is caption-only now — "
                      f"put it at the end of the caption before publishing.")
+        # Reddit posts are usually the creator's own account, so unlike an
+        # aggregator repost there is someone specific to ask, and asking costs
+        # one comment. "denied" is a hard stop; anything short of "granted" is
+        # a warning rather than a block, because the account has always run on
+        # credited reposts and silently changing that mid-queue helps nobody.
+        perm = (reel.get("permission") or "").lower()
+        if perm == "denied":
+            sys.exit(f"{job_path.name}: the creator said no. Not publishing.")
+        if perm and perm != "granted":
+            print(f"  ! permission is {perm!r} — credited repost, not licensed")
+
         # detect_band() marks a crop it does not trust. Honouring one would
         # publish the aggregator's header full-bleed instead of the footage,
         # which is the same accident as publishing uncredited, just louder.
