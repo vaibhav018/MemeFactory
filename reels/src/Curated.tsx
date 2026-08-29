@@ -79,10 +79,23 @@ export const Curated: React.FC<CuratedData> = ({
   // Uncropped: the box is the source's own shape at full width.
   // Cropped: the box is only the band we keep, and the video is rendered at
   // full height inside it and offset so that band lands in view.
-  const fullHeight = Math.round(W / sourceAspect);
-  const videoHeight = sourceCrop
-    ? Math.round(fullHeight * sourceCrop.height)
-    : fullHeight;
+  const naturalFull = Math.round(W / sourceAspect);
+  const naturalBox = sourceCrop
+    ? Math.round(naturalFull * sourceCrop.height)
+    : naturalFull;
+
+  // Every clip so far has been a wide band lifted out of somebody's 9:16 post,
+  // ~1.7:1 to 2:1, which lands about a third of the frame tall and needs no
+  // thought. A clip taken from the source is whatever shape its creator chose,
+  // and a full-frame 9:16 one is 1920 tall at full width — starting below the
+  // header it would run off the bottom of the frame with a third of the
+  // picture simply missing, silently. So the box scales down to what is left
+  // under the text and the video is centred in the width it then occupies.
+  const roomBelow = H - (HEADER_TOP + GAP) - 240;
+  const scale = naturalBox > roomBelow ? roomBelow / naturalBox : 1;
+  const videoHeight = Math.round(naturalBox * scale);
+  const videoWidth = Math.round(W * scale);
+  const fullHeight = Math.round(naturalFull * scale);
   const offsetY = sourceCrop ? Math.round(fullHeight * sourceCrop.top) : 0;
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
@@ -174,8 +187,9 @@ export const Curated: React.FC<CuratedData> = ({
             exactly as it does on @evolving.ai. */}
         <div
           style={{
-            width: W,
+            width: videoWidth,
             height: videoHeight,
+            marginLeft: Math.round((W - videoWidth) / 2),
             background: '#000',
             overflow: 'hidden',
             position: 'relative',
@@ -188,7 +202,7 @@ export const Curated: React.FC<CuratedData> = ({
               position: 'absolute',
               top: -offsetY,
               left: 0,
-              width: W,
+              width: videoWidth,
               height: fullHeight,
               objectFit: 'contain',
             }}
