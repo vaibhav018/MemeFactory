@@ -1,0 +1,19 @@
+{
+ "id": "20260829_spidey",
+ "displayName": "Profit Prompts",
+ "handle": "@profit_prompts_",
+ "verified": true,
+ "commentary": "The same character in every shot — **that's the part that used to break**",
+ "videoSrc": "video/rd_dwn7c2akmflh1.mp4",
+ "sourceAspect": 0.5625,
+ "sourceCrop": null,
+ "startFrom": 0,
+ "durationInSeconds": 21,
+ "credit": {
+  "name": "u/8bitcollective",
+  "note": "posted to r/aivideo by the creator's own account"
+ },
+ "permission": "not_asked",
+ "caption": "Spider-Man, if he were an actual man in 1970s Queens. Homemade suit, gut, moustache, a rope instead of webs, a cat in a tree instead of a supervillain.\n\nLook past the joke at what is holding it together: it is the same character in every shot. Same face, same badly-stitched costume, same body, across six different setups and two lighting conditions.\n\nThat is the thing that was broken until recently. Making one convincing frame stopped being hard a while ago. Making the *next* shot contain the same person is what kept AI video stuck at \"clip\" instead of \"scene\" — faces drifted between cuts, and everyone quietly learned to shoot around it.\n\nThis is someone shooting straight at it. For a joke. In grainy 70s film stock.\n\nFound at the source rather than three reposts downstream: by u/8bitcollective on r/aivideo — reddit.com/r/aivideo/comments/1vxncab\n\n#ai #aivideo #spiderman #aifilm #generativeai #characterconsistency #artificialintelligence #aiart #filmmaking #vfx",
+ "_note": "First reel sourced from r/aivideo instead of an Instagram aggregator: native 9:16, full frame, no band to crop and no reposter to credit. Full 21s, no excerpt. Curated now scales an oversized source to fit — a full-frame 9:16 clip is 1920 tall at full width and would have run off the bottom."
+}
