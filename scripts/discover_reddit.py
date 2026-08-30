@@ -89,7 +89,14 @@ def probe(url: str) -> dict | None:
         return None
     if not info or not info.get("duration"):
         return None          # text post, image, or gallery
+    # Reddit serves DASH, and a post can have no audio stream at all — every
+    # format comes back "video only". One clip in eight was silent, and it was
+    # the one that got picked and published, because frames, crop and fit were
+    # all checked and sound was not. It is cheaper to know here than to notice
+    # it on Instagram.
+    fmts = info.get("formats") or []
     return {
+        "hasAudio": any((f.get("acodec") or "none") != "none" for f in fmts),
         "score": info.get("like_count") or 0,
         "comments": info.get("comment_count") or 0,
         "seconds": round(float(info["duration"]), 1),
@@ -164,8 +171,9 @@ def main() -> int:
         if not meta or meta["seconds"] < args.min_seconds:
             continue
         vids.append({**p, **meta})
-        print(f"  {meta['score']:>6} | {meta['seconds']:>6.1f}s | u/{p['author'][:18]:<18} "
-              f"{p['title'][:40]}")
+        print(f"  {meta['score']:>6} | {meta['seconds']:>6.1f}s | "
+              f"{'audio ' if meta['hasAudio'] else 'SILENT'} | "
+              f"u/{p['author'][:18]:<18} {p['title'][:38]}")
 
     vids.sort(key=lambda c: c["score"], reverse=True)
     print(f"\n{len(vids)} video posts; downloading top {args.keep} for preview\n")

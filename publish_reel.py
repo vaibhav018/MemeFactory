@@ -20,6 +20,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -83,6 +84,28 @@ def _job_id(p: Path) -> str:
         if p.name.endswith(suffix):
             return p.name[: -len(suffix)]
     return p.stem
+
+
+def loudest_db(path: Path) -> float | None:
+    """Peak volume in dBFS, or None if there is no audio stream at all.
+
+    Checking that an audio *stream* exists is not enough: a render always has
+    one, because the composition supplies it, and it is happily full of
+    digital silence when the source clip had nothing to put in it. Yesterday's
+    reel measured -91 dB peak and went out mute. Measuring the level catches
+    both the missing stream and the silent one.
+    """
+    probe = shutil.which("ffmpeg")
+    cmd = [probe] if probe else [_tool("npx.cmd", "npx"), "remotion", "ffmpeg"]
+    try:
+        r = subprocess.run(cmd + ["-hide_banner", "-i", str(path),
+                                  "-af", "volumedetect", "-f", "null", "-"],
+                           cwd=None if probe else REELS,
+                           capture_output=True, text=True, timeout=180)
+    except Exception:
+        return None
+    m = re.search(r"max_volume:\s*(-?[\d.]+) dB", (r.stdout or "") + (r.stderr or ""))
+    return float(m.group(1)) if m else None
 
 
 def pick_job(explicit: str = "") -> tuple[Path | None, str]:
@@ -191,6 +214,16 @@ def main() -> int:
         # detect_band() marks a crop it does not trust. Honouring one would
         # publish the aggregator's header full-bleed instead of the footage,
         # which is the same accident as publishing uncredited, just louder.
+        peak = loudest_db(asset)
+        if not reel.get("allowSilent") and (peak is None or peak < -60):
+            sys.exit(f"{asset.name} is silent "
+                     f"({'no audio stream' if peak is None else f'{peak:.0f} dB peak'})"
+                     f" — a mute reel gets no watch-through and Instagram ranks on "
+                     f"exactly that. Pick a clip with sound, or set "
+                     f'"allowSilent": true if the silence is deliberate.')
+        elif peak is not None:
+            print(f"  audio peak {peak:.1f} dB")
+
         if (reel.get("sourceCrop") or {}).get("suspect"):
             sys.exit(f"{job_path.name} carries a crop flagged suspect by "
                      f"discover_reels — check the preview frame and set "
