@@ -1,0 +1,19 @@
+{
+ "id": "20260830_soap",
+ "displayName": "Profit Prompts",
+ "handle": "@profit_prompts_",
+ "verified": true,
+ "commentary": "Anyone can prompt \"cinematic\" — **nailing 1994 daytime TV** is the hard part",
+ "videoSrc": "video/rd_vw1hljk2ktkh1.mp4",
+ "sourceAspect": 0.5625,
+ "sourceCrop": null,
+ "startFrom": 26,
+ "durationInSeconds": 22,
+ "credit": {
+  "name": "u/Darri3D",
+  "note": "posted to r/aivideo by the creator's own account"
+ },
+ "permission": "not_asked",
+ "caption": "An AI soap opera. Not a parody of one — the actual texture of 1994 daytime television.\n\nThe flat three-camera lighting. The shoulder pads. Hair that takes a full can. Line readings landing one beat too slow. A birdcage in the set dressing for no reason at all. Then someone opens fire in the living room and it cuts to \"To Be Continued\".\n\nThe part worth your attention, if you are trying to earn with these tools:\n\nEveryone prompts \"cinematic\". Cinematic is the default — it is what the models were trained to flatter you with. Hitting a specific, unglamorous, dated house style on purpose is far harder, and it is the thing someone will actually pay for. No brand wants cinematic. They want *their* look.\n\nThe skill that transfers isn't \"make it beautiful\". It's \"make it match\".\n\nFound at the source rather than three reposts downstream: by u/Darri3D on r/aivideo — reddit.com/r/aivideo/comments/1vux7k6\n\n#ai #aivideo #aifilm #generativeai #soapopera #artificialintelligence #aiart #promptengineering #contentcreation #filmmaking",
+ "_note": "Excerpt 26-48s: deadpan soap dialogue, \"Tony has a message for you\", then the gunfire. Setup into turn. Audio confirmed present before building — yesterday's clip was the one silent post in a pool of eight and shipped without sound."
+}
