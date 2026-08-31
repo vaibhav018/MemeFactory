@@ -16,16 +16,24 @@ name: profit-prompts
 
 on:
   schedule:
-    # ~11:00 AM IST. Deliberately not on the half hour: GitHub queues scheduled
-    # runs and drops or delays the ones landing on congested minutes, and :00
-    # and :30 are the most congested there are.
-    - cron: "27 5 * * *"
-    # Catch-ups. GitHub's cron is best-effort and this slot has been landing
-    # 23-31 minutes late; on 27 Aug 2026 it did not fire at all — no run, no
-    # failure, nothing in the history to notice. Each attempt asks Instagram
-    # whether the slot is already filled and exits if so.
-    - cron: "13 6 * * *"
-    - cron: "41 7 * * *"
+    # 11:00 AM IST = 05:30 UTC. ONE cron, deliberately.
+    #
+    # Three catch-up crons were added on 27 Aug to survive a dropped run. They
+    # made everyday scheduling 10-20x worse. Measured, same repo:
+    #
+    #   9-26 Aug, one cron per workflow    delay 10-31 min, every day
+    #   27-31 Aug, three crons per workflow  delay 1h14m to 11h53m
+    #
+    # The run queue time is zero throughout, so this is not runners being busy
+    # — GitHub is firing the schedule event itself late, and each extra cron in
+    # a set lands progressively later than the one before it. Tripling the
+    # scheduled events appears to have pushed the repo into a deprioritised
+    # bucket. Restoring the exact schedule that worked, rather than a new one,
+    # so the result is readable.
+    #
+    # The cost of this: a dropped run is now a missed day. That is worth it
+    # against a five-hour delay every day.
+    - cron: "30 5 * * *"
     # The 14:00 UTC evening carousel is retired: the night slot is now a Reel,
     # published by profit_prompts_reel.yml at 13:00 UTC. Leaving both enabled
     # posted twice within an hour.

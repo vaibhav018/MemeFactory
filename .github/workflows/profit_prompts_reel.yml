@@ -12,15 +12,10 @@ name: profit-prompts-reel
 
 on:
   schedule:
-    # ~6:30 PM IST, off the hour on purpose — see the carousel workflow.
-    - cron: "03 13 * * *"
-    # Catch-ups. GitHub's cron is best-effort: this repo's slots have been
-    # firing 20-30 minutes late most days and on 27 Aug 2026 the carousel slot
-    # did not fire at all — no run, no failure, nothing to notice. Each attempt
-    # asks Instagram whether the slot is already filled and exits if so, so a
-    # dropped trigger costs an hour instead of the whole day.
-    - cron: "17 14 * * *"
-    - cron: "49 15 * * *"
+    # 6:30 PM IST = 13:00 UTC. One cron — see profit_prompts.yml for why the
+    # catch-ups were removed.
+    - cron: "0 13 * * *"
+
   workflow_dispatch:
     inputs:
       dry_run:
